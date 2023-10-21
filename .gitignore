@@ -1,0 +1,8 @@
+# Bot configuration
+Bot/config.json
+
+# PyCharm
+.idea/
+
+# Python
+__pycache__
