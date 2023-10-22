@@ -1,8 +1,11 @@
 # Bot configuration
 Bot/config.json
 
+# Bot – generated images
+Bot/_img/
+
 # PyCharm
-.idea/
+Bot/.idea/
 
 # Python
 __pycache__
