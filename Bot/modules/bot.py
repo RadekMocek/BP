@@ -1,5 +1,4 @@
 import os
-import pathlib
 
 import discord
 from discord.ext import commands
@@ -10,13 +9,9 @@ __config = json_read("config.json")
 TOKEN = __config["token"]
 TEST_GUILD = discord.Object(id=__config["test_guild_id"])
 
-__path_root = pathlib.Path(__file__).parent.parent
-PATH_IMG = __path_root / "_img"
-PATH_TEX = PATH_IMG / "tex.png"
-
 
 class DisGebra(commands.Bot):
-    def __init__(self):
+    def __init__(self) -> None:
         # Prefix pro starý typ příkazů
         command_prefix = "dg:"
         # Gateway intents určují, ke kterým událostem bude mít bot přístup
@@ -31,16 +26,16 @@ class DisGebra(commands.Bot):
         )
 
     # Úvodní nastavení, metoda je spuštěna jednou po přihlášení
-    async def setup_hook(self):
+    async def setup_hook(self) -> None:
         # Nahrání cogs souborů
         for filename in os.listdir("cogs"):
             if filename.endswith(".py"):
                 await self.load_extension(f"cogs.{filename[:-3]}")
                 print(f"{filename} načteno.")
-        # Synchronizovat slash commands
+        # Synchronizovat slash commands na testovacím serveru
         self.tree.clear_commands(guild=TEST_GUILD)
         self.tree.copy_global_to(guild=TEST_GUILD)
         await self.tree.sync(guild=TEST_GUILD)
 
-    async def on_ready(self):
+    async def on_ready(self) -> None:
         print("Bot je připraven.")
