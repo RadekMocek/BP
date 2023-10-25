@@ -4,11 +4,12 @@ import re
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 
+__DPI = 180
 __COLOR_BACKGROUND = "#323337"  # Barva pozadí Discord chatu ve výchozím nastavení
 __COLOR_FOREGROUND = "white"  # Barva písma pro tmavé pozadí
-__MATRIX_SPACE_SCALE = 0.02  # Velikost mezer mezi prvky matice
-__MATRIX_SPACE_VERTICAL_MULTIPLIER = 2.2
-__MATRIX_MIN_ITEM_LEN_MULTIPLIER = 1.2
+__MATRIX_CHAR_WIDTH = 0.011  # Šířka krátkého znaku v matici
+__MATRIX_SPACE_WIDTH = 0.02  # Šířka mezery v matici
+__MATRIX_SPACE_VERTICAL_MULTIPLIER = 2.2  # Výška mezery v matici = šířka * tato konstanta
 __MATRIX_BRACES_THICKNESS = 0.75  # Tloušťka závorek vykreslené matice
 
 plt.rcParams["text.usetex"] = False  # Nepoužívat lokální TeX distribuci, ale Matplotlib renderer
@@ -40,8 +41,7 @@ def render_matrix(text: str) -> io.BytesIO:
     text = text.strip("[]")  # Zbavit se vnějších závorek, pokud jsou
     rows = text.split(";")  # Rozdělení na jednotlivé řádky matice
     items = []  # Pole bude obsahovat očesané prvky matice ve stylu [[a,b],[c,d]]
-    min_item_len = __MATRIX_SPACE_SCALE * __MATRIX_MIN_ITEM_LEN_MULTIPLIER  # Vynásobeno pro lepší vzhled úzkých matic
-    max_item_len = min_item_len  # Délka nejdelšího prvku matice
+    max_item_len = 1  # Délka nejdelšího prvku matice
     max_n_cols = 1  # Počet sloupců matice
 
     # Naplnit items a zjistit správné hodnoty max_item_len a max_n_cols
@@ -54,7 +54,7 @@ def render_matrix(text: str) -> io.BytesIO:
                 item = "\\/"  # Pokud je prvek matice úplně prázdný, nahradit ho whitespace znakem
             row_items.append(item)
 
-            item_len = __approx_tex_len(item) * __MATRIX_SPACE_SCALE
+            item_len = __approx_tex_len(item)
             if item_len > max_item_len:
                 max_item_len = item_len
         items.append(row_items)
@@ -63,20 +63,21 @@ def render_matrix(text: str) -> io.BytesIO:
         if n_cols > max_n_cols:
             max_n_cols = n_cols
 
-    # Závorky matice – zjištění rohových bodů
-    max_item_len_half = max_item_len / 2
-    x_left = -max_item_len_half
-    x_right = ((max_n_cols - 1) * max_item_len) + max_item_len_half
-    n_rows = len(rows)
-    y_top = __MATRIX_SPACE_VERTICAL_MULTIPLIER * __MATRIX_SPACE_SCALE * n_rows
-    y_bot = -__MATRIX_SPACE_SCALE
+    #
+    max_item_len_with_space_scaled = max_item_len * __MATRIX_CHAR_WIDTH + __MATRIX_SPACE_WIDTH
+    matrix_space_height = __MATRIX_SPACE_VERTICAL_MULTIPLIER * __MATRIX_SPACE_WIDTH
 
-    # Pokud je matice příliš úzká, přizpůsobit tvar závorek (více odsadit a zkrátit "nožky")
-    braces_leg_size = __MATRIX_SPACE_SCALE
-    if max_item_len == min_item_len or max_n_cols * max_item_len <= 2 * braces_leg_size:
+    # Závorky matice – zjištění rohových bodů
+    brace_space = (max_item_len * __MATRIX_CHAR_WIDTH / 2) + __MATRIX_CHAR_WIDTH
+    x_left = -brace_space
+    x_right = max_item_len_with_space_scaled * (max_n_cols - 1) + brace_space
+    y_top = matrix_space_height * len(rows)
+    y_bot = -__MATRIX_SPACE_WIDTH
+
+    # Pokud je matice příliš úzká, přizpůsobit tvar závorek (zkrátit "nožky")
+    braces_leg_size = __MATRIX_SPACE_WIDTH
+    if max_n_cols == 1 and max_item_len < 5 or max_n_cols == 2 and max_item_len == 1:
         braces_leg_size /= 2
-        x_left -= max_item_len_half
-        x_right += max_item_len_half
 
     # Levá a pravá závorka, každá tvořena čtyřmi body spojenými čárou
     fig.add_artist(lines.Line2D([x_left + braces_leg_size, x_left, x_left, x_left + braces_leg_size],
@@ -94,8 +95,8 @@ def render_matrix(text: str) -> io.BytesIO:
         col_n = 0
         for item in row:
             fig.text(
-                x=max_item_len * col_n,
-                y=__MATRIX_SPACE_VERTICAL_MULTIPLIER * __MATRIX_SPACE_SCALE * row_n,
+                x=max_item_len_with_space_scaled * col_n,
+                y=matrix_space_height * row_n,
                 s=f"${item}$",
                 ha="center",  # Horizontal alignment
             )
@@ -106,9 +107,12 @@ def render_matrix(text: str) -> io.BytesIO:
 
 
 def __approx_tex_len(text: str) -> int:
-    """Vrací PŘIBLIŽNOU délku TeX výrazu (přibližný počet znaků po vykreslení, vrací více než méně)."""
+    """Vrací PŘIBLIŽNOU délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
     text = text.replace("\\frac", "")
     text = text.replace("\\", " \\")
+    for ch in "+-ABCDEFGHKMNOPQRUVWXYZmw":
+        if ch in text:
+            text = text.replace(ch, "00")
     text = re.sub(r"\\[^\\\s{_^()\[]*[\\\s{_^()\[]", "0", text + " ")
     text = text.translate(str.maketrans("", "", " _^{}[]"))
     return len(text)
@@ -117,7 +121,7 @@ def __approx_tex_len(text: str) -> int:
 def __plt_to_image_buffer() -> io.BytesIO:
     """Vrací byte buffer s uloženým obrázkem aktuální matplotlib.pyplot.figure."""
     buf = io.BytesIO()
-    plt.savefig(fname=buf, dpi=200, bbox_inches="tight", pad_inches=0.02, transparent=False)
+    plt.savefig(fname=buf, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
     plt.close()
     buf.seek(0)
     return buf
