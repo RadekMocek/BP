@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils.math_render import render_tex, render_matrix
+from utils.math_render import render_tex, render_matrix, render_matrix_equation
 
 
 class Other(commands.Cog):
@@ -39,6 +39,19 @@ class Other(commands.Cog):
         await itx.response.send_message(f"Rendering `{text}`:")
         image_buffer = render_matrix(text)
         await itx.channel.send(file=discord.File(image_buffer, "mex.png"))
+        image_buffer.close()
+
+    @app_commands.command()
+    async def texmex(self, itx: discord.Integration, text: app_commands.Range[str, 1, 200]) -> None:
+        """
+        Vykreslit rovnici s maticemi.
+
+        :param itx
+        :param text: Např. 2\\cdot[1,2;3,4]=[2,4;6,8]
+        """
+        await itx.response.send_message(f"Rendering `{text}`:")
+        image_buffer = render_matrix_equation(text)
+        await itx.channel.send(file=discord.File(image_buffer, "texmex.png"))
         image_buffer.close()
 
 

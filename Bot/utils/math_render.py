@@ -4,12 +4,13 @@ import re
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 
-__DPI = 180
+__DPI = 180  # Rozlišení vykreslených obrázků
 __COLOR_BACKGROUND = "#323337"  # Barva pozadí Discord chatu ve výchozím nastavení
 __COLOR_FOREGROUND = "white"  # Barva písma pro tmavé pozadí
 __MATRIX_CHAR_WIDTH = 0.011  # Šířka krátkého znaku v matici
 __MATRIX_SPACE_WIDTH = 0.02  # Šířka mezery v matici
 __MATRIX_SPACE_VERTICAL_MULTIPLIER = 2.2  # Výška mezery v matici = šířka * tato konstanta
+__MATRIX_SPACE_HEIGHT = __MATRIX_SPACE_VERTICAL_MULTIPLIER * __MATRIX_SPACE_WIDTH
 __MATRIX_BRACES_THICKNESS = 0.75  # Tloušťka závorek vykreslené matice
 
 plt.rcParams["text.usetex"] = False  # Nepoužívat lokální TeX distribuci, ale Matplotlib renderer
@@ -20,24 +21,70 @@ plt.rcParams["mathtext.fontset"] = "cm"  # Computer Modern
 
 def render_tex(text_raw: str) -> io.BytesIO:
     """Vrací byte buffer obrázek s vykresleným TeX výrazem."""
+    # O vykreslení matematického výrazu se stará Matplotlib
+    fig = plt.figure()
+    fig.patch.set_facecolor(__COLOR_BACKGROUND)
+    __render_tex_at(fig, 0, 0, text_raw)
+    # Obrázek není třeba ukládat lokálně, je uložen do byte bufferu a rovnou odeslán
+    return __plt_to_image_buffer()
+
+
+def render_matrix(text_raw: str) -> io.BytesIO:
+    """Vrací byte buffer obrázek s vykreslenou maticí."""
+    fig = plt.figure()
+    fig.patch.set_facecolor(__COLOR_BACKGROUND)
+    __render_matrix_at(fig, 0, 0, text_raw)
+    return __plt_to_image_buffer()
+
+
+def render_matrix_equation(text_raw: str) -> io.BytesIO:
+    items_raw = re.split(r"([\[\]])", text_raw)
+    items = []
+    index = 0
+    previous = ""
+    sqrt = False
+    items.append("")
+    for item in items_raw:
+        if item:
+            if item == "[":
+                if previous[-5:] == "\\sqrt":
+                    sqrt = True
+                else:
+                    index += 1
+                    items.append("")
+            items[index] += item
+            if item == "]":
+                if sqrt:
+                    sqrt = False
+                else:
+                    index += 1
+                    items.append("")
+            previous = item
+    fig = plt.figure()
+    fig.patch.set_facecolor(__COLOR_BACKGROUND)
+    x = 0
+    for item in items:
+        if item:
+            if item[0] == "[":
+                x_right = __render_matrix_at(fig, x, 0, item)
+                x += x_right + __MATRIX_CHAR_WIDTH
+            else:
+                __render_tex_at(fig, x, 0, item)
+                x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
+    return __plt_to_image_buffer()
+
+
+def __render_tex_at(fig, x: int, y: int, text_raw: str) -> None:
     # Obalit text do dolarů, pokud není
     if text_raw[0] == "$" and text_raw[-1] == "$":
         text_math = text_raw
     else:
         text_math = f"${text_raw}$"
-    # O vykreslení matematického výrazu se stará Matplotlib
-    fig = plt.figure()
-    fig.patch.set_facecolor(__COLOR_BACKGROUND)
-    fig.text(x=0, y=0, s=text_math)
-    # Obrázek není třeba ukládat lokálně, je uložen do byte bufferu a rovnou odeslán
-    return __plt_to_image_buffer()
+    # Vykreslit text do fig
+    fig.text(x=x, y=y, s=text_math)
 
 
-def render_matrix(text: str) -> io.BytesIO:
-    """Vrací byte buffer obrázek s vykreslenou maticí."""
-    fig = plt.figure()
-    fig.patch.set_facecolor(__COLOR_BACKGROUND)
-
+def __render_matrix_at(fig, x: int, y: int, text: str) -> float:
     text = text.strip("[]")  # Zbavit se vnějších závorek, pokud jsou
     rows = text.split(";")  # Rozdělení na jednotlivé řádky matice
     items = []  # Pole bude obsahovat očesané prvky matice ve stylu [[a,b],[c,d]]
@@ -65,13 +112,12 @@ def render_matrix(text: str) -> io.BytesIO:
 
     #
     max_item_len_with_space_scaled = max_item_len * __MATRIX_CHAR_WIDTH + __MATRIX_SPACE_WIDTH
-    matrix_space_height = __MATRIX_SPACE_VERTICAL_MULTIPLIER * __MATRIX_SPACE_WIDTH
 
     # Závorky matice – zjištění rohových bodů
     brace_space = (max_item_len * __MATRIX_CHAR_WIDTH / 2) + __MATRIX_CHAR_WIDTH
-    x_left = -brace_space
-    x_right = max_item_len_with_space_scaled * (max_n_cols - 1) + brace_space
-    y_top = matrix_space_height * len(rows)
+    x_left = x
+    x_right = max_item_len_with_space_scaled * (max_n_cols - 1) + 2 * brace_space + x
+    y_top = __MATRIX_SPACE_HEIGHT * len(rows)
     y_bot = -__MATRIX_SPACE_WIDTH
 
     # Pokud je matice příliš úzká, přizpůsobit tvar závorek (zkrátit "nožky")
@@ -95,25 +141,25 @@ def render_matrix(text: str) -> io.BytesIO:
         col_n = 0
         for item in row:
             fig.text(
-                x=max_item_len_with_space_scaled * col_n,
-                y=matrix_space_height * row_n,
+                x=x + brace_space + max_item_len_with_space_scaled * col_n,
+                y=y + __MATRIX_SPACE_HEIGHT * row_n,
                 s=f"${item}$",
                 ha="center",  # Horizontal alignment
             )
             col_n += 1
         row_n += 1
 
-    return __plt_to_image_buffer()
+    return x_right - x
 
 
 def __approx_tex_len(text: str) -> int:
     """Vrací PŘIBLIŽNOU délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
     text = text.replace("\\frac", "")
     text = text.replace("\\", " \\")
-    for ch in "+-ABCDEFGHKMNOPQRUVWXYZmw":
+    for ch in "+-=ABCDEFGHKMNOPQRUVWXYZmw":
         if ch in text:
             text = text.replace(ch, "00")
-    text = re.sub(r"\\[^\\\s{_^()\[]*[\\\s{_^()\[]", "0", text + " ")
+    text = re.sub(r"\\[^\\\s{_^()\[]*[\\\s{_^()\[]", "00", text + " ")
     text = text.translate(str.maketrans("", "", " _^{}[]"))
     return len(text)
 
