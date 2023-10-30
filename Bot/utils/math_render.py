@@ -38,12 +38,15 @@ def render_matrix(text_raw: str) -> io.BytesIO:
 
 
 def render_matrix_equation(text_raw: str) -> io.BytesIO:
-    items_raw = re.split(r"([\[\]])", text_raw)
-    items = []
+    """Vrací byte buffer obrázek, kombinuje možnosti render_tex a render_matrix."""
+    items_raw = re.split(r"([\[\]])", text_raw)  # Split podle hranatých závorek, závorky ponechat
+    items = []  # Pole bude obsahovat finální TeX a matrix výrazy pro vykreslení
     index = 0
     previous = ""
-    sqrt = False
+    sqrt = False  # Odmocnina může mít syntax \sqrt[x]{y}, potřeba nebrat hranaté závorky jako závorky matice
+    max_n_rows = 1  # Nejvyšší matice bude zabírat celou výšku obrázku, nižší výrazy budou zarovnány na střed
     items.append("")
+    # Rozdělit na TeX a matrix výrazy:
     for item in items_raw:
         if item:
             if item == "[":
@@ -57,34 +60,41 @@ def render_matrix_equation(text_raw: str) -> io.BytesIO:
                 if sqrt:
                     sqrt = False
                 else:
+                    n_rows = items[index].count(";") + 1
+                    if n_rows > max_n_rows:
+                        max_n_rows = n_rows
                     index += 1
                     items.append("")
             previous = item
+    # Vykreslit jednotlivé výrazy:
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
     x = 0
+    text_y = max_n_rows / 2 * __MATRIX_SPACE_HEIGHT
     for item in items:
         if item:
             if item[0] == "[":
-                x_right = __render_matrix_at(fig, x, 0, item)
+                n_rows = item.count(";") + 1
+                matrix_y = (max_n_rows - n_rows) / 2 * __MATRIX_SPACE_HEIGHT
+                x_right = __render_matrix_at(fig, x, matrix_y, item)
                 x += x_right + __MATRIX_CHAR_WIDTH
             else:
-                __render_tex_at(fig, x, 0, item)
+                __render_tex_at(fig, x, text_y, item)
                 x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
     return __plt_to_image_buffer()
 
 
-def __render_tex_at(fig, x: int, y: int, text_raw: str) -> None:
+def __render_tex_at(fig, x: float, y: float, text_raw: str) -> None:
     # Obalit text do dolarů, pokud není
     if text_raw[0] == "$" and text_raw[-1] == "$":
         text_math = text_raw
     else:
         text_math = f"${text_raw}$"
     # Vykreslit text do fig
-    fig.text(x=x, y=y, s=text_math)
+    fig.text(x=x, y=y, s=text_math, va="top")
 
 
-def __render_matrix_at(fig, x: int, y: int, text: str) -> float:
+def __render_matrix_at(fig, x: float, y: float, text: str) -> float:
     text = text.strip("[]")  # Zbavit se vnějších závorek, pokud jsou
     rows = text.split(";")  # Rozdělení na jednotlivé řádky matice
     items = []  # Pole bude obsahovat očesané prvky matice ve stylu [[a,b],[c,d]]
@@ -117,8 +127,8 @@ def __render_matrix_at(fig, x: int, y: int, text: str) -> float:
     brace_space = (max_item_len * __MATRIX_CHAR_WIDTH / 2) + __MATRIX_CHAR_WIDTH
     x_left = x
     x_right = max_item_len_with_space_scaled * (max_n_cols - 1) + 2 * brace_space + x
-    y_top = __MATRIX_SPACE_HEIGHT * len(rows)
-    y_bot = -__MATRIX_SPACE_WIDTH
+    y_top = y + __MATRIX_SPACE_HEIGHT * len(rows)
+    y_bot = y - __MATRIX_SPACE_WIDTH
 
     # Pokud je matice příliš úzká, přizpůsobit tvar závorek (zkrátit "nožky")
     braces_leg_size = __MATRIX_SPACE_WIDTH
