@@ -1,5 +1,5 @@
-from modules.bot import DisGebra, TOKEN
+from modules.bot import LingeBot, TOKEN
 
 if __name__ == "__main__":
-    bot = DisGebra()
+    bot = LingeBot()
     bot.run(token=TOKEN, reconnect=True)

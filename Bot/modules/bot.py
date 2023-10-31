@@ -10,7 +10,7 @@ TOKEN = __config["token"]
 TEST_GUILD = discord.Object(id=__config["test_guild_id"])
 
 
-class DisGebra(commands.Bot):
+class LingeBot(commands.Bot):
     def __init__(self) -> None:
         # Prefix pro starý typ příkazů
         command_prefix = "dg:"

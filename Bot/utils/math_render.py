@@ -76,8 +76,8 @@ def render_matrix_equation(text_raw: str) -> io.BytesIO:
             if item[0] == "[":
                 n_rows = item.count(";") + 1
                 matrix_y = (max_n_rows - n_rows) / 2 * __MATRIX_SPACE_HEIGHT
-                x_right = __render_matrix_at(fig, x, matrix_y, item)
-                x += x_right + __MATRIX_CHAR_WIDTH
+                matrix_width = __render_matrix_at(fig, x, matrix_y, item)
+                x += matrix_width + __MATRIX_CHAR_WIDTH
             else:
                 __render_tex_at(fig, x, text_y, item)
                 x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
@@ -163,21 +163,33 @@ def __render_matrix_at(fig, x: float, y: float, text: str) -> float:
 
 
 def __approx_tex_len(text: str) -> int:
-    """Vrací PŘIBLIŽNOU délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
+    """Vrací PŘIBLIŽNOU (nadceněnou) délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
+    # Vstupní řetězec je postupně upravován a nakonec je změřena jeho délka
+    # 1 - Zlomky mají dva parametry (\frac{x}{y}), výraz \frac je zde zahozen, závorky jsou zahozeny později (krok 5)
+    #   - V tuto chvíli může tedy zlomek být brán jako dvakrát širší, než je ve skutečnosti (\frac{123}{123} má délku 6)
     text = text.replace("\\frac", "")
+    # 2 - Před každý symbol "\" je přidána mezera, aby správně fungoval výraz v dalším kroku
     text = text.replace("\\", " \\")
+    # 3 - Hledáme výrazy začínající na "\", které jsou po libovolném počtu znaků ukončeny jedním ze znaků: " {_^()["
+    #   - Ty jsou nahrazeny řetězcem "00", důležitá je délka řetězce len("00") == 2
+    #   - Některé výrazy (např. \cdot) nejsou široké, jako dva krátké znaky, lepší ale délku nadcenit nežli podcenit
+    text = re.sub(r"\\[^\s{_^()\[]*[\s{_^()\[]", "00", text + " ")
+    # 4 - Znaky které jsou širší než běžná číslice jsou také nahrazeny dvouznakovým řetězcem "00"
     for ch in "+-=ABCDEFGHKMNOPQRUVWXYZmw":
         if ch in text:
             text = text.replace(ch, "00")
-    text = re.sub(r"\\[^\\\s{_^()\[]*[\\\s{_^()\[]", "00", text + " ")
+    # 5 - Znaky " _^{}[]" jsou zahozeny
     text = text.translate(str.maketrans("", "", " _^{}[]"))
+    # 6 - Délka upraveného řetězce je vrácena
     return len(text)
 
 
 def __plt_to_image_buffer() -> io.BytesIO:
     """Vrací byte buffer s uloženým obrázkem aktuální matplotlib.pyplot.figure."""
     buf = io.BytesIO()
-    plt.savefig(fname=buf, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
-    plt.close()
+    try:
+        plt.savefig(fname=buf, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
+    finally:
+        plt.close()
     buf.seek(0)
     return buf

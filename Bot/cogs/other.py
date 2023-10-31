@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from utils.math_render import render_tex, render_matrix, render_matrix_equation
+from utils.math_render import render_matrix_equation
 
 
 class Other(commands.Cog):
@@ -10,48 +10,27 @@ class Other(commands.Cog):
         self.bot = bot
 
     @app_commands.command()
-    async def ping(self, itx: discord.Integration) -> None:
+    async def ping(self, itx: discord.Interaction) -> None:
         """Ověřit dostupnost bota."""
         latency = round(self.bot.latency * 1000)
         await itx.response.send_message(f"Pong!\nProdleva: {latency} ms")
 
     @app_commands.command()
-    async def tex(self, itx: discord.Integration, text: app_commands.Range[str, 1, 100]) -> None:
-        """
-        Vykreslit TeX matematický výraz pomocí Matplotlib Mathtext.
-
-        :param itx
-        :param text: Matematický výraz, např. \\frac{x^2}{2}
-        """
-        await itx.response.send_message(f"Rendering `{text}`:")
-        image_buffer = render_tex(text)
-        await itx.channel.send(file=discord.File(image_buffer, "tex.png"))
-        image_buffer.close()
+    async def help(self, itx: discord.Interaction) -> None:
+        """Zobrazit nápovědu."""
+        await itx.response.send_message("Nápověda.")
 
     @app_commands.command()
-    async def mex(self, itx: discord.Integration, text: app_commands.Range[str, 1, 100]) -> None:
+    async def render(self, itx: discord.Interaction, text: app_commands.Range[str, 1, 250]) -> None:
         """
-        Vykreslit matici.
+        Vykreslit rovnici s maticemi. Podporuje základní TeX výrazy. Syntax matic podobný MATLABu.
 
         :param itx
-        :param text: Matice, syntax podobná MATLABu, např. [1, 2, 3; 4, 5, 6]. Podporuje i TeX výrazy.
+        :param text: Např. "2 \\cdot [1, 2; 3, \\sqrt{4}] = [2, 4; 6, 4]"
         """
-        await itx.response.send_message(f"Rendering `{text}`:")
-        image_buffer = render_matrix(text)
-        await itx.channel.send(file=discord.File(image_buffer, "mex.png"))
-        image_buffer.close()
-
-    @app_commands.command()
-    async def texmex(self, itx: discord.Integration, text: app_commands.Range[str, 1, 200]) -> None:
-        """
-        Vykreslit rovnici s maticemi.
-
-        :param itx
-        :param text: Např. 2\\cdot[1,2;3,4]=[2,4;6,8]
-        """
-        await itx.response.send_message(f"Rendering `{text}`:")
+        await itx.response.defer()  # "Bot přemýšlí"
         image_buffer = render_matrix_equation(text)
-        await itx.channel.send(file=discord.File(image_buffer, "texmex.png"))
+        await itx.followup.send(file=discord.File(image_buffer, "texmex.png"))
         image_buffer.close()
 
 
