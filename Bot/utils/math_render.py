@@ -5,7 +5,7 @@ import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 
 __DPI = 180  # Rozlišení vykreslených obrázků
-__COLOR_BACKGROUND = "#323337"  # Barva pozadí Discord chatu ve výchozím nastavení
+__COLOR_BACKGROUND = "#323338"  # Barva pozadí Discord chatu ve výchozím nastavení
 __COLOR_FOREGROUND = "white"  # Barva písma pro tmavé pozadí
 __MATRIX_CHAR_WIDTH = 0.011  # Šířka krátkého znaku v matici
 __MATRIX_SPACE_WIDTH = 0.02  # Šířka mezery v matici

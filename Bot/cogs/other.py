@@ -2,11 +2,12 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from modules.buttons import Buttons, ConfirmBtn, EditMathRenderBtn, DeleteBtn
 from utils.math_render import render_matrix_equation
 
 
 class Other(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot) -> None:
         self.bot = bot
 
     @app_commands.command()
@@ -23,16 +24,18 @@ class Other(commands.Cog):
     @app_commands.command()
     async def render(self, itx: discord.Interaction, text: app_commands.Range[str, 1, 250]) -> None:
         """
-        Vykreslit rovnici s maticemi. Podporuje základní TeX výrazy. Syntax matic podobný MATLABu.
+        Vykreslit matematický výraz. Podporuje základní TeX výrazy. Syntax matic podobný MATLABu.
 
         :param itx
         :param text: Např. "2 \\cdot [1, 2; 3, \\sqrt{4}] = [2, 4; 6, 4]"
         """
         await itx.response.defer()  # "Bot přemýšlí"
         image_buffer = render_matrix_equation(text)
-        await itx.followup.send(file=discord.File(image_buffer, "texmex.png"))
+        await itx.followup.send(file=discord.File(image_buffer, "lingebot_math_render.png"))
         image_buffer.close()
+        await Buttons.attach_to_message(await itx.original_response(),
+                                        [ConfirmBtn(), EditMathRenderBtn(text), DeleteBtn()])
 
 
-async def setup(bot):
+async def setup(bot) -> None:
     await bot.add_cog(Other(bot))
