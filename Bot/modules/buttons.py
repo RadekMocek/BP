@@ -42,7 +42,7 @@ class EditMathRenderBtn(discord.ui.Button):
         super().__init__(emoji="📝", label="Upravit")
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await itx.response.send_modal(EditMathRenderModal(itx, self.text_old))
+        await itx.response.send_modal(EditMathRenderModal(self, itx))
 
 
 class DeleteBtn(discord.ui.Button):
