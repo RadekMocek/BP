@@ -19,26 +19,26 @@ plt.rcParams["text.color"] = __COLOR_FOREGROUND
 plt.rcParams["mathtext.fontset"] = "cm"  # Computer Modern
 
 
-def render_tex(text_raw: str) -> io.BytesIO:
-    """Vrací byte buffer obrázek s vykresleným TeX výrazem."""
+def render_tex_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
+    """Do byte bufferu vloží obrázek s vykresleným TeX výrazem."""
     # O vykreslení matematického výrazu se stará Matplotlib
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
     __render_tex_at(fig, 0, 0, text_raw)
     # Obrázek není třeba ukládat lokálně, je uložen do byte bufferu a rovnou odeslán
-    return __plt_to_image_buffer()
+    __plt_to_image_buffer(buffer)
 
 
-def render_matrix(text_raw: str) -> io.BytesIO:
-    """Vrací byte buffer obrázek s vykreslenou maticí."""
+def render_matrix_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
+    """Do byte bufferu vloží obrázek s vykreslenou maticí."""
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
     __render_matrix_at(fig, 0, 0, text_raw)
-    return __plt_to_image_buffer()
+    __plt_to_image_buffer(buffer)
 
 
-def render_matrix_equation(text_raw: str) -> io.BytesIO:
-    """Vrací byte buffer obrázek, kombinuje možnosti render_tex a render_matrix."""
+def render_matrix_equation_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
+    """Do byte bufferu vloží obrázek, kombinuje možnosti render_tex a render_matrix."""
     items_raw = re.split(r"([\[\]])", text_raw)  # Split podle hranatých závorek, závorky ponechat
     items = []  # Pole bude obsahovat finální TeX a matrix výrazy pro vykreslení
     index = 0
@@ -81,7 +81,8 @@ def render_matrix_equation(text_raw: str) -> io.BytesIO:
             else:
                 __render_tex_at(fig, x, text_y, item)
                 x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
-    return __plt_to_image_buffer()
+    # Render to buffer
+    __plt_to_image_buffer(buffer)
 
 
 def __render_tex_at(fig, x: float, y: float, text_raw: str) -> None:
@@ -184,12 +185,13 @@ def __approx_tex_len(text: str) -> int:
     return len(text)
 
 
-def __plt_to_image_buffer() -> io.BytesIO:
+def __plt_to_image_buffer(buffer: io.BytesIO) -> None:
     """Vrací byte buffer s uloženým obrázkem aktuální matplotlib.pyplot.figure."""
-    buf = io.BytesIO()
+    # buf = io.BytesIO()
     try:
-        plt.savefig(fname=buf, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
+        plt.savefig(fname=buffer, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
     finally:
         plt.close()
-    buf.seek(0)
-    return buf
+    buffer.seek(0)
+    # buf.seek(0)
+    # return buf
