@@ -6,3 +6,6 @@ Bot/.idea/
 
 # Python
 __pycache__
+
+# Bot static files (Temporary?)
+Bot/static
