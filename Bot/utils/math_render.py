@@ -166,22 +166,20 @@ def __render_matrix_at(fig, x: float, y: float, text: str) -> float:
 def __approx_tex_len(text: str) -> int:
     """Vrací PŘIBLIŽNOU (nadceněnou) délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
     # Vstupní řetězec je postupně upravován a nakonec je změřena jeho délka
-    # 1 - Zlomky mají dva parametry (\frac{x}{y}), výraz \frac je zde zahozen, závorky jsou zahozeny později (krok 5)
+    # 1 - Zlomky mají dva parametry (\frac{x}{y}), výraz \frac je zde zahozen, závorky jsou zahozeny později (krok 4)
     #   - V tuto chvíli může tedy zlomek být brán jako dvakrát širší, než je ve skutečnosti (\frac{123}{123} má délku 6)
     text = text.replace("\\frac", "")
-    # 2 - Před každý symbol "\" je přidána mezera, aby správně fungoval výraz v dalším kroku
-    text = text.replace("\\", " \\")
-    # 3 - Hledáme výrazy začínající na "\", které jsou po libovolném počtu znaků ukončeny jedním ze znaků: " {_^()["
+    # 2 - Hledáme výrazy začínající na "\", které jsou po libovolném počtu písmen ukončeny nějakým znakem
     #   - Ty jsou nahrazeny řetězcem "00", důležitá je délka řetězce len("00") == 2
-    #   - Některé výrazy (např. \cdot) nejsou široké, jako dva krátké znaky, lepší ale délku nadcenit nežli podcenit
-    text = re.sub(r"\\[^\s{_^()\[]*[\s{_^()\[]", "00", text + " ")
-    # 4 - Znaky které jsou širší než běžná číslice jsou také nahrazeny dvouznakovým řetězcem "00"
+    #   - Některé výrazy (např. \iota) nejsou široké jako dva krátké znaky, lepší ale délku nadcenit nežli podcenit
+    text = re.sub(r"\\[a-zA-Z]+(?=[^a-zA-Z])", "00", text + " ")
+    # 3 - Znaky které jsou širší než běžná číslice jsou také nahrazeny dvouznakovým řetězcem "00"
     for ch in "+-=ABCDEFGHKMNOPQRUVWXYZmw":
         if ch in text:
             text = text.replace(ch, "00")
-    # 5 - Znaky " _^{}[]" jsou zahozeny
+    # 4 - Znaky " _^{}[]" jsou zahozeny
     text = text.translate(str.maketrans("", "", " _^{}[]"))
-    # 6 - Délka upraveného řetězce je vrácena
+    # 5 - Délka upraveného řetězce je vrácena
     return len(text)
 
 

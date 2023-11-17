@@ -13,8 +13,8 @@ class Error(commands.Cog):
 
     @commands.Cog.listener()
     async def on_app_command_error(self, itx: discord.Interaction, error: app_commands.AppCommandError) -> None:
-        # Odeslat do chatu výpis chyby
-        error_message = f"```{error}```"
+        # Odeslat do chatu výpis chyby (červeně)
+        error_message = f"```ansi\n[2;31m{error}```"
         # Použitá metoda pro odeslání výpisu závisí na typu interakce:
         match itx.response.type:
             case discord.InteractionResponseType.deferred_channel_message:
