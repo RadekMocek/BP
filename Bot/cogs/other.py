@@ -4,7 +4,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from modules.buttons import Buttons, ConfirmBtn, EditMathRenderBtn, DeleteBtn
+from modules.buttons import ConfirmButton, EditMathRenderButton, DeleteButton
+from modules.views import MessageView
 from utils.math_render import render_matrix_equation_to_buffer
 
 
@@ -43,9 +44,10 @@ class Other(commands.Cog):
         finally:
             image_buffer.close()
 
-        await Buttons.attach_to_message(await itx.original_response(),
-                                        itx.user,
-                                        [ConfirmBtn(), EditMathRenderBtn(text), DeleteBtn()])
+        await MessageView.attach_to_message(30,
+                                            await itx.original_response(),
+                                            itx.user,
+                                            [ConfirmButton(), EditMathRenderButton(text), DeleteButton()])
 
 
 async def setup(bot) -> None:
