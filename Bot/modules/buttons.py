@@ -9,8 +9,8 @@ class ConfirmButton(discord.ui.Button):
         super().__init__(emoji="✔️", label="Potvrdit")
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await itx.message.edit(view=self.view.clear_items())
         self.view.stop()
+        await itx.message.edit(view=self.view.clear_items())
 
 
 class EditMathRenderButton(discord.ui.Button):
@@ -27,5 +27,13 @@ class DeleteButton(discord.ui.Button):
         super().__init__(emoji="🗑", label="Smazat")
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await itx.message.delete()
         self.view.stop()
+        await itx.message.delete()
+
+
+class TheoryNextButton(discord.ui.Button):
+    def __init__(self) -> None:
+        super().__init__(label="Pokračovat")
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        await self.view.next_subtheme(itx)

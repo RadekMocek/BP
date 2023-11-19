@@ -1,4 +1,6 @@
 import pathlib
+import re
+from typing import Tuple
 
 from utils.text_utils import sux_to_unicode
 
@@ -13,7 +15,16 @@ def list_themes() -> list[str]:
     return results
 
 
-def get_theme(filename: str) -> str:
+def get_theme(filename: str) -> Tuple[str, list[str], list[str]]:
     with open(static_files_path / filename, encoding="utf-8") as file:
         text = file.read()
-    return sux_to_unicode(text)
+
+    pattern = r"(^##\s.*$)"
+    result = re.split(pattern, text, flags=re.MULTILINE)
+
+    theme_name = result[0].strip()[2:]
+    result.pop(0)
+    subtheme_names = result[0::2]
+    subtheme_texts = [sux_to_unicode(x) for x in result[1::2]]
+
+    return theme_name, subtheme_names, subtheme_texts
