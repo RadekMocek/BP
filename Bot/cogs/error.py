@@ -13,16 +13,24 @@ class Error(commands.Cog):
 
     @commands.Cog.listener()
     async def on_app_command_error(self, itx: discord.Interaction, error: app_commands.AppCommandError) -> None:
-        # Odeslat do chatu výpis chyby (červeně)
-        error_message = f"```ansi\n[2;31m{error}```"
-        # Použitá metoda pro odeslání výpisu závisí na typu interakce:
+        # Reagovat podle typu chyby:
+        if isinstance(error, app_commands.MissingPermissions):
+            # Pokud uživatel nemá dostatečná práva, informovat ho emphemeral zprávou
+            content = "Pro spuštění tohoto příkazu nemáte dostatečná práva."
+            ephemeral = True
+        else:
+            # Pokud daná chyba není jinak specificky ošetřena, odeslat do chatu výpis chyby (červeně)
+            content = f"```ansi\n[2;31m{error}```"
+            ephemeral = False
+
+        # Použitá metoda pro odeslání reakce závisí na typu interakce:
         match itx.response.type:
             case discord.InteractionResponseType.deferred_channel_message:
                 # Pokud "Bot přemýšlí"
-                await itx.followup.send(error_message)
+                await itx.followup.send(content=content, ephemeral=ephemeral)
             case _:
                 # Ostatní případy
-                await itx.response.send_message(error_message)
+                await itx.response.send_message(content=content, ephemeral=ephemeral)
 
 
 async def setup(bot) -> None:

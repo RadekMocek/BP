@@ -3,13 +3,17 @@ import re
 import unicodeit
 
 
-def sux_to_unicode(text: str) -> str:
+def convert_html_tags(text: str) -> str:
+    # <i>
+    pattern = r"<\/?i>"
+    text = re.sub(pattern, "_", text)
+    # <sub> / <sup>
     pattern = r"<(sub|sup)>(.*?)</\1>"
-    result = re.sub(pattern, __replace_sux, text)
-    return result
+    text = re.sub(pattern, __replace_sub_or_sup, text)
+    return text
 
 
-def __replace_sux(match):
+def __replace_sub_or_sup(match):
     tag_content = match.group(2)  # Řetězec mezi <tag> a </tag>
     tag_name = match.group(1)  # Název tagu (sub/sup)
     tex_char = "^" if tag_name == "sup" else "_"

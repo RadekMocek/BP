@@ -29,11 +29,3 @@ class DeleteButton(discord.ui.Button):
     async def callback(self, itx: discord.Interaction) -> None:
         self.view.stop()
         await itx.message.delete()
-
-
-class TheoryNextButton(discord.ui.Button):
-    def __init__(self) -> None:
-        super().__init__(label="Pokračovat")
-
-    async def callback(self, itx: discord.Interaction) -> None:
-        await self.view.next_subtheme(itx)

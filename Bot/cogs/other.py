@@ -20,6 +20,12 @@ class Other(commands.Cog):
         await itx.response.send_message(f"Pong!\nProdleva: {latency} ms")
 
     @app_commands.command()
+    @app_commands.checks.has_permissions(administrator=True)
+    async def clear(self, itx: discord.Interaction) -> None:
+        """Poslat dlouhou prázdnou zprávu."""
+        await itx.response.send_message("⠀\n" * 45)
+
+    @app_commands.command()
     async def help(self, itx: discord.Interaction) -> None:
         """Zobrazit nápovědu."""
         await itx.response.send_message("Nápověda.")

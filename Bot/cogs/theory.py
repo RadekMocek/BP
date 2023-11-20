@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from modules.selects import TheorySelect
+from modules.theory_modules import TheorySelect
 from modules.views import MessageView
 
 
