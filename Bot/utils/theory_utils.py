@@ -24,7 +24,7 @@ def get_theme(filename: str) -> Tuple[str, list[str], list[str]]:
 
     theme_name = result[0].strip()[2:]
     result.pop(0)
-    subtheme_names = result[0::2]
+    subtheme_names = [x[3:] for x in result[0::2]]
     subtheme_texts = [convert_html_tags(x) for x in result[1::2]]
 
     return theme_name, subtheme_names, subtheme_texts
