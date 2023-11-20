@@ -1,4 +1,5 @@
 import io
+import textwrap
 from typing import Union
 
 import discord
@@ -154,10 +155,18 @@ class ThemeView(discord.ui.View):
                         result.append(image_buffer)
                     except ValueError as error:
                         result.append(f"```{error}```")
-                    finally:
-                        image_buffer.close()
                 else:
-                    result.append(body_part[:2000])  # TODO
+                    if len(body_part) > 2000:
+                        message_parts = textwrap.wrap(body_part,
+                                                      width=2000,
+                                                      expand_tabs=False,
+                                                      replace_whitespace=False,
+                                                      drop_whitespace=False,
+                                                      break_long_words=False,
+                                                      break_on_hyphens=False)
+                        result.extend(message_parts)
+                    else:
+                        result.append(body_part)
         return result
 
     async def __switch_subtheme(self, itx: discord.Interaction) -> None:
@@ -178,6 +187,7 @@ class ThemeView(discord.ui.View):
                 elif isinstance(message_content, io.BytesIO):
                     message = await channel.send(file=discord.File(message_content, "lingebot_math_render.png"))
                     new_messages.append(message)
+                    message_content.close()
 
             self.previous_button.disabled = index == 0
             self.next_button.disabled = index == len(self.subtheme_names) - 1
@@ -208,6 +218,7 @@ class ThemeView(discord.ui.View):
                 await user.send(message_content)
             elif isinstance(message_content, io.BytesIO):
                 await user.send(file=discord.File(message_content, "lingebot_math_render.png"))
+                message_content.close()
         await itx.response.send_message(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
     async def exit(self) -> None:
