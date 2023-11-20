@@ -24,6 +24,14 @@ class SubthemePreviousButton(discord.ui.Button):
         await self.view.previous_subtheme(itx)
 
 
+class SubthemeSaveButton(discord.ui.Button):
+    def __init__(self) -> None:
+        super().__init__(emoji="📨", label="Uložit do DMs", disabled=True, custom_id="SubthemeSaveButton")
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        await self.view.fwd_subtheme(itx)
+
+
 class ThemeExitButton(discord.ui.Button):
     def __init__(self) -> None:
         super().__init__(emoji="🚫", label="Ukončit")
@@ -86,6 +94,7 @@ class ThemeView(discord.ui.View):
         self.subtheme_messages: list[discord.Message] = [self.initial_parent_message]
         self.previous_button = SubthemePreviousButton()
         self.next_button = SubthemeNextButton()
+        self.save_button = SubthemeSaveButton()
 
     @classmethod
     async def attach_to_message(cls,
@@ -97,13 +106,17 @@ class ThemeView(discord.ui.View):
         self.add_item(SubthemeSelect(self.subtheme_names))
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
+        self.add_item(self.save_button)
         self.add_item(ThemeExitButton())
         await self.initial_parent_message.edit(content=f"# {self.theme_name}",
                                                view=self,
                                                embed=self.__generate_embed(""))
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
-        # View itemy může použít pouze autor původní zprávy nebo admin
+        # Tlačítko pro přeposlání podtématu do přímých zpráv může použít kdokoliv
+        if itx.data["custom_id"] == "SubthemeSaveButton":
+            return True
+        # Ostatní View itemy může použít pouze autor původní zprávy nebo admin
         if itx.user == self.author or itx.user.guild_permissions.administrator:
             return True
         # Při nedostatečných právech informovat uživatele ephemeral zprávou
@@ -126,42 +139,49 @@ class ThemeView(discord.ui.View):
             self.subtheme_index = self.subtheme_names.index(subtheme_name)
         await self.__switch_subtheme(itx)
 
-    async def __switch_subtheme(self, itx: discord.Interaction) -> None:
+    def __get_subtheme_messages(self) -> list[Union[str, io.BytesIO]]:
         index = self.subtheme_index
         header = self.subtheme_names[index]
         body = self.subtheme_texts[index]
-
         body_parts = body.split("$$")
-        channel = itx.channel
+        result: list[Union[str, io.BytesIO]] = [f"## {header}"]
+        for body_part in body_parts:
+            if not body_part.isspace():
+                if body_part[:7] == "$render":
+                    image_buffer = io.BytesIO()
+                    try:
+                        render_matrix_equation_to_buffer(image_buffer, body_part[7:].strip())
+                        result.append(image_buffer)
+                    except ValueError as error:
+                        result.append(f"```{error}```")
+                    finally:
+                        image_buffer.close()
+                else:
+                    result.append(body_part[:2000])  # TODO
+        return result
 
+    async def __switch_subtheme(self, itx: discord.Interaction) -> None:
+        index = self.subtheme_index
+        header = self.subtheme_names[index]
+        channel = itx.channel
         async with channel.typing():
             new_messages = []
+            message_contents = self.__get_subtheme_messages()
 
             await itx.response.send_message(content=f"# {self.theme_name}", embed=self.__generate_embed(header))
             new_messages.append(await itx.original_response())
 
-            message = await channel.send(f"## {header}")
-            new_messages.append(message)
-
-            for body_part in body_parts:
-                if not body_part.isspace():
-                    if body_part[:7] == "$render":
-                        image_buffer = io.BytesIO()
-                        try:
-                            render_matrix_equation_to_buffer(image_buffer, body_part[7:].strip())
-                            message = await channel.send(file=discord.File(image_buffer, "lingebot_math_render.png"))
-                            new_messages.append(message)
-                        except ValueError as error:
-                            message = await channel.send(f"```{error}```")
-                            new_messages.append(message)
-                        finally:
-                            image_buffer.close()
-                    else:
-                        message = await channel.send(body_part[:2000])  # TODO
-                        new_messages.append(message)
+            for message_content in message_contents:
+                if isinstance(message_content, str):
+                    message = await channel.send(message_content)
+                    new_messages.append(message)
+                elif isinstance(message_content, io.BytesIO):
+                    message = await channel.send(file=discord.File(message_content, "lingebot_math_render.png"))
+                    new_messages.append(message)
 
             self.previous_button.disabled = index == 0
             self.next_button.disabled = index == len(self.subtheme_names) - 1
+            self.save_button.disabled = False
 
             await new_messages[-1].edit(view=self)
 
@@ -171,6 +191,24 @@ class ThemeView(discord.ui.View):
                 except discord.errors.NotFound:
                     pass  # Zpráva již byla smazána
             self.subtheme_messages = new_messages
+
+    async def fwd_subtheme(self, itx: discord.Interaction) -> None:
+        user = itx.user
+        try:
+            await user.send(f"# {self.theme_name}")
+        except discord.Forbidden:
+            await itx.response.send_message(
+                content="Nemáte povolené přímé zprávy od členů tohoto serveru.\n"
+                        "`Right click na ikonu serveru -> Nastavení soukromí -> Přímé zprávy`",
+                ephemeral=True)
+            return
+        message_contents = self.__get_subtheme_messages()
+        for message_content in message_contents:
+            if isinstance(message_content, str):
+                await user.send(message_content)
+            elif isinstance(message_content, io.BytesIO):
+                await user.send(file=discord.File(message_content, "lingebot_math_render.png"))
+        await itx.response.send_message(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
     async def exit(self) -> None:
         self.stop()
