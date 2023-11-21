@@ -1,3 +1,5 @@
+"""Hlavní modul – bot samotný."""
+
 import os
 
 import discord
@@ -6,19 +8,20 @@ from discord.ext import commands
 from utils.file_io import json_read
 
 __config = json_read("config.json")
-TOKEN = __config["token"]
-TEST_GUILD = discord.Object(id=__config["test_guild_id"])
+TOKEN = __config["token"]  # Botův ověřovací token pro komunikaci s Discord API
+TEST_GUILD = discord.Object(id=__config["test_guild_id"])  # Id testovacího serveru
 
 
 class LingeBot(commands.Bot):
     def __init__(self) -> None:
         # Prefix pro starý typ příkazů
-        command_prefix = "dg:"
+        command_prefix = "$> "
         # Gateway intents určují, ke kterým událostem bude mít bot přístup
         intents = discord.Intents.default()
         intents.message_content = True  # Umožňuje botu číst zprávy
         # Status "Poslouchá /help"
         activity = discord.Activity(type=discord.ActivityType.listening, name="/help")
+        # LingeBot dědí od obecného bota
         super().__init__(
             command_prefix=command_prefix,
             intents=intents,

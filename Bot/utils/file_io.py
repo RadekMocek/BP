@@ -1,3 +1,5 @@
+"""Podpůrný modul pro zápis/čtení ze souborů. Momentálně pouze pro načtení konfigurace z JSON souboru."""
+
 import json
 
 

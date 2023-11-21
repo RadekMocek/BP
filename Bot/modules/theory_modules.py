@@ -1,3 +1,5 @@
+"""Tlačítka, selecty, views užívaná při výkladu teorie."""
+
 import io
 import textwrap
 from typing import Union
@@ -45,14 +47,15 @@ class ThemeExitButton(discord.ui.Button):
 
 # region Theory Selects
 class ThemeSelect(discord.ui.Select):
-    def __init__(self):
+    """Nabízí dostupná teoretická témata a po výběru vytvoří zprávu s ThemeView."""
+    def __init__(self) -> None:
         options = []
         themes = list_themes()
         for theme in themes:
             options.append(discord.SelectOption(label=theme))
         super().__init__(placeholder="Zvolte si téma", min_values=1, max_values=1, options=options)
 
-    async def callback(self, itx: discord.Interaction):
+    async def callback(self, itx: discord.Interaction) -> None:
         self.view.stop()
         chosen_theme = self.values[0]
         await itx.response.send_message(content=f"Nahrávám {chosen_theme} ...")
@@ -63,7 +66,7 @@ class ThemeSelect(discord.ui.Select):
 
 
 class SubthemeSelect(discord.ui.Select):
-    def __init__(self, subthemes: list[str]):
+    def __init__(self, subthemes: list[str]) -> None:
         options = []
         for subtheme in subthemes:
             options.append(discord.SelectOption(label=subtheme))
@@ -72,7 +75,7 @@ class SubthemeSelect(discord.ui.Select):
                          max_values=1,
                          options=options)
 
-    async def callback(self, itx: discord.Interaction):
+    async def callback(self, itx: discord.Interaction) -> None:
         chosen_subtheme = self.values[0]
         await self.view.select_subtheme(itx, chosen_subtheme)
         # for option in self.options:
@@ -88,11 +91,14 @@ class ThemeView(discord.ui.View):
                  author: Union[discord.Member, discord.User],
                  theme: str) -> None:
         super().__init__(timeout=None)  # Žádný timeout
-        self.initial_parent_message = parent_message
-        self.author = author
+        self.author = author  # Uživatel příkazu /explain
+        # Z utils.theory_utils získat název tématu a názvy+texty podtémat
         self.theme_name, self.subtheme_names, self.subtheme_texts = get_theme(theme)
+        # Index právě zobrazovaného podtématu; začíná se na "úvodní obrazovce", proto -1 (mimo rozsah)
         self.subtheme_index = -1
-        self.subtheme_messages: list[discord.Message] = [self.initial_parent_message]
+        # Všechny zprávy použité pro vypsání  aktuálního podtématu uloženy v listu, aby mohli smazány, až bude třeba
+        self.subtheme_messages: list[discord.Message] = [parent_message]
+        # Na tato tlačítka si držet referenci, aby mohly být měněny jejich parametry (disabled) dle potřeby
         self.previous_button = SubthemePreviousButton()
         self.next_button = SubthemeNextButton()
         self.save_button = SubthemeSaveButton()
@@ -102,22 +108,22 @@ class ThemeView(discord.ui.View):
                                 parent_message: discord.Message,
                                 author: Union[discord.Member, discord.User],
                                 theme: str) -> None:
-        # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě
+        # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")
         self = cls(parent_message, author, theme)
         self.add_item(SubthemeSelect(self.subtheme_names))
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
         self.add_item(self.save_button)
         self.add_item(ThemeExitButton())
-        await self.initial_parent_message.edit(content=f"# {self.theme_name}",
-                                               view=self,
-                                               embed=self.__generate_embed(""))
+        await parent_message.edit(content=f"# {self.theme_name}",
+                                  view=self,
+                                  embed=self.__generate_embed(""))
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
         # Tlačítko pro přeposlání podtématu do přímých zpráv může použít kdokoliv
         if itx.data["custom_id"] == "SubthemeSaveButton":
             return True
-        # Ostatní View itemy může použít pouze autor původní zprávy nebo admin
+        # Ostatní View itemy může použít původní uživatel příkazu /explain nebo admin
         if itx.user == self.author or itx.user.guild_permissions.administrator:
             return True
         # Při nedostatečných právech informovat uživatele ephemeral zprávou
@@ -141,14 +147,20 @@ class ThemeView(discord.ui.View):
         await self.__switch_subtheme(itx)
 
     def __get_subtheme_messages(self) -> list[Union[str, io.BytesIO]]:
-        index = self.subtheme_index
-        header = self.subtheme_names[index]
-        body = self.subtheme_texts[index]
-        body_parts = body.split("$$")
-        result: list[Union[str, io.BytesIO]] = [f"## {header}"]
+        """
+        :return:
+            List textů/obrázků [str/io.BytesIO], které bude potřeba postupně odeslat pro vypsání aktuálního podtématu.
+        """
+        index = self.subtheme_index  # Index aktuálního podtématu
+        header = self.subtheme_names[index]  # Název aktuálního podtématu
+        body = self.subtheme_texts[index]  # Text aktuálního podtématu
+        body_parts = body.split("$$")  # Matematické výrazy očekáváme ve specifickém formátu: $$$render\nvýraz\n$$
+        result: list[Union[str, io.BytesIO]] = [f"## {header}"]  # První odeslanou zprávou bude název podtématu
         for body_part in body_parts:
-            if not body_part.isspace():
+            if not body_part.isspace():  # Vynechat whitespace only
                 if body_part[:7] == "$render":
+                    # Při splnění formátu $$$render\nvýraz\n$$ vykreslit matematický výraz,
+                    # případně přiložit chybu, byte buffer se uzavře až později při odesílání zpráv.
                     image_buffer = io.BytesIO()
                     try:
                         render_matrix_equation_to_buffer(image_buffer, body_part[7:].strip())
@@ -156,7 +168,10 @@ class ThemeView(discord.ui.View):
                     except ValueError as error:
                         result.append(f"```{error}```")
                 else:
+                    # Limit pro délku zprávy na Discordu je 2000 znaků
                     if len(body_part) > 2000:
+                        # Rozdělit na co nejdelší části tak, že maximální délka je 2000
+                        # znaků, ale může se rozdělovat pouze podle whitespace znaků.
                         message_parts = textwrap.wrap(body_part,
                                                       width=2000,
                                                       expand_tabs=False,
@@ -170,31 +185,32 @@ class ThemeView(discord.ui.View):
         return result
 
     async def __switch_subtheme(self, itx: discord.Interaction) -> None:
+        """Zobrazí podtéma odpovídající aktuální hodnotě self.subtheme_index a smaže zprávy předchozího podtématu."""
         index = self.subtheme_index
         header = self.subtheme_names[index]
         channel = itx.channel
         async with channel.typing():
-            new_messages = []
+            new_messages = []  # Všechny odeslané zprávy si uložit, aby mohli být při další změně podtématu smazány
             message_contents = self.__get_subtheme_messages()
-
+            # První odeslaná zpráva je reakce na interakci
             await itx.response.send_message(content=f"# {self.theme_name}", embed=self.__generate_embed(header))
             new_messages.append(await itx.original_response())
-
+            # Další zprávy už jsou normální zprávy do kanálu
             for message_content in message_contents:
-                if isinstance(message_content, str):
+                if isinstance(message_content, str):  # Text
                     message = await channel.send(message_content)
                     new_messages.append(message)
-                elif isinstance(message_content, io.BytesIO):
+                elif isinstance(message_content, io.BytesIO):  # Obrázek s matematickým výrazem
                     message = await channel.send(file=discord.File(message_content, "lingebot_math_render.png"))
                     new_messages.append(message)
                     message_content.close()
-
+            # Enable/disable tlačítek
             self.previous_button.disabled = index == 0
             self.next_button.disabled = index == len(self.subtheme_names) - 1
-            self.save_button.disabled = False
-
+            self.save_button.disabled = False  # True pouze při "úvodní obrazovce", na kterou se nelze vrátit
+            # K poslední odeslané zprávě připnout sebe sama (view s tlačítky a selectem)
             await new_messages[-1].edit(view=self)
-
+            # Staré zprávy smazat
             for old_message in self.subtheme_messages:
                 try:
                     await old_message.delete()
@@ -203,6 +219,7 @@ class ThemeView(discord.ui.View):
             self.subtheme_messages = new_messages
 
     async def fwd_subtheme(self, itx: discord.Interaction) -> None:
+        """Přeposlat aktuálně zobrazované podtéma uživateli do přímých zpráv."""
         user = itx.user
         try:
             await user.send(f"# {self.theme_name}")
@@ -219,6 +236,7 @@ class ThemeView(discord.ui.View):
             elif isinstance(message_content, io.BytesIO):
                 await user.send(file=discord.File(message_content, "lingebot_math_render.png"))
                 message_content.close()
+        # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
         await itx.response.send_message(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
     async def exit(self) -> None:
@@ -230,6 +248,7 @@ class ThemeView(discord.ui.View):
                 pass  # Zpráva již byla smazána
 
     def __generate_embed(self, subtheme_name: str) -> discord.Embed:
+        """Vygenerovat embed s přehledem podtémat, aktuálního podtématu a uživatele příkazu /explain."""
         embed_description = "".join(
             f"`>>` {x}\n" if subtheme_name == x else f"`  ` {x}\n" for x in self.subtheme_names
         )

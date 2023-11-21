@@ -1,3 +1,5 @@
+"""Podpůrný modul pro práci s textovými řetězci."""
+
 import re
 
 import unicodeit
@@ -13,7 +15,7 @@ def convert_html_tags(text: str) -> str:
     return text
 
 
-def __replace_sub_or_sup(match):
+def __replace_sub_or_sup(match: re.Match[str]) -> str:
     tag_content = match.group(2)  # Řetězec mezi <tag> a </tag>
     tag_name = match.group(1)  # Název tagu (sub/sup)
     tex_char = "^" if tag_name == "sup" else "_"

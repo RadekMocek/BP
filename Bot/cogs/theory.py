@@ -1,3 +1,5 @@
+"""Cog obstarávající příkazy pro výklad teorie."""
+
 import discord
 from discord import app_commands
 from discord.ext import commands
@@ -12,7 +14,7 @@ class Theory(commands.Cog):
 
     @app_commands.command()
     async def explain(self, itx: discord.Interaction) -> None:
-        """Testovací příkaz pro zobrazení vybrané látky z teorie."""
+        """Otevřít rozhraní pro výklad teorie."""
         await itx.response.defer()
         await itx.followup.send("Zvolte si téma:")
         await MessageView.attach_to_message(180,

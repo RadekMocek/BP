@@ -1,3 +1,5 @@
+"""Views."""
+
 from typing import Union
 
 import discord
@@ -25,7 +27,7 @@ class MessageView(discord.ui.View):
         await self.parent_message.edit(view=self)
 
     async def on_timeout(self) -> None:
-        # Po uplynutí `__TIMEOUT` smazat sebe sama ze zprávy a přestat naslouchat interakce
+        # Po uplynutí timeout smazat sebe sama ze zprávy a přestat naslouchat interakce
         try:
             await self.parent_message.edit(view=self.clear_items())
         except discord.errors.NotFound:

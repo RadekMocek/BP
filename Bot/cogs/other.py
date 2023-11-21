@@ -1,3 +1,5 @@
+"""Cog obstarávající ostatní nezařezené příkazy."""
+
 import io
 
 import discord
@@ -38,10 +40,11 @@ class Other(commands.Cog):
         :param itx
         :param text: Např. "2 \\cdot [1, 2; 3, \\sqrt{4}] = [2, 4; 6, 4]"
         """
-        await itx.response.defer()  # "Bot přemýšlí"
-
+        # Po zavolání defer Discord napíše, že "Bot přemýšlí", followup s odpovědí může pak být odeslán později
+        await itx.response.defer()
+        # Byte buffer, do kterého bude vložen obrázek s vykresleným matematickým výrazem
         image_buffer = io.BytesIO()
-
+        # Pokusit se výraz vykreslit, případně odpovědět chybovým hlášením
         try:
             render_matrix_equation_to_buffer(image_buffer, text)
             await itx.followup.send(file=discord.File(image_buffer, "lingebot_math_render.png"))
@@ -49,7 +52,7 @@ class Other(commands.Cog):
             await itx.followup.send(f"```{error}```")
         finally:
             image_buffer.close()
-
+        # Přidat ke zprávě tlačítka
         await MessageView.attach_to_message(30,
                                             await itx.original_response(),
                                             itx.user,

@@ -1,3 +1,5 @@
+"""Podpůrný modul pro vykreslování matematických výrazů."""
+
 import io
 import re
 
@@ -48,24 +50,26 @@ def render_matrix_equation_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
     items.append("")
     # Rozdělit na TeX a matrix výrazy:
     for item in items_raw:
-        if item:
-            if item == "[":
-                if previous[-5:] == "\\sqrt":
+        if item:  # Vynechat prázdné
+            if item == "[":  # Začátek matice / argumentu odmocniny
+                if previous[-5:] == "\\sqrt":  # Začátek argumentu odmocniny
                     sqrt = True
-                else:
+                else:  # Začátek matice – začít vkládat do nové pozice v items
                     index += 1
                     items.append("")
-            items[index] += item
-            if item == "]":
-                if sqrt:
+            items[index] += item  # Vložit tex/matrix výraz na aktuální pozici v items
+            if item == "]":  # Konec matice / argumentu odmocniny
+                if sqrt:  # Pokud byl otevřen argument odmocniny, jedná se o jeho ukončení
                     sqrt = False
-                else:
+                else:  # Jinak je to konec matice
+                    # Kontrola výšky matice, zdali není nové maximum
                     n_rows = items[index].count(";") + 1
                     if n_rows > max_n_rows:
                         max_n_rows = n_rows
+                    # Začít vkládat do nové pozice v items
                     index += 1
                     items.append("")
-            previous = item
+            previous = item  # Pamatovat si předchozí položku kvůli detekci odmocnin
     # Vykreslit jednotlivé výrazy:
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
@@ -73,29 +77,35 @@ def render_matrix_equation_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
     text_y = max_n_rows / 2 * __MATRIX_SPACE_HEIGHT
     for item in items:
         if item:
-            if item[0] == "[":
+            if item[0] == "[":  # Matrix
                 n_rows = item.count(";") + 1
                 matrix_y = (max_n_rows - n_rows) / 2 * __MATRIX_SPACE_HEIGHT
                 matrix_width = __render_matrix_at(fig, x, matrix_y, item)
                 x += matrix_width + __MATRIX_CHAR_WIDTH
-            else:
+            else:  # TeX
                 __render_tex_at(fig, x, text_y, item)
                 x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
     # Render to buffer
     __plt_to_image_buffer(buffer)
 
 
-def __render_tex_at(fig, x: float, y: float, text_raw: str) -> None:
+def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str) -> None:
+    """Vykreslit matematický výraz `text_raw` do `fig` na souřadnice `x`, `y`."""
     # Obalit text do dolarů, pokud není
     if text_raw[0] == "$" and text_raw[-1] == "$":
         text_math = text_raw
     else:
         text_math = f"${text_raw}$"
-    # Vykreslit text do fig
+    # Vykreslit text do `fig`
     fig.text(x=x, y=y, s=text_math, va="top")
 
 
-def __render_matrix_at(fig, x: float, y: float, text: str) -> float:
+def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
+    """
+    Vykreslit matici popsanou v `text` do `fig` na souřadnice `x`, `y`.
+
+    :return: Šířka vykreslené matice.
+    """
     text = text.strip("[]")  # Zbavit se vnějších závorek, pokud jsou
     rows = text.split(";")  # Rozdělení na jednotlivé řádky matice
     items = []  # Pole bude obsahovat očesané prvky matice ve stylu [[a,b],[c,d]]
@@ -121,13 +131,13 @@ def __render_matrix_at(fig, x: float, y: float, text: str) -> float:
         if n_cols > max_n_cols:
             max_n_cols = n_cols
 
-    #
+    # Šířka sloupce s mezerou
     max_item_len_with_space_scaled = max_item_len * __MATRIX_CHAR_WIDTH + __MATRIX_SPACE_WIDTH
 
     # Závorky matice – zjištění rohových bodů
     brace_space = (max_item_len * __MATRIX_CHAR_WIDTH / 2) + __MATRIX_CHAR_WIDTH
-    x_left = x
-    x_right = max_item_len_with_space_scaled * (max_n_cols - 1) + 2 * brace_space + x
+    # x_left = x
+    x_right = x + max_item_len_with_space_scaled * (max_n_cols - 1) + 2 * brace_space
     y_top = y + __MATRIX_SPACE_HEIGHT * len(rows)
     y_bot = y - __MATRIX_SPACE_WIDTH
 
@@ -137,7 +147,7 @@ def __render_matrix_at(fig, x: float, y: float, text: str) -> float:
         braces_leg_size /= 2
 
     # Levá a pravá závorka, každá tvořena čtyřmi body spojenými čárou
-    fig.add_artist(lines.Line2D([x_left + braces_leg_size, x_left, x_left, x_left + braces_leg_size],
+    fig.add_artist(lines.Line2D([x + braces_leg_size, x, x, x + braces_leg_size],
                                 [y_bot, y_bot, y_top, y_top],
                                 color=__COLOR_FOREGROUND,
                                 lw=__MATRIX_BRACES_THICKNESS))
@@ -184,12 +194,9 @@ def __approx_tex_len(text: str) -> int:
 
 
 def __plt_to_image_buffer(buffer: io.BytesIO) -> None:
-    """Vrací byte buffer s uloženým obrázkem aktuální matplotlib.pyplot.figure."""
-    # buf = io.BytesIO()
+    """Uloží do byte bufferu `buffer` obrázek s aktuálním matplotlib.pyplot.figure."""
     try:
         plt.savefig(fname=buffer, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
     finally:
         plt.close()
     buffer.seek(0)
-    # buf.seek(0)
-    # return buf

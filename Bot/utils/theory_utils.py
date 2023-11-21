@@ -1,3 +1,5 @@
+"""Podpůrný modul pro výklad teorie. Momentálně čte ze statických markdown souborů."""
+
 import pathlib
 import re
 from typing import Tuple
