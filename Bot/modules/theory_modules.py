@@ -8,6 +8,7 @@ import discord
 
 from utils.math_render import render_matrix_equation_to_buffer
 from utils.theory_utils import list_themes, get_theme
+from modules.views import LingeBotView
 
 
 # region Theory Buttons
@@ -85,7 +86,7 @@ class SubthemeSelect(discord.ui.Select):
 # endregion
 
 # region Theory Views
-class ThemeView(discord.ui.View):
+class ThemeView(LingeBotView):
     def __init__(self,
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],

@@ -1,11 +1,21 @@
 """Views."""
 
-from typing import Union
+import logging
+from typing import Any, Optional, Union
 
 import discord
 
 
-class MessageView(discord.ui.View):
+class LingeBotView(discord.ui.View):
+    def __init__(self, timeout: Optional[float]):
+        super().__init__(timeout=timeout)
+
+    async def on_error(self, itx: discord.Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
+        logging.getLogger("discord").error('Ignoring exception in view %r for item %r', self, item, exc_info=error)
+        await itx.followup.send(f"```{error}```", ephemeral=True)
+
+
+class MessageView(LingeBotView):
     def __init__(self,
                  timeout: int,  # Pokud od poslední interakce uběhne tento počet vteřin, zavolá se on_timeout()
                  parent_message: discord.Message,

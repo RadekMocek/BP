@@ -1,6 +1,7 @@
 """Vyskakovací okna, modaly."""
 
 import io
+import logging
 
 import discord
 
@@ -9,6 +10,7 @@ from utils.math_render import render_matrix_equation_to_buffer
 
 class EditMathRenderModal(discord.ui.Modal):
     """Modal pro editaci matematického výrazu."""
+
     def __init__(self, button, itx: discord.Interaction) -> None:
         """
         :param button: Tlačítko, které vyvolalo tento modal
@@ -17,7 +19,10 @@ class EditMathRenderModal(discord.ui.Modal):
         self.button = button
         self.itx = itx
         super().__init__(title="Upravit matematický výraz")
-        self.add_item(discord.ui.TextInput(label="Nový výraz", default=self.button.text_old, min_length=1, max_length=256))
+        self.add_item(discord.ui.TextInput(label="Nový výraz",
+                                           default=self.button.text_old,
+                                           min_length=1,
+                                           max_length=256))
 
     async def on_submit(self, itx: discord.Interaction) -> None:
         await itx.response.defer()  # "Modal přemýšlí"
@@ -42,4 +47,5 @@ class EditMathRenderModal(discord.ui.Modal):
         self.button.text_old = text
 
     async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
+        logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
         await itx.followup.send(f"```{error}```", ephemeral=True)
