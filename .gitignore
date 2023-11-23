@@ -1,6 +1,9 @@
 # Bot configuration
 Bot/config.json
 
+# Bot logs
+Bot/logs
+
 # PyCharm
 Bot/.idea/
 
