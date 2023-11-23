@@ -6,9 +6,9 @@ from typing import Union
 
 import discord
 
-from utils.math_render import render_matrix_equation_to_buffer
-from utils.theory_utils import list_themes, get_theme
 from modules.views import LingeBotView
+from utils.math_render import render_matrix_equation_to_buffer
+from utils.theory_utils import get_theme, list_themes
 
 
 # region Theory Buttons
@@ -49,6 +49,7 @@ class ThemeExitButton(discord.ui.Button):
 # region Theory Selects
 class ThemeSelect(discord.ui.Select):
     """Nabízí dostupná teoretická témata a po výběru vytvoří zprávu s ThemeView."""
+
     def __init__(self) -> None:
         options = []
         themes = list_themes()

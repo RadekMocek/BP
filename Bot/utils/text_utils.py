@@ -17,7 +17,11 @@ def convert_html_tags(text: str) -> str:
 
 def __replace_sub_or_sup(match: re.Match[str]) -> str:
     tag_content = match.group(2)  # Řetězec mezi <tag> a </tag>
-    tag_name = match.group(1)  # Název tagu (sub/sup)
-    tex_char = "^" if tag_name == "sup" else "_"
+    is_sub = match.group(1) == "sub"  # Je tag <sub> nebo <sup>
+    tex_char = "_" if is_sub else "^"
     replacement = unicodeit.replace(f"{tex_char}{{{tag_content}}}")
+
+    if is_sub and "_" in replacement:
+        replacement = f"`{tag_content}`"
+
     return replacement
