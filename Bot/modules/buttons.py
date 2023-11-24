@@ -9,8 +9,8 @@ from modules.modals import EditMathRenderModal
 class ConfirmButton(discord.ui.Button):
     """Tlačítko potvrzení pouze zastaví a vyčistí svůj view."""
 
-    def __init__(self) -> None:
-        super().__init__(emoji="✔️", label="Potvrdit")
+    def __init__(self, label: str = "Potvrdit") -> None:
+        super().__init__(emoji="✔️", label=label)
 
     async def callback(self, itx: discord.Interaction) -> None:
         self.view.stop()

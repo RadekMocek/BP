@@ -48,4 +48,4 @@ class EditMathRenderModal(discord.ui.Modal):
 
     async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
         logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
-        await itx.followup.send(f"```{error}```", ephemeral=True)
+        await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)

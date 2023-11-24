@@ -7,12 +7,33 @@ import discord
 
 
 class LingeBotView(discord.ui.View):
-    def __init__(self, timeout: Optional[float]):
+    """Obsahuje metody/parametry společné pro všechny Views v LingeBot."""
+
+    def __init__(self,
+                 timeout: Optional[float],
+                 parent_message: discord.Message,
+                 author: Union[discord.Member, discord.User]):
         super().__init__(timeout=timeout)
+        self.parent_message = parent_message
+        self.author = author
+
+    async def on_timeout(self) -> None:
+        # Po uplynutí timeout smazat sebe sama ze zprávy a přestat naslouchat interakce
+        try:
+            await self.parent_message.edit(view=self.clear_items())
+        except discord.errors.NotFound:
+            pass  # Zpráva již neexistuje
+        finally:
+            self.stop()
 
     async def on_error(self, itx: discord.Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         logging.getLogger("discord").error('Ignoring exception in view %r for item %r', self, item, exc_info=error)
-        await itx.followup.send(f"```{error}```", ephemeral=True)
+        content = f"```ansi\n[2;31m{error}```"
+        match itx.response.type:
+            case discord.InteractionResponseType.deferred_channel_message:
+                await itx.followup.send(content=content)
+            case _:
+                await itx.response.send_message(content=content)
 
 
 class MessageView(LingeBotView):
@@ -20,9 +41,7 @@ class MessageView(LingeBotView):
                  timeout: int,  # Pokud od poslední interakce uběhne tento počet vteřin, zavolá se on_timeout()
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User]) -> None:
-        super().__init__(timeout=timeout)
-        self.parent_message = parent_message
-        self.author = author
+        super().__init__(timeout=timeout, parent_message=parent_message, author=author)
 
     @classmethod
     async def attach_to_message(cls,
@@ -35,15 +54,6 @@ class MessageView(LingeBotView):
         for item in items:
             self.add_item(item)
         await self.parent_message.edit(view=self)
-
-    async def on_timeout(self) -> None:
-        # Po uplynutí timeout smazat sebe sama ze zprávy a přestat naslouchat interakce
-        try:
-            await self.parent_message.edit(view=self.clear_items())
-        except discord.errors.NotFound:
-            pass  # Zpráva již neexistuje
-        finally:
-            self.stop()
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
         # View itemy může použít pouze autor původní zprávy nebo admin

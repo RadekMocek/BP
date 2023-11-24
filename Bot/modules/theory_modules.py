@@ -6,6 +6,7 @@ from typing import Union
 
 import discord
 
+from modules.buttons import ConfirmButton
 from modules.views import LingeBotView
 from utils.math_render import render_matrix_equation_to_buffer
 from utils.theory_utils import get_theme, list_themes
@@ -38,7 +39,7 @@ class SubthemeSaveButton(discord.ui.Button):
 
 class ThemeExitButton(discord.ui.Button):
     def __init__(self) -> None:
-        super().__init__(emoji="🚫", label="Ukončit")
+        super().__init__(emoji="🚫", label="Ukončit a smazat")
 
     async def callback(self, itx: discord.Interaction) -> None:
         await self.view.exit()
@@ -92,8 +93,7 @@ class ThemeView(LingeBotView):
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],
                  theme: str) -> None:
-        super().__init__(timeout=None)  # Žádný timeout
-        self.author = author  # Uživatel příkazu /explain
+        super().__init__(timeout=900, parent_message=parent_message, author=author)
         # Z utils.theory_utils získat název tématu a názvy+texty podtémat
         self.theme_name, self.subtheme_names, self.subtheme_texts = get_theme(theme)
         # Index právě zobrazovaného podtématu; začíná se na "úvodní obrazovce", proto -1 (mimo rozsah)
@@ -116,6 +116,7 @@ class ThemeView(LingeBotView):
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
         self.add_item(self.save_button)
+        self.add_item(ConfirmButton("Ukončit"))
         self.add_item(ThemeExitButton())
         await parent_message.edit(content=f"# {self.theme_name}",
                                   view=self,
