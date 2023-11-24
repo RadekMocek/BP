@@ -42,7 +42,7 @@ class ThemeExitButton(discord.ui.Button):
         super().__init__(emoji="🚫", label="Ukončit a smazat")
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await self.view.exit()
+        await self.view.exit(itx)
 
 
 # endregion
@@ -214,11 +214,7 @@ class ThemeView(LingeBotView):
             # K poslední odeslané zprávě připnout sebe sama (view s tlačítky a selectem)
             await new_messages[-1].edit(view=self)
             # Staré zprávy smazat
-            for old_message in self.subtheme_messages:
-                try:
-                    await old_message.delete()
-                except discord.errors.NotFound:
-                    pass  # Zpráva již byla smazána
+            await channel.delete_messages(self.subtheme_messages)
             self.subtheme_messages = new_messages
 
     async def fwd_subtheme(self, itx: discord.Interaction) -> None:
@@ -242,13 +238,9 @@ class ThemeView(LingeBotView):
         # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
         await itx.response.send_message(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
-    async def exit(self) -> None:
+    async def exit(self, itx: discord.Interaction) -> None:
         self.stop()
-        for message in self.subtheme_messages:
-            try:
-                await message.delete()
-            except discord.errors.NotFound:
-                pass  # Zpráva již byla smazána
+        await itx.channel.delete_messages(self.subtheme_messages)
 
     def __generate_embed(self, subtheme_name: str) -> discord.Embed:
         """Vygenerovat embed s přehledem podtémat, aktuálního podtématu a uživatele příkazu /explain."""

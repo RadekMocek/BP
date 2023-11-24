@@ -29,11 +29,10 @@ class LingeBotView(discord.ui.View):
     async def on_error(self, itx: discord.Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         logging.getLogger("discord").error('Ignoring exception in view %r for item %r', self, item, exc_info=error)
         content = f"```ansi\n[2;31m{error}```"
-        match itx.response.type:
-            case discord.InteractionResponseType.deferred_channel_message:
-                await itx.followup.send(content=content)
-            case _:
-                await itx.response.send_message(content=content)
+        try:
+            await itx.response.send_message(content=content)
+        except discord.InteractionResponded:
+            await itx.followup.send(content=content)
 
 
 class MessageView(LingeBotView):
