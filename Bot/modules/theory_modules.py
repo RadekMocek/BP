@@ -2,7 +2,7 @@
 
 import io
 import textwrap
-from typing import Union
+from typing import Optional, Union
 
 import discord
 
@@ -64,7 +64,8 @@ class ThemeSelect(discord.ui.Select):
         await itx.response.send_message(content=f"Nahrávám {chosen_theme} ...")
         await ThemeView.attach_to_message(await itx.original_response(),
                                           itx.user,
-                                          chosen_theme)
+                                          chosen_theme,
+                                          itx.guild)
         await itx.message.delete()
 
 
@@ -92,8 +93,10 @@ class ThemeView(LingeBotView):
     def __init__(self,
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],
-                 theme: str) -> None:
-        super().__init__(timeout=900, parent_message=parent_message, author=author)
+                 theme: str,
+                 guild: Optional[discord.Guild]) -> None:
+        super().__init__(parent_message=parent_message, author=author)
+        self.guild = guild
         # Z utils.theory_utils získat název tématu a názvy+texty podtémat
         self.theme_name, self.subtheme_names, self.subtheme_texts = get_theme(theme)
         # Index právě zobrazovaného podtématu; začíná se na "úvodní obrazovce", proto -1 (mimo rozsah)
@@ -109,13 +112,15 @@ class ThemeView(LingeBotView):
     async def attach_to_message(cls,
                                 parent_message: discord.Message,
                                 author: Union[discord.Member, discord.User],
-                                theme: str) -> None:
+                                theme: str,
+                                guild: Optional[discord.Guild]) -> None:
         # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")
-        self = cls(parent_message, author, theme)
+        self = cls(parent_message, author, theme, guild)
         self.add_item(SubthemeSelect(self.subtheme_names))
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
-        self.add_item(self.save_button)
+        if self.guild:
+            self.add_item(self.save_button)
         self.add_item(ConfirmButton("Ukončit"))
         self.add_item(ThemeExitButton())
         await parent_message.edit(content=f"# {self.theme_name}",
@@ -212,9 +217,10 @@ class ThemeView(LingeBotView):
             self.next_button.disabled = index == len(self.subtheme_names) - 1
             self.save_button.disabled = False  # True pouze při "úvodní obrazovce", na kterou se nelze vrátit
             # K poslední odeslané zprávě připnout sebe sama (view s tlačítky a selectem)
-            await new_messages[-1].edit(view=self)
+            self.parent_message = new_messages[-1]
+            await self.parent_message.edit(view=self)
             # Staré zprávy smazat
-            await channel.delete_messages(self.subtheme_messages)
+            await self.delete_old_messages(itx)
             self.subtheme_messages = new_messages
 
     async def fwd_subtheme(self, itx: discord.Interaction) -> None:
@@ -238,9 +244,19 @@ class ThemeView(LingeBotView):
         # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
         await itx.response.send_message(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
+    async def delete_old_messages(self, itx: discord.Interaction):
+        if self.guild:
+            await itx.channel.delete_messages(self.subtheme_messages)
+        else:  # 'DMChannel' object has no attribute 'delete_messages'
+            for old_message in self.subtheme_messages:
+                try:
+                    await old_message.delete()
+                except discord.errors.NotFound:
+                    pass  # Zpráva již byla smazána
+
     async def exit(self, itx: discord.Interaction) -> None:
         self.stop()
-        await itx.channel.delete_messages(self.subtheme_messages)
+        await self.delete_old_messages(itx)
 
     def __generate_embed(self, subtheme_name: str) -> discord.Embed:
         """Vygenerovat embed s přehledem podtémat, aktuálního podtématu a uživatele příkazu /explain."""

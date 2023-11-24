@@ -1,7 +1,7 @@
 """Views."""
 
 import logging
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 import discord
 
@@ -10,9 +10,9 @@ class LingeBotView(discord.ui.View):
     """Obsahuje metody/parametry společné pro všechny Views v LingeBot."""
 
     def __init__(self,
-                 timeout: Optional[float],
                  parent_message: discord.Message,
-                 author: Union[discord.Member, discord.User]):
+                 author: Union[discord.Member, discord.User],
+                 timeout: float = 840):
         super().__init__(timeout=timeout)
         self.parent_message = parent_message
         self.author = author
