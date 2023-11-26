@@ -22,9 +22,11 @@ class Other(commands.Cog):
         await itx.response.send_message(f"Pong!\nProdleva: {latency} ms")
 
     @app_commands.command()
-    @app_commands.checks.has_permissions(administrator=True)
+    # @app_commands.checks.has_permissions(administrator=True)
     async def clear(self, itx: discord.Interaction) -> None:
-        """Poslat dlouhou prázdnou zprávu."""
+        """Poslat dlouhou prázdnou zprávu (admin only)."""
+        if itx.guild and not itx.user.guild_permissions.administrator:
+            raise discord.app_commands.MissingPermissions(["Není admin."])
         await itx.response.send_message("⠀\n" * 45)
 
     @app_commands.command()
