@@ -196,7 +196,7 @@ def __approx_tex_len(text: str) -> int:
 def __plt_to_image_buffer(buffer: io.BytesIO) -> None:
     """Uloží do byte bufferu `buffer` obrázek s aktuálním matplotlib.pyplot.figure."""
     try:
-        plt.savefig(fname=buffer, dpi=__DPI, bbox_inches="tight", pad_inches=0.02, transparent=False)
+        plt.savefig(fname=buffer, dpi=__DPI, bbox_inches="tight", pad_inches=0.05, transparent=False)
     finally:
         plt.close()
     buffer.seek(0)

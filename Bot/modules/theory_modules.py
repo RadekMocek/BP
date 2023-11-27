@@ -82,8 +82,6 @@ class SubthemeSelect(discord.ui.Select):
     async def callback(self, itx: discord.Interaction) -> None:
         chosen_subtheme = self.values[0]
         await self.view.select_subtheme(itx, chosen_subtheme)
-        # for option in self.options:
-        #    option.default = option.label == chosen_subtheme
 
 
 # endregion
@@ -104,6 +102,7 @@ class ThemeView(LingeBotView):
         # Všechny zprávy použité pro vypsání  aktuálního podtématu uloženy v listu, aby mohli smazány, až bude třeba
         self.subtheme_messages: list[discord.Message] = [parent_message]
         # Na tato tlačítka si držet referenci, aby mohly být měněny jejich parametry (disabled) dle potřeby
+        self.subtheme_select = SubthemeSelect(self.subtheme_names)
         self.previous_button = SubthemePreviousButton()
         self.next_button = SubthemeNextButton()
         self.save_button = SubthemeSaveButton()
@@ -116,7 +115,7 @@ class ThemeView(LingeBotView):
                                 guild: Optional[discord.Guild]) -> None:
         # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")
         self = cls(parent_message, author, theme, guild)
-        self.add_item(SubthemeSelect(self.subtheme_names))
+        self.add_item(self.subtheme_select)
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
         if self.guild:
@@ -216,6 +215,9 @@ class ThemeView(LingeBotView):
             self.previous_button.disabled = index == 0
             self.next_button.disabled = index == len(self.subtheme_names) - 1
             self.save_button.disabled = False  # True pouze při "úvodní obrazovce", na kterou se nelze vrátit
+            # Aktualizovat Select s podtématy (aktuální podtéma předvybráno)
+            for option in self.subtheme_select.options:
+                option.default = option.label == header
             # K poslední odeslané zprávě připnout sebe sama (view s tlačítky a selectem)
             self.parent_message = new_messages[-1]
             await self.parent_message.edit(view=self)
@@ -225,13 +227,14 @@ class ThemeView(LingeBotView):
 
     async def fwd_subtheme(self, itx: discord.Interaction) -> None:
         """Přeposlat aktuálně zobrazované podtéma uživateli do přímých zpráv."""
+        await itx.response.defer()
         user = itx.user
         try:
             await user.send(f"# {self.theme_name}")
         except discord.Forbidden:
-            await itx.response.send_message(
+            await itx.followup.send(
                 content="Nemáte povolené přímé zprávy od členů tohoto serveru.\n"
-                        "`Right click na ikonu serveru -> Nastavení soukromí -> Přímé zprávy`",
+                        "`Right click na ikonu serveru → Nastavení soukromí → Přímé zprávy`",
                 ephemeral=True)
             return
         message_contents = self.__get_subtheme_messages()
@@ -242,21 +245,24 @@ class ThemeView(LingeBotView):
                 await user.send(file=discord.File(message_content, "lingebot_math_render.png"))
                 message_content.close()
         # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
-        await itx.response.send_message(content="Podtéma přeposláno do DMs.", ephemeral=True)
+        await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
     async def delete_old_messages(self, itx: discord.Interaction):
-        if self.guild:
-            await itx.channel.delete_messages(self.subtheme_messages)
-        else:  # 'DMChannel' object has no attribute 'delete_messages'
-            for old_message in self.subtheme_messages:
-                try:
-                    await old_message.delete()
-                except discord.errors.NotFound:
-                    pass  # Zpráva již byla smazána
+        if not itx.response.is_done():
+            await itx.response.defer()
+        # if self.guild:
+        #     await itx.channel.delete_messages(self.subtheme_messages)
+        # else:  # 'DMChannel' object has no attribute 'delete_messages'
+        # ???: channel.delete_messages() dělá problémy, občas nic nesmaže
+        for old_message in self.subtheme_messages:
+            try:
+                await old_message.delete()
+            except discord.errors.NotFound:
+                pass  # Zpráva již byla smazána
 
     async def exit(self, itx: discord.Interaction) -> None:
-        self.stop()
         await self.delete_old_messages(itx)
+        self.stop()
 
     def __generate_embed(self, subtheme_name: str) -> discord.Embed:
         """Vygenerovat embed s přehledem podtémat, aktuálního podtématu a uživatele příkazu /explain."""
