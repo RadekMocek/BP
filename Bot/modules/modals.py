@@ -5,7 +5,7 @@ import logging
 
 import discord
 
-from utils.math_render import render_matrix_equation_to_buffer
+from utils.math_render import render_matrix_equation_align_to_buffer
 
 
 class EditMathRenderModal(discord.ui.Modal):
@@ -34,7 +34,7 @@ class EditMathRenderModal(discord.ui.Modal):
         image_buffer = io.BytesIO()
         try:
             # Nahradit obrázek u zprávy. Smazat text zprávy, pokud zde nějaký byl (error message)
-            render_matrix_equation_to_buffer(image_buffer, text)
+            render_matrix_equation_align_to_buffer(image_buffer, text)
             await message.edit(content=None, attachments=[discord.File(image_buffer, "lingebot_math_render.png")])
         except ValueError as error:
             # Vypsat chybu. Smazat starý obrázek, pokud zde nějaký byl.

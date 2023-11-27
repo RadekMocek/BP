@@ -39,8 +39,35 @@ def render_matrix_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
     __plt_to_image_buffer(buffer)
 
 
-def render_matrix_equation_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek, kombinuje možnosti render_tex a render_matrix."""
+def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
+    """Do byte bufferu vloží obrázek, kombinuje možnosti render_tex a render_matrix.
+    Umí vykreslit víceřádkové výrazy (\\) a zrovnat je podle ampersandu."""
+    fig = plt.figure()
+    fig.patch.set_facecolor(__COLOR_BACKGROUND)
+    if "\\\\" in text_raw:
+        align_lines = text_raw.split("\\\\")
+        align_y = 0
+        for line_raw in align_lines:
+            line = line_raw.strip()
+            ampersand_index = line.find("&")
+            if ampersand_index != -1:
+                text_left = line[:ampersand_index]
+                text_right = line[ampersand_index + 1:]
+                line_height = __render_matrix_equation_at(fig,
+                                                          text_left + text_right,
+                                                          -__approx_tex_len(text_left) * __MATRIX_CHAR_WIDTH,
+                                                          align_y)
+            else:
+                __render_matrix_equation_at(fig, line, 0, align_y)
+                line_height = __MATRIX_SPACE_HEIGHT
+            align_y -= line_height
+    else:
+        __render_matrix_equation_at(fig, text_raw, 0, 0)
+    __plt_to_image_buffer(buffer)
+
+
+def __render_matrix_equation_at(fig: plt.figure, text_raw: str, start_x: float, start_y: float) -> float:
+    """Vykreslit matematický výraz s maticemi `text_raw` do `fig` na souřadnice `start_x`, `start_y`."""
     items_raw = re.split(r"([\[\]])", text_raw)  # Split podle hranatých závorek, závorky ponechat
     items = []  # Pole bude obsahovat finální TeX a matrix výrazy pro vykreslení
     index = 0
@@ -71,22 +98,20 @@ def render_matrix_equation_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
                     items.append("")
             previous = item  # Pamatovat si předchozí položku kvůli detekci odmocnin
     # Vykreslit jednotlivé výrazy:
-    fig = plt.figure()
-    fig.patch.set_facecolor(__COLOR_BACKGROUND)
-    x = 0
-    text_y = max_n_rows / 2 * __MATRIX_SPACE_HEIGHT
+    x = start_x
+    text_y = start_y + (-max_n_rows / 2 * __MATRIX_SPACE_HEIGHT)
     for item in items:
         if item:
             if item[0] == "[":  # Matrix
                 n_rows = item.count(";") + 1
-                matrix_y = (max_n_rows - n_rows) / 2 * __MATRIX_SPACE_HEIGHT
+                matrix_y = start_y + ((-max_n_rows - n_rows) / 2 * __MATRIX_SPACE_HEIGHT)
                 matrix_width = __render_matrix_at(fig, x, matrix_y, item)
                 x += matrix_width + __MATRIX_CHAR_WIDTH
             else:  # TeX
                 __render_tex_at(fig, x, text_y, item)
                 x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
-    # Render to buffer
-    __plt_to_image_buffer(buffer)
+    #
+    return max_n_rows * __MATRIX_SPACE_HEIGHT
 
 
 def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str) -> None:

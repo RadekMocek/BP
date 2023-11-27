@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from modules.buttons import ConfirmButton, DeleteButton, EditMathRenderButton
 from modules.views import MessageView
-from utils.math_render import render_matrix_equation_to_buffer
+from utils.math_render import render_matrix_equation_align_to_buffer
 
 
 class Other(commands.Cog):
@@ -48,7 +48,7 @@ class Other(commands.Cog):
         image_buffer = io.BytesIO()
         # Pokusit se výraz vykreslit, případně odpovědět chybovým hlášením
         try:
-            render_matrix_equation_to_buffer(image_buffer, text)
+            render_matrix_equation_align_to_buffer(image_buffer, text)
             await itx.followup.send(file=discord.File(image_buffer, "lingebot_math_render.png"))
         except ValueError as error:
             await itx.followup.send(f"```{error}```")

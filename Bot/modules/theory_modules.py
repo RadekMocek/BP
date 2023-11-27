@@ -8,7 +8,7 @@ import discord
 
 from modules.buttons import ConfirmButton
 from modules.views import LingeBotView
-from utils.math_render import render_matrix_equation_to_buffer
+from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.theory_utils import get_theme, list_themes
 
 
@@ -170,7 +170,7 @@ class ThemeView(LingeBotView):
                     # případně přiložit chybu, byte buffer se uzavře až později při odesílání zpráv.
                     image_buffer = io.BytesIO()
                     try:
-                        render_matrix_equation_to_buffer(image_buffer, body_part[7:].strip())
+                        render_matrix_equation_align_to_buffer(image_buffer, body_part[7:].strip())
                         result.append(image_buffer)
                     except ValueError as error:
                         result.append(f"```{error}```")
