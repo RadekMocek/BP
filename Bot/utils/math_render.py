@@ -9,10 +9,10 @@ import matplotlib.pyplot as plt
 __DPI = 180  # Rozlišení vykreslených obrázků
 __COLOR_BACKGROUND = "#323338"  # Barva pozadí Discord chatu ve výchozím nastavení
 __COLOR_FOREGROUND = "white"  # Barva písma pro tmavé pozadí
-__MATRIX_CHAR_WIDTH = 0.011  # Šířka krátkého znaku v matici
-__MATRIX_SPACE_WIDTH = 0.02  # Šířka mezery v matici
-__MATRIX_SPACE_VERTICAL_MULTIPLIER = 2.2  # Výška mezery v matici = šířka * tato konstanta
-__MATRIX_SPACE_HEIGHT = __MATRIX_SPACE_VERTICAL_MULTIPLIER * __MATRIX_SPACE_WIDTH
+__CHAR_WIDTH = 0.011  # Šířka krátkého znaku
+__CHAR_HEIGHT = 0.05  # Výška znaku i s mezerou
+__SPACE_WIDTH = 0.02  # Šířka mezery mezi částmi výrazu / prvky v matici
+__ALIGN_SPACE_HEIGHT_ADDITION = 0.03  # Dodatečná mezera mezi řádky víceřádkového výrazu
 __MATRIX_BRACES_THICKNESS = 0.75  # Tloušťka závorek vykreslené matice
 
 plt.rcParams["text.usetex"] = False  # Nepoužívat lokální TeX distribuci, ale Matplotlib renderer
@@ -44,30 +44,35 @@ def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) ->
     Umí vykreslit víceřádkové výrazy (\\) a zrovnat je podle ampersandu."""
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
-    if "\\\\" in text_raw:
+    if "\\\\" in text_raw:  # Víceřádkový výraz:
         align_lines = text_raw.split("\\\\")
-        align_y = 0
-        for line_raw in align_lines:
+        align_y = 0  # Souřadnice y aktuálně vykreslovaného řádku
+        for line_raw in align_lines:  # Pro každý řádek výrazu:
             line = line_raw.strip()
             ampersand_index = line.find("&")
             if ampersand_index != -1:
+                # Pokud text obsahuje "&", zahodit tento znak a vykreslit tak, aby se byl nacházel na souřadnici x=0
                 text_left = line[:ampersand_index]
                 text_right = line[ampersand_index + 1:]
                 line_height = __render_matrix_equation_at(fig,
                                                           text_left + text_right,
-                                                          -__approx_tex_len(text_left) * __MATRIX_CHAR_WIDTH,
+                                                          -__approx_tex_len(text_left) * __CHAR_WIDTH,
                                                           align_y)
             else:
-                __render_matrix_equation_at(fig, line, 0, align_y)
-                line_height = __MATRIX_SPACE_HEIGHT
+                line_height = __render_matrix_equation_at(fig, line, 0, align_y)
             align_y -= line_height
-    else:
+    else:  # Jednořádkový výraz:
         __render_matrix_equation_at(fig, text_raw, 0, 0)
+    # Uložit do bufferu
     __plt_to_image_buffer(buffer)
 
 
 def __render_matrix_equation_at(fig: plt.figure, text_raw: str, start_x: float, start_y: float) -> float:
-    """Vykreslit matematický výraz s maticemi `text_raw` do `fig` na souřadnice `start_x`, `start_y`."""
+    """
+    Vykreslit matematický výraz s maticemi `text_raw` do `fig` na souřadnice `start_x`, `start_y`.
+
+    :return: Výška vykresleného výrazu.
+    """
     items_raw = re.split(r"([\[\]])", text_raw)  # Split podle hranatých závorek, závorky ponechat
     items = []  # Pole bude obsahovat finální TeX a matrix výrazy pro vykreslení
     index = 0
@@ -99,19 +104,20 @@ def __render_matrix_equation_at(fig: plt.figure, text_raw: str, start_x: float, 
             previous = item  # Pamatovat si předchozí položku kvůli detekci odmocnin
     # Vykreslit jednotlivé výrazy:
     x = start_x
-    text_y = start_y + (-max_n_rows / 2 * __MATRIX_SPACE_HEIGHT)
-    for item in items:
+    text_y = start_y - max_n_rows / 2 * __CHAR_HEIGHT + __SPACE_WIDTH / 2
+    last_item_index = len(items) - 1
+    for index, item in enumerate(items):
         if item:
             if item[0] == "[":  # Matrix
                 n_rows = item.count(";") + 1
-                matrix_y = start_y + ((-max_n_rows - n_rows) / 2 * __MATRIX_SPACE_HEIGHT)
+                matrix_y = start_y - ((max_n_rows - n_rows) / 2 * __CHAR_HEIGHT)
                 matrix_width = __render_matrix_at(fig, x, matrix_y, item)
-                x += matrix_width + __MATRIX_CHAR_WIDTH
+                x += matrix_width + __CHAR_WIDTH
             else:  # TeX
                 __render_tex_at(fig, x, text_y, item)
-                x += __approx_tex_len(item) * __MATRIX_CHAR_WIDTH + __MATRIX_CHAR_WIDTH
-    #
-    return max_n_rows * __MATRIX_SPACE_HEIGHT
+                if index != last_item_index:  # U poslední části výrazu není třeba počítat její šířku
+                    x += __approx_tex_len(item) * __CHAR_WIDTH + __CHAR_WIDTH
+    return max_n_rows * __CHAR_HEIGHT + __ALIGN_SPACE_HEIGHT_ADDITION
 
 
 def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str) -> None:
@@ -122,7 +128,7 @@ def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str) -> None:
     else:
         text_math = f"${text_raw}$"
     # Vykreslit text do `fig`
-    fig.text(x=x, y=y, s=text_math, va="top")
+    fig.text(x=x, y=y, s=text_math)
 
 
 def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
@@ -136,6 +142,10 @@ def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
     items = []  # Pole bude obsahovat očesané prvky matice ve stylu [[a,b],[c,d]]
     max_item_len = 1  # Délka nejdelšího prvku matice
     max_n_cols = 1  # Počet sloupců matice
+
+    # Matice bude vykreslována odspodu, `y` ale značí vrchol matice, proto je posunut
+    n_rows = len(rows)
+    y -= __CHAR_HEIGHT * (n_rows - 1) + __SPACE_WIDTH
 
     # Naplnit items a zjistit správné hodnoty max_item_len a max_n_cols
     for row in reversed(rows):  # Řádky jsou prohozeny, protože plt má y=0 dole
@@ -157,17 +167,17 @@ def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
             max_n_cols = n_cols
 
     # Šířka sloupce s mezerou
-    max_item_len_with_space_scaled = max_item_len * __MATRIX_CHAR_WIDTH + __MATRIX_SPACE_WIDTH
+    max_item_len_with_space_scaled = max_item_len * __CHAR_WIDTH + __SPACE_WIDTH
 
     # Závorky matice – zjištění rohových bodů
-    brace_space = (max_item_len * __MATRIX_CHAR_WIDTH / 2) + __MATRIX_CHAR_WIDTH
+    brace_space = (max_item_len * __CHAR_WIDTH / 2) + __CHAR_WIDTH
     # x_left = x
     x_right = x + max_item_len_with_space_scaled * (max_n_cols - 1) + 2 * brace_space
-    y_top = y + __MATRIX_SPACE_HEIGHT * len(rows)
-    y_bot = y - __MATRIX_SPACE_WIDTH
+    y_top = y + __CHAR_HEIGHT * n_rows
+    y_bot = y - __SPACE_WIDTH
 
     # Pokud je matice příliš úzká, přizpůsobit tvar závorek (zkrátit "nožky")
-    braces_leg_size = __MATRIX_SPACE_WIDTH
+    braces_leg_size = __SPACE_WIDTH
     if max_n_cols == 1 and max_item_len < 5 or max_n_cols == 2 and max_item_len == 1:
         braces_leg_size /= 2
 
@@ -188,7 +198,7 @@ def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
         for item in row:
             fig.text(
                 x=x + brace_space + max_item_len_with_space_scaled * col_n,
-                y=y + __MATRIX_SPACE_HEIGHT * row_n,
+                y=y + __CHAR_HEIGHT * row_n,
                 s=f"${item}$",
                 ha="center",  # Horizontal alignment
             )
@@ -198,12 +208,12 @@ def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
     return x_right - x
 
 
-def __approx_tex_len(text: str) -> int:
+def __approx_tex_len(text: str, frac_recursive: bool = True) -> int:
     """Vrací PŘIBLIŽNOU (nadceněnou) délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
     # Vstupní řetězec je postupně upravován a nakonec je změřena jeho délka
-    # 1 - Zlomky mají dva parametry (\frac{x}{y}), výraz \frac je zde zahozen, závorky jsou zahozeny později (krok 4)
-    #   - V tuto chvíli může tedy zlomek být brán jako dvakrát širší, než je ve skutečnosti (\frac{123}{123} má délku 6)
-    text = text.replace("\\frac", "")
+    # 1 - Zlomky \frac{...}{...}
+    if frac_recursive:
+        text = re.sub(r"\\frac{([^{}]*)}{([^{}]*)}", __approx_tex_frac_replace, text)
     # 2 - Hledáme výrazy začínající na "\", které jsou po libovolném počtu písmen ukončeny nějakým znakem
     #   - Ty jsou nahrazeny řetězcem "00", důležitá je délka řetězce len("00") == 2
     #   - Některé výrazy (např. \iota) nejsou široké jako dva krátké znaky, lepší ale délku nadcenit nežli podcenit
@@ -216,6 +226,13 @@ def __approx_tex_len(text: str) -> int:
     text = text.translate(str.maketrans("", "", " _^{}[]"))
     # 5 - Délka upraveného řetězce je vrácena
     return len(text)
+
+
+def __approx_tex_frac_replace(match: re.Match[str]) -> str:
+    frac_numerator_len = __approx_tex_len(match.group(1), False)  # Délka čitatele
+    frac_denominator_len = __approx_tex_len(match.group(2), False)  # Délka jmenovatele
+    longer_part = max(frac_numerator_len, frac_denominator_len)
+    return "0" * longer_part  # String s délkou odpovídající délce delšího prvku ve zlomku
 
 
 def __plt_to_image_buffer(buffer: io.BytesIO) -> None:
