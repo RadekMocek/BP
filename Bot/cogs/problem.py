@@ -14,8 +14,7 @@ class Problem(commands.Cog):
     @app_commands.command()
     async def generate(self, itx: discord.Interaction) -> None:
         """Otevřít rozhraní pro generování a vysvětlení příkladů z lineární algebry."""
-        await itx.response.defer()
-        await itx.followup.send("Zvolte si téma:")
+        await itx.response.send_message("Zvolte si téma:")
         await ProblemView.attach_to_message(await itx.original_response(), itx.user)
 
 

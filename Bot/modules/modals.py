@@ -8,7 +8,15 @@ import discord
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 
-class EditMathRenderModal(discord.ui.Modal):
+class LingeBotModal(discord.ui.Modal):
+    """Obsahuje metody/parametry společné pro všechny modaly v LingeBot."""
+
+    async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
+        logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
+        await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)
+
+
+class EditMathRenderModal(LingeBotModal):
     """Modal pro editaci matematického výrazu."""
 
     def __init__(self, button, itx: discord.Interaction) -> None:
@@ -45,7 +53,3 @@ class EditMathRenderModal(discord.ui.Modal):
         # Předat nový matematický výraz zpět tlačítku, aby mohl být při případném
         # dalším otevření tohoto modalu nastaven jako defaultní hodnota textového pole.
         self.button.text_old = text
-
-    async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
-        logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
-        await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)

@@ -40,3 +40,13 @@ class DeleteButton(discord.ui.Button):
     async def callback(self, itx: discord.Interaction) -> None:
         self.view.stop()
         await itx.message.delete()
+
+
+class CustomExitButton(discord.ui.Button):
+    """Tlačítko volá ve svém view metodu exit, která musí být implementována."""
+
+    def __init__(self) -> None:
+        super().__init__(emoji="🚫", label="Ukončit a smazat")
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        await self.view.exit(itx)

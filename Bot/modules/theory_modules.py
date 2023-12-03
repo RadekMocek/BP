@@ -6,7 +6,7 @@ from typing import Optional, Union
 
 import discord
 
-from modules.buttons import ConfirmButton
+from modules.buttons import ConfirmButton, CustomExitButton
 from modules.views import LingeBotView
 from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.theory_utils import get_theme, list_themes
@@ -35,14 +35,6 @@ class SubthemeSaveButton(discord.ui.Button):
 
     async def callback(self, itx: discord.Interaction) -> None:
         await self.view.fwd_subtheme(itx)
-
-
-class ThemeExitButton(discord.ui.Button):
-    def __init__(self) -> None:
-        super().__init__(emoji="🚫", label="Ukončit a smazat")
-
-    async def callback(self, itx: discord.Interaction) -> None:
-        await self.view.exit(itx)
 
 
 # endregion
@@ -121,7 +113,7 @@ class ThemeView(LingeBotView):
         if self.guild:
             self.add_item(self.save_button)
         self.add_item(ConfirmButton("Ukončit"))
-        self.add_item(ThemeExitButton())
+        self.add_item(CustomExitButton())
         await parent_message.edit(content=f"# {self.theme_name}",
                                   view=self,
                                   embed=self.__generate_embed(""))

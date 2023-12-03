@@ -1,4 +1,5 @@
-"""Podpůrný modul pro výklad příklady."""
+"""Podpůrný modul pro příklady."""
+
 from abc import ABC, abstractmethod
 
 import numpy as np
@@ -17,30 +18,34 @@ def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
 
 class ProblemManager:
     def __init__(self) -> None:
-        self.problems: list[GeneralProblem] = [
-            MatrixMultiplication(),
+        problems_list: list[GeneralProblem] = [
+            MatrixMultiplicationProblem(),
         ]
+        self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
 
     def list_problems(self) -> list[str]:
-        return [str(x) for x in self.problems]
+        return list(self.problems.keys())
+
+    def generate_problem(self, problem_name: str) -> tuple[str, str, str]:
+        return self.problems[problem_name].generate_problem()
 
 
 class GeneralProblem(ABC):
     @abstractmethod
-    def generate_problem(self) -> tuple[str, str, str]:  # -> Zadání, Postup, Výsledek
+    def generate_problem(self):
         pass
 
 
-class MatrixMultiplication(GeneralProblem):
+class MatrixMultiplicationProblem(GeneralProblem):
     def __str__(self) -> str:
         return "Nasobení matic"
 
-    def generate_problem(self) -> tuple[str, str, str]:
+    def generate_problem(self) -> str:
         mx1 = np.random.randint(low=-5, high=12, size=(2, 2))
         mx2 = np.random.randint(low=-5, high=12, size=(2, 2))
         mx3 = mx1 @ mx2
-        return_task = (f"Vynásbote matice:"
+        return_task = (f"Vynásobte matice:"
                        f"$$${numpy_array_2_lingebot_matrix(mx1)}\\cdot{numpy_array_2_lingebot_matrix(mx2)}=?")
         return_process = f"Postup..."
         return_answer = numpy_array_2_lingebot_matrix(mx3)
-        return return_task, return_process, return_answer
+        return return_task  # , return_process, return_answer
