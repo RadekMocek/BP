@@ -54,10 +54,17 @@ def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) ->
                 # Pokud text obsahuje "&", zahodit tento znak a vykreslit tak, aby se byl nacházel na souřadnici x=0
                 text_left = line[:ampersand_index]
                 text_right = line[ampersand_index + 1:]
-                line_height = __render_matrix_equation_at(fig,
-                                                          text_left + text_right,
-                                                          -__approx_tex_len(text_left) * __CHAR_WIDTH,
-                                                          align_y)
+                # Pokud tento řádek obsahuje matice, nelze použít horizontal align (ha),
+                # využije se přibližná délka levé strany řádku:
+                if line.count("[") > line.count("\\sqrt["):
+                    line_height = __render_matrix_equation_at(fig,
+                                                              text_left + text_right,
+                                                              -__approx_tex_len(text_left) * __CHAR_WIDTH,
+                                                              align_y)
+                # Jinak využít ha:
+                else:
+                    line_height = __render_matrix_equation_at(fig, text_left, 0, align_y, "right")
+                    __render_matrix_equation_at(fig, text_right, 0, align_y)
             else:
                 line_height = __render_matrix_equation_at(fig, line, 0, align_y)
             align_y -= line_height
@@ -67,7 +74,11 @@ def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) ->
     __plt_to_image_buffer(buffer)
 
 
-def __render_matrix_equation_at(fig: plt.figure, text_raw: str, start_x: float, start_y: float) -> float:
+def __render_matrix_equation_at(fig: plt.figure,
+                                text_raw: str,
+                                start_x: float,
+                                start_y: float,
+                                ha: str = "left") -> float:
     """
     Vykreslit matematický výraz s maticemi `text_raw` do `fig` na souřadnice `start_x`, `start_y`.
 
@@ -114,13 +125,13 @@ def __render_matrix_equation_at(fig: plt.figure, text_raw: str, start_x: float, 
                 matrix_width = __render_matrix_at(fig, x, matrix_y, item)
                 x += matrix_width + __CHAR_WIDTH
             else:  # TeX
-                __render_tex_at(fig, x, text_y, item)
+                __render_tex_at(fig, x, text_y, item, ha)
                 if index != last_item_index:  # U poslední části výrazu není třeba počítat její šířku
                     x += __approx_tex_len(item) * __CHAR_WIDTH + __CHAR_WIDTH
     return max_n_rows * __CHAR_HEIGHT + __ALIGN_SPACE_HEIGHT_ADDITION
 
 
-def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str) -> None:
+def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str, ha: str = "left") -> None:
     """Vykreslit matematický výraz `text_raw` do `fig` na souřadnice `x`, `y`."""
     # Obalit text do dolarů, pokud není
     if text_raw[0] == "$" and text_raw[-1] == "$":
@@ -128,7 +139,7 @@ def __render_tex_at(fig: plt.figure, x: float, y: float, text_raw: str) -> None:
     else:
         text_math = f"${text_raw}$"
     # Vykreslit text do `fig`
-    fig.text(x=x, y=y, s=text_math)
+    fig.text(x=x, y=y, s=text_math, ha=ha)
 
 
 def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
