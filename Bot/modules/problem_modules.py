@@ -7,7 +7,6 @@ from typing import Union
 import discord
 
 from modules.buttons import CustomExitButton
-from modules.modals import LingeBotModal
 from modules.views import LingeBotView
 from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.problem_utils import ProblemManager
@@ -30,20 +29,20 @@ class ProblemGenerateButton(discord.ui.Button):
         await self.view.generate(itx)
 
 
-class AnswerCheckButton(discord.ui.Button):
+class ProblemTutorialButton(discord.ui.Button):
     def __init__(self) -> None:
-        super().__init__(emoji="🛂", label="Zkontrolovat výsledek")
+        super().__init__(emoji="❔", label="Jak počítat?", disabled=True)
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await itx.response.send_modal(self.view.modal)
+        await self.view.tutorial(itx)
 
 
-class AnswerShowButton(discord.ui.Button):
+class ProblemAnswerShowButton(discord.ui.Button):
     def __init__(self) -> None:
-        super().__init__(emoji="👁️", label="Zobrazit výsledek")
+        super().__init__(emoji="🛂", label="Zobrazit výsledek")
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await self.view.show(itx)
+        await self.view.show_answer(itx)
 
 
 # endregion
@@ -73,13 +72,13 @@ class ProblemView(LingeBotView):
         self.problem_manager = ProblemManager()
         self.problem_select = ProblemSelect(self.problem_manager)
         self.generate_button = ProblemGenerateButton()
-        self.check_button = AnswerCheckButton()
-        self.show_button = AnswerShowButton()
+        self.tutorial_button = ProblemTutorialButton()
+        self.show_button = ProblemAnswerShowButton()
         self.home_button = ProblemHomeButton()
         self.exit_button = CustomExitButton()
-        self.modal = AnswerCheckModal(self)
         self.problem_name = ""
         self.is_any_problem_visible = False
+        self.answer = ""
 
     @classmethod
     async def attach_to_message(cls,
@@ -89,64 +88,86 @@ class ProblemView(LingeBotView):
         self = cls(parent_message, author)
         self.add_item(self.problem_select)
         self.add_item(self.generate_button)
+        self.add_item(self.tutorial_button)
         self.add_item(self.exit_button)
         await parent_message.edit(view=self)
 
+    async def interaction_check(self, itx: discord.Interaction) -> bool:
+        # View může použít původní uživatel příkazu /generate nebo admin
+        if itx.user == self.author or itx.user.guild_permissions.administrator:
+            return True
+        # Při nedostatečných právech informovat uživatele ephemeral zprávou
+        message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."
+        await itx.response.send_message(content=message_content, ephemeral=True)
+        return False
+
     async def home(self, itx: discord.Interaction) -> None:
         self.is_any_problem_visible = False
-        old_message = self.parent_message
         self.clear_items()
         self.add_item(self.problem_select)
+        for option in self.problem_select.options:
+            option.default = False
         self.generate_button.disabled = True
         self.add_item(self.generate_button)
+        self.tutorial_button.disabled = True
+        self.add_item(self.tutorial_button)
         self.add_item(self.exit_button)
-        await itx.response.send_message(content="Zvolte si téma:", view=self)
-        self.parent_message = await itx.original_response()
-        await old_message.delete()
+        await itx.response.edit_message(content="Zvolte si téma:", embed=None, attachments=[], view=self)
 
     async def select_problem(self, itx: discord.Interaction, problem_name: str) -> None:
         self.problem_name = problem_name
-        old_message = self.parent_message
-        # self.clear_items()
+
+        # Aktualizovat Select s tématy (aktuální téma předvybráno)
+        for option in self.problem_select.options:
+            option.default = option.label == problem_name
+
         self.generate_button.disabled = False
+        self.tutorial_button.disabled = False
         embed_message = discord.Embed(title=problem_name)
         embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
-        await itx.response.send_message(embed=embed_message, view=self)
-        self.parent_message = await itx.original_response()
-        await old_message.delete()
+        await itx.response.edit_message(embed=embed_message, view=self)
 
     async def generate(self, itx: discord.Interaction) -> None:
-        old_message = self.parent_message
-        task = self.problem_manager.generate_problem(self.problem_name)
-        task_parts = task.split("$$$")
-        # New message content
-        content = task_parts[0]
-        # New message image
-        image_buffer = io.BytesIO()
-        try:
-            render_matrix_equation_align_to_buffer(image_buffer, task_parts[1])
-        except ValueError as error:
-            content += f"\n```{error}```"
-        # New message embed
-        embed_message = discord.Embed(timestamp=datetime.utcnow())
-        embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
         # New message view items
         if not self.is_any_problem_visible:
             self.clear_items()
             self.generate_button.label = "Nový příklad"
+            self.generate_button.emoji = "🆕"
             self.add_item(self.generate_button)
-            self.add_item(self.check_button)
             self.add_item(self.show_button)
             self.add_item(self.home_button)
             self.is_any_problem_visible = True
-        # Odeslat new message
-        await itx.response.send_message(content=content,
+        self.show_button.disabled = False
+        # Odeslat new message a nastavit answer
+        task, self.answer = self.problem_manager.generate_problem(self.problem_name)
+        await self.__edit_message(itx, task)
+
+    async def show_answer(self, itx: discord.Interaction) -> None:
+        self.show_button.disabled = True
+        await self.__edit_message(itx, self.answer)
+
+    async def __edit_message(self, itx: discord.Interaction, text: str):
+        # Content
+        text_parts = text.split("$$$")
+        content = text_parts[0]
+        # Image
+        image_buffer = io.BytesIO()
+        try:
+            render_matrix_equation_align_to_buffer(image_buffer, text_parts[1])
+        except ValueError as error:
+            content += f"\n```{error}```"
+        # Embed
+        embed_message = discord.Embed(timestamp=datetime.now())
+        embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
+        # Upravit parent_message
+        await itx.response.edit_message(content=content,
                                         embed=embed_message,
-                                        file=discord.File(image_buffer, "lingebot_math_render.png"),
+                                        attachments=[discord.File(image_buffer, "lingebot_math_render.png")],
                                         view=self)
         image_buffer.close()
-        self.parent_message = await itx.original_response()
-        await old_message.delete()
+
+    async def tutorial(self, itx: discord.Interaction) -> None:  # TODO
+        pass
 
     async def exit(self, itx: discord.Interaction) -> None:
         try:
@@ -155,26 +176,4 @@ class ProblemView(LingeBotView):
             pass  # Zpráva již byla smazána
         self.stop()
 
-
 # endregion
-
-# region Problem Modals
-class AnswerCheckModal(LingeBotModal):
-    def __init__(self, view: ProblemView) -> None:
-        super().__init__(title="Zadejte Váš výsledek")
-        self.view = view
-        self.add_item(discord.ui.TextInput(label="Výsledek",
-                                           min_length=1,
-                                           style=discord.TextStyle.paragraph))
-
-    async def on_submit(self, itx: discord.Interaction) -> None:
-        await itx.response.defer()
-        text = self.children[0].value
-        await itx.followup.send(content=f"Zadali jste výsledek `{text}`", ephemeral=True)
-# endregion
-
-# TODO: Embed – Čas je o hodinu posunutý
-# TODO: Buttons – Práva
-# TODO: Modal pro zkontrolování výsledku
-# TODO: Zobrazit řešení
-# TODO: Tutorial tlačítko pro příklady
