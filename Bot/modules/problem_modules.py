@@ -9,7 +9,7 @@ import discord
 from modules.buttons import CustomExitButton
 from modules.views import LingeBotView
 from utils.math_render import render_matrix_equation_align_to_buffer
-from utils.problem_utils import ProblemManager
+from utils.problem_utils import ProblemManager, get_problem_tutorial
 
 
 # region Problem Buttons
@@ -79,6 +79,7 @@ class ProblemView(LingeBotView):
         self.problem_name = ""
         self.is_any_problem_visible = False
         self.answer = ""
+        self.tutorial_text = ""
 
     @classmethod
     async def attach_to_message(cls,
@@ -117,12 +118,16 @@ class ProblemView(LingeBotView):
     async def select_problem(self, itx: discord.Interaction, problem_name: str) -> None:
         self.problem_name = problem_name
 
+        tutorial_text = get_problem_tutorial(self.problem_name)
+        if tutorial_text:
+            self.tutorial_text = tutorial_text
+            self.tutorial_button.disabled = False
+
         # Aktualizovat Select s tématy (aktuální téma předvybráno)
         for option in self.problem_select.options:
             option.default = option.label == problem_name
 
         self.generate_button.disabled = False
-        self.tutorial_button.disabled = False
         embed_message = discord.Embed(title=problem_name)
         embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
         await itx.response.edit_message(embed=embed_message, view=self)
@@ -167,7 +172,7 @@ class ProblemView(LingeBotView):
         image_buffer.close()
 
     async def tutorial(self, itx: discord.Interaction) -> None:  # TODO
-        pass
+        await itx.response.send_message(content=self.tutorial_text[:2000], ephemeral=True)
 
     async def exit(self, itx: discord.Interaction) -> None:
         try:

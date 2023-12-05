@@ -1,3 +1,5 @@
+"""Modul nastaví logování a spustí bota."""
+
 import logging
 import pathlib
 from logging.handlers import RotatingFileHandler
@@ -7,10 +9,10 @@ from modules.bot import LingeBot, TOKEN
 if __name__ == "__main__":
     # Upravit nastavení logování (přidat logování do souboru)
     # - Složka pro log soubory
-    pathlib.Path("logs").mkdir(exist_ok=True)
+    pathlib.Path("_logs").mkdir(exist_ok=True)
     # - https://discordpy.readthedocs.io/en/stable/logging.html
     file_handler = RotatingFileHandler(
-        filename="logs/discord.log",
+        filename="_logs/discord.log",
         encoding="utf-8",
         maxBytes=32 * 1024 * 1024,  # 32 MiB
         backupCount=5,  # Rotate through 5 files

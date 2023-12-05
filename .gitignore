@@ -2,7 +2,7 @@
 Bot/config.json
 
 # Bot logs
-Bot/logs
+Bot/_logs
 
 # PyCharm
 Bot/.idea/
@@ -11,4 +11,4 @@ Bot/.idea/
 __pycache__
 
 # Bot static files (Temporary?)
-Bot/static
+Bot/_static
