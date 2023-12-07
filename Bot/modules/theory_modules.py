@@ -6,8 +6,8 @@ from typing import Optional, Union
 
 import discord
 
-from modules.buttons import ConfirmButton, CustomExitButton
-from modules.views import LingeBotView
+from modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView
+from modules.message_sender import send_messages
 from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.theory_utils import get_theme, list_themes
 
@@ -195,14 +195,7 @@ class ThemeView(LingeBotView):
             await itx.response.send_message(content=f"# {self.theme_name}", embed=self.__generate_embed(header))
             new_messages.append(await itx.original_response())
             # Další zprávy už jsou normální zprávy do kanálu
-            for message_content in message_contents:
-                if isinstance(message_content, str):  # Text
-                    message = await channel.send(message_content)
-                    new_messages.append(message)
-                elif isinstance(message_content, io.BytesIO):  # Obrázek s matematickým výrazem
-                    message = await channel.send(file=discord.File(message_content, "lingebot_math_render.png"))
-                    new_messages.append(message)
-                    message_content.close()
+            new_messages.extend(await send_messages(itx, message_contents))
             # Enable/disable tlačítek
             self.previous_button.disabled = index == 0
             self.next_button.disabled = index == len(self.subtheme_names) - 1
@@ -221,6 +214,7 @@ class ThemeView(LingeBotView):
         """Přeposlat aktuálně zobrazované podtéma uživateli do přímých zpráv."""
         await itx.response.defer()
         user = itx.user
+        # Můžeme uživateli posílat přímé zprávy?
         try:
             await user.send(f"# {self.theme_name}")
         except discord.Forbidden:
@@ -229,13 +223,9 @@ class ThemeView(LingeBotView):
                         "`Right click na ikonu serveru → Nastavení soukromí → Přímé zprávy`",
                 ephemeral=True)
             return
+        # Odeslat zprávy uživateli
         message_contents = self.__get_subtheme_messages()
-        for message_content in message_contents:
-            if isinstance(message_content, str):
-                await user.send(message_content)
-            elif isinstance(message_content, io.BytesIO):
-                await user.send(file=discord.File(message_content, "lingebot_math_render.png"))
-                message_content.close()
+        await send_messages(itx, message_contents, True)
         # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
         await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
 

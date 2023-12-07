@@ -1,11 +1,56 @@
-"""Views."""
-
 import logging
 from typing import Any, Union
 
 import discord
 
 
+# region Common Buttons
+class ConfirmButton(discord.ui.Button):
+    """Tlačítko potvrzení pouze zastaví a vyčistí svůj view."""
+
+    def __init__(self, label: str = "Potvrdit") -> None:
+        super().__init__(emoji="✔️", label=label)
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        self.view.stop()
+        await itx.message.edit(view=self.view.clear_items())
+
+
+class DeleteButton(discord.ui.Button):
+    """Tlačítko smazání zastaví svůj view a smaže zprávu, ke které je přiděleno."""
+
+    def __init__(self) -> None:
+        super().__init__(emoji="🗑", label="Smazat")
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        self.view.stop()
+        await itx.message.delete()
+
+
+class CustomExitButton(discord.ui.Button):
+    """Tlačítko volá ve svém view metodu exit, která musí být implementována."""
+
+    def __init__(self) -> None:
+        super().__init__(emoji="🚫", label="Ukončit a smazat")
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        await self.view.exit(itx)
+
+
+# endregion
+
+# region Common Modals
+class LingeBotModal(discord.ui.Modal):
+    """Obsahuje metody/parametry společné pro všechny modaly v LingeBot."""
+
+    async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
+        logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
+        await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)
+
+
+# endregion
+
+# region Common Views
 class LingeBotView(discord.ui.View):
     """Obsahuje metody/parametry společné pro všechny Views v LingeBot."""
 
@@ -62,3 +107,4 @@ class MessageView(LingeBotView):
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."
         await itx.response.send_message(content=message_content, ephemeral=True)
         return False
+# endregion

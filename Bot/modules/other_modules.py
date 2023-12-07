@@ -1,21 +1,30 @@
-"""Vyskakovací okna, modaly."""
-
 import io
-import logging
 
 import discord
+from discord import app_commands
 
+from modules.common_modules import LingeBotModal
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 
-class LingeBotModal(discord.ui.Modal):
-    """Obsahuje metody/parametry společné pro všechny modaly v LingeBot."""
+# region Other Buttons
+class EditMathRenderButton(discord.ui.Button):
+    """Tlačítko editace matematického výrazu vyvolá příslušný modal."""
 
-    async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
-        logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
-        await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)
+    def __init__(self, text_old: app_commands.Range[str, 1, 256]) -> None:
+        """
+        :param text_old: Aktuální text matematického výrazu, který bude předvyplněn ve vyvolaném modalu.
+        """
+        self.text_old = text_old
+        super().__init__(emoji="📝", label="Upravit")
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        await itx.response.send_modal(EditMathRenderModal(self, itx))
 
 
+# endregion
+
+# region Other Modals
 class EditMathRenderModal(LingeBotModal):
     """Modal pro editaci matematického výrazu."""
 
@@ -53,3 +62,5 @@ class EditMathRenderModal(LingeBotModal):
         # Předat nový matematický výraz zpět tlačítku, aby mohl být při případném
         # dalším otevření tohoto modalu nastaven jako defaultní hodnota textového pole.
         self.button.text_old = text
+
+# endregion

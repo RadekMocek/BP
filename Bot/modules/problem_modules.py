@@ -6,8 +6,7 @@ from typing import Union
 
 import discord
 
-from modules.buttons import CustomExitButton
-from modules.views import LingeBotView
+from modules.common_modules import CustomExitButton, LingeBotView
 from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.problem_utils import ProblemManager, get_problem_tutorial
 

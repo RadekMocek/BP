@@ -6,8 +6,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from modules.buttons import ConfirmButton, DeleteButton, EditMathRenderButton
-from modules.views import MessageView
+from modules.common_modules import ConfirmButton, DeleteButton, MessageView
+from modules.other_modules import EditMathRenderButton
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 

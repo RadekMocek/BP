@@ -4,8 +4,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from modules.common_modules import MessageView
 from modules.theory_modules import ThemeSelect
-from modules.views import MessageView
 
 
 class Theory(commands.Cog):
