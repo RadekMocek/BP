@@ -84,22 +84,27 @@ class MessageView(LingeBotView):
     def __init__(self,
                  timeout: int,  # Pokud od poslední interakce uběhne tento počet vteřin, zavolá se on_timeout()
                  parent_message: discord.Message,
-                 author: Union[discord.Member, discord.User]) -> None:
+                 author: Union[discord.Member, discord.User],
+                 public: bool) -> None:
         super().__init__(timeout=timeout, parent_message=parent_message, author=author)
+        self.public = public
 
     @classmethod
     async def attach_to_message(cls,
                                 timeout: int,
                                 parent_message: discord.Message,
                                 author: Union[discord.Member, discord.User],
-                                items: list[discord.ui.Item]) -> None:
+                                items: list[discord.ui.Item],
+                                public: bool = False) -> None:
         # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě
-        self = cls(timeout, parent_message, author)
+        self = cls(timeout, parent_message, author, public)
         for item in items:
             self.add_item(item)
         await self.parent_message.edit(view=self)
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
+        if self.public:
+            return True
         # View itemy může použít pouze autor původní zprávy nebo admin
         if itx.user == self.author or itx.user.guild_permissions.administrator:
             return True

@@ -1,14 +1,13 @@
 """Tlačítka, selecty, views užívaná při výkladu teorie."""
 
 import io
-import textwrap
 from typing import Optional, Union
 
 import discord
 
 from modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView
-from modules.message_sender import send_messages
-from utils.math_render import render_matrix_equation_align_to_buffer
+from modules.messages import delete_messages, send_messages, try_dm_user
+from utils.text_utils import raw_text_2_message_text
 from utils.theory_utils import get_theme, list_themes
 
 
@@ -152,49 +151,24 @@ class ThemeView(LingeBotView):
         """
         index = self.subtheme_index  # Index aktuálního podtématu
         header = self.subtheme_names[index]  # Název aktuálního podtématu
-        body = self.subtheme_texts[index]  # Text aktuálního podtématu
-        body_parts = body.split("$$")  # Matematické výrazy očekáváme ve specifickém formátu: $$$render\nvýraz\n$$
-        result: list[Union[str, io.BytesIO]] = [f"## {header}"]  # První odeslanou zprávou bude název podtématu
-        for body_part in body_parts:
-            if not body_part.isspace():  # Vynechat whitespace only
-                if body_part[:7] == "$render":
-                    # Při splnění formátu $$$render\nvýraz\n$$ vykreslit matematický výraz,
-                    # případně přiložit chybu, byte buffer se uzavře až později při odesílání zpráv.
-                    image_buffer = io.BytesIO()
-                    try:
-                        render_matrix_equation_align_to_buffer(image_buffer, body_part[7:].strip())
-                        result.append(image_buffer)
-                    except ValueError as error:
-                        result.append(f"```{error}```")
-                else:
-                    # Limit pro délku zprávy na Discordu je 2000 znaků
-                    if len(body_part) > 2000:
-                        # Rozdělit na co nejdelší části tak, že maximální délka je 2000
-                        # znaků, ale může se rozdělovat pouze podle whitespace znaků.
-                        message_parts = textwrap.wrap(body_part,
-                                                      width=2000,
-                                                      expand_tabs=False,
-                                                      replace_whitespace=False,
-                                                      drop_whitespace=False,
-                                                      break_long_words=False,
-                                                      break_on_hyphens=False)
-                        result.extend(message_parts)
-                    else:
-                        result.append(body_part)
+        # Text aktuálního podtématu
+        body = self.subtheme_texts[index]
+        result = raw_text_2_message_text(body)
+        # První odeslanou zprávou bude název podtématu
+        result.insert(0, f"## {header}")
         return result
 
     async def __switch_subtheme(self, itx: discord.Interaction) -> None:
         """Zobrazí podtéma odpovídající aktuální hodnotě self.subtheme_index a smaže zprávy předchozího podtématu."""
         index = self.subtheme_index
         header = self.subtheme_names[index]
-        channel = itx.channel
-        async with channel.typing():
-            new_messages = []  # Všechny odeslané zprávy si uložit, aby mohli být při další změně podtématu smazány
-            message_contents = self.__get_subtheme_messages()
+        async with itx.channel.typing():
             # První odeslaná zpráva je reakce na interakci
             await itx.response.send_message(content=f"# {self.theme_name}", embed=self.__generate_embed(header))
-            new_messages.append(await itx.original_response())
+            # Všechny odeslané zprávy si uložit, aby mohli být při další změně podtématu smazány
+            new_messages = [await itx.original_response()]
             # Další zprávy už jsou normální zprávy do kanálu
+            message_contents = self.__get_subtheme_messages()
             new_messages.extend(await send_messages(itx, message_contents))
             # Enable/disable tlačítek
             self.previous_button.disabled = index == 0
@@ -207,43 +181,20 @@ class ThemeView(LingeBotView):
             self.parent_message = new_messages[-1]
             await self.parent_message.edit(view=self)
             # Staré zprávy smazat
-            await self.delete_old_messages(itx)
+            await delete_messages(itx, self.subtheme_messages)
             self.subtheme_messages = new_messages
 
     async def fwd_subtheme(self, itx: discord.Interaction) -> None:
         """Přeposlat aktuálně zobrazované podtéma uživateli do přímých zpráv."""
-        await itx.response.defer()
-        user = itx.user
-        # Můžeme uživateli posílat přímé zprávy?
-        try:
-            await user.send(f"# {self.theme_name}")
-        except discord.Forbidden:
-            await itx.followup.send(
-                content="Nemáte povolené přímé zprávy od členů tohoto serveru.\n"
-                        "`Right click na ikonu serveru → Nastavení soukromí → Přímé zprávy`",
-                ephemeral=True)
-            return
-        # Odeslat zprávy uživateli
-        message_contents = self.__get_subtheme_messages()
-        await send_messages(itx, message_contents, True)
-        # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
-        await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
-
-    async def delete_old_messages(self, itx: discord.Interaction):
-        if not itx.response.is_done():
-            await itx.response.defer()
-        # if self.guild:
-        #     await itx.channel.delete_messages(self.subtheme_messages)
-        # else:  # 'DMChannel' object has no attribute 'delete_messages'
-        # ???: channel.delete_messages() dělá problémy, občas nic nesmaže
-        for old_message in self.subtheme_messages:
-            try:
-                await old_message.delete()
-            except discord.errors.NotFound:
-                pass  # Zpráva již byla smazána
+        if await try_dm_user(itx, f"# {self.theme_name}"):
+            # Odeslat zprávy uživateli
+            message_contents = self.__get_subtheme_messages()
+            await send_messages(itx, message_contents, True)
+            # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
+            await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
     async def exit(self, itx: discord.Interaction) -> None:
-        await self.delete_old_messages(itx)
+        await delete_messages(itx, self.subtheme_messages)
         self.stop()
 
     def __generate_embed(self, subtheme_name: str) -> discord.Embed:

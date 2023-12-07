@@ -8,12 +8,13 @@ from typing import Optional
 import numpy as np
 
 from utils.file_io import txt_read
+from utils.text_utils import convert_html_tags
 
 __PROBLEM_FILES_PATH = pathlib.Path(__file__).parent.parent / "_static" / "problems"
 
 
 def get_problem_tutorial(problem_name: str) -> Optional[str]:
-    return txt_read(__PROBLEM_FILES_PATH / f"{problem_name}.MD")
+    return convert_html_tags(txt_read(__PROBLEM_FILES_PATH / f"{problem_name}.MD"))
 
 
 def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:

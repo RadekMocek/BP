@@ -2,13 +2,15 @@
 
 import io
 from datetime import datetime
-from typing import Union
+from typing import Optional, Union
 
 import discord
 
-from modules.common_modules import CustomExitButton, LingeBotView
+from modules.common_modules import CustomExitButton, LingeBotView, MessageView
+from modules.messages import delete_messages, send_messages, try_dm_user
 from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.problem_utils import ProblemManager, get_problem_tutorial
+from utils.text_utils import raw_text_2_message_text
 
 
 # region Problem Buttons
@@ -44,6 +46,18 @@ class ProblemAnswerShowButton(discord.ui.Button):
         await self.view.show_answer(itx)
 
 
+class TutorialSaveButton(discord.ui.Button):
+    def __init__(self, problem_name: str, tutorial_text: str) -> None:
+        super().__init__(emoji="📨", label="Uložit do DMs")
+        self.tutorial_text = tutorial_text
+        self.problem_name = problem_name
+
+    async def callback(self, itx: discord.Interaction) -> None:
+        if await try_dm_user(itx, f"Jak počítat _{self.problem_name}_?"):
+            await send_messages(itx, raw_text_2_message_text(self.tutorial_text), True)
+            await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
+
+
 # endregion
 
 # region Problem Selects
@@ -66,8 +80,10 @@ class ProblemSelect(discord.ui.Select):
 class ProblemView(LingeBotView):
     def __init__(self,
                  parent_message: discord.Message,
-                 author: Union[discord.Member, discord.User]) -> None:
+                 author: Union[discord.Member, discord.User],
+                 guild: Optional[discord.Guild]) -> None:
         super().__init__(parent_message=parent_message, author=author)
+        self.guild = guild
         self.problem_manager = ProblemManager()
         self.problem_select = ProblemSelect(self.problem_manager)
         self.generate_button = ProblemGenerateButton()
@@ -79,13 +95,15 @@ class ProblemView(LingeBotView):
         self.is_any_problem_visible = False
         self.answer = ""
         self.tutorial_text = ""
+        self.tutorial_messages: list[discord.Message] = []
 
     @classmethod
     async def attach_to_message(cls,
                                 parent_message: discord.Message,
-                                author: Union[discord.Member, discord.User]) -> None:
+                                author: Union[discord.Member, discord.User],
+                                guild: Optional[discord.Guild]) -> None:
         # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě
-        self = cls(parent_message, author)
+        self = cls(parent_message, author, guild)
         self.add_item(self.problem_select)
         self.add_item(self.generate_button)
         self.add_item(self.tutorial_button)
@@ -127,9 +145,7 @@ class ProblemView(LingeBotView):
             option.default = option.label == problem_name
 
         self.generate_button.disabled = False
-        embed_message = discord.Embed(title=problem_name)
-        embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
-        await itx.response.edit_message(embed=embed_message, view=self)
+        await itx.response.edit_message(embed=self.__generate_embed(True), view=self)
 
     async def generate(self, itx: discord.Interaction) -> None:
         # New message view items
@@ -142,7 +158,7 @@ class ProblemView(LingeBotView):
             self.add_item(self.home_button)
             self.is_any_problem_visible = True
         self.show_button.disabled = False
-        # Odeslat new message a nastavit answer
+        # "Odeslat" new message a nastavit answer
         task, self.answer = self.problem_manager.generate_problem(self.problem_name)
         await self.__edit_message(itx, task)
 
@@ -160,24 +176,40 @@ class ProblemView(LingeBotView):
             render_matrix_equation_align_to_buffer(image_buffer, text_parts[1])
         except ValueError as error:
             content += f"\n```{error}```"
-        # Embed
-        embed_message = discord.Embed(timestamp=datetime.now())
-        embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
         # Upravit parent_message
         await itx.response.edit_message(content=content,
-                                        embed=embed_message,
+                                        embed=self.__generate_embed(False),
                                         attachments=[discord.File(image_buffer, "lingebot_math_render.png")],
                                         view=self)
         image_buffer.close()
 
     async def tutorial(self, itx: discord.Interaction) -> None:  # TODO
-        await itx.response.send_message(content=self.tutorial_text[:2000], ephemeral=True)
+        await itx.response.defer()
+        async with itx.channel.typing():
+            new_tutorial_messages = await send_messages(itx, raw_text_2_message_text(self.tutorial_text))
+            new_parent_message = await itx.followup.send(embed=self.__generate_embed(True), view=self)
+
+            if self.guild:
+                await MessageView.attach_to_message(840,
+                                                    new_tutorial_messages[-1],
+                                                    itx.user,
+                                                    [TutorialSaveButton(self.problem_name, self.tutorial_text)],
+                                                    True)
+
+            self.tutorial_messages.append(self.parent_message)
+            await delete_messages(itx, self.tutorial_messages)
+
+            self.tutorial_messages = new_tutorial_messages
+            self.parent_message = new_parent_message
 
     async def exit(self, itx: discord.Interaction) -> None:
-        try:
-            await self.parent_message.delete()
-        except discord.errors.NotFound:
-            pass  # Zpráva již byla smazána
+        self.tutorial_messages.append(self.parent_message)
+        await delete_messages(itx, self.tutorial_messages)
         self.stop()
+
+    def __generate_embed(self, title: bool) -> discord.Embed:
+        embed_message = discord.Embed(title=self.problem_name) if title else discord.Embed(timestamp=datetime.now())
+        embed_message.set_footer(text=f"{self.author.display_name} použil/a /generate", icon_url=self.author.avatar)
+        return embed_message
 
 # endregion
