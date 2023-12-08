@@ -183,7 +183,7 @@ class ProblemView(LingeBotView):
                                         view=self)
         image_buffer.close()
 
-    async def tutorial(self, itx: discord.Interaction) -> None:  # TODO
+    async def tutorial(self, itx: discord.Interaction) -> None:
         await itx.response.defer()
         async with itx.channel.typing():
             new_tutorial_messages = await send_messages(itx, raw_text_2_message_text(self.tutorial_text))

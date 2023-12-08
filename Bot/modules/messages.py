@@ -1,7 +1,10 @@
+import asyncio
 import io
 from typing import Union
 
 import discord
+
+__DELAY_DURATION = 0.1
 
 
 async def send_messages(itx: discord.Interaction,
@@ -9,6 +12,8 @@ async def send_messages(itx: discord.Interaction,
                         dm: bool = False) -> list[discord.Message]:
     channel = itx.user if dm else itx.channel
     sent_messages = []
+
+    delay = len(message_contents) > 5
 
     for message_content in message_contents:
         if isinstance(message_content, str):  # Text
@@ -19,19 +24,24 @@ async def send_messages(itx: discord.Interaction,
             message = await channel.send(file=discord.File(message_content, "lingebot_math_render.png"))
             sent_messages.append(message)
             message_content.close()
+        if delay:
+            await asyncio.sleep(__DELAY_DURATION)
     return sent_messages
 
 
 async def delete_messages(itx: discord.Interaction, messages: list[discord.Message]):
     if not itx.response.is_done():
         await itx.response.defer()
+    # ???: channel.delete_messages() dělá problémy, občas nic nesmaže
     # if self.guild:
     #     await itx.channel.delete_messages(self.subtheme_messages)
     # else:  # 'DMChannel' object has no attribute 'delete_messages'
-    # ???: channel.delete_messages() dělá problémy, občas nic nesmaže
+    delay = len(messages) > 5
     for old_message in messages:
         try:
             await old_message.delete()
+            if delay:
+                await asyncio.sleep(__DELAY_DURATION)
         except discord.errors.NotFound:
             pass  # Zpráva již byla smazána
 
