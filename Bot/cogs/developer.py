@@ -11,6 +11,7 @@ class Developer(commands.Cog):
     @commands.dm_only()
     @commands.is_owner()
     async def slash_sync(self, ctx: commands.Context) -> None:
+        """Globálně synchronizovat slash commands."""
         synchronized = await ctx.bot.tree.sync()
         await ctx.send(f"Synchronizované příkazy:\n```/" + "\n/".join([x.name for x in synchronized]) + "```")
 

@@ -1,3 +1,5 @@
+"""Obecné view komponenty."""
+
 import logging
 from typing import Any, Union
 
@@ -81,6 +83,8 @@ class LingeBotView(discord.ui.View):
 
 
 class MessageView(LingeBotView):
+    """Základní View - kontejner pro tlačítka/selecty/textinput."""
+
     def __init__(self,
                  timeout: int,  # Pokud od poslední interakce uběhne tento počet vteřin, zavolá se on_timeout()
                  parent_message: discord.Message,
@@ -96,7 +100,7 @@ class MessageView(LingeBotView):
                                 author: Union[discord.Member, discord.User],
                                 items: list[discord.ui.Item],
                                 is_public: bool = False) -> None:
-        # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě
+        """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě."""
         self = cls(timeout, parent_message, author, is_public)
         for item in items:
             self.add_item(item)

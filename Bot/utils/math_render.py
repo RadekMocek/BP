@@ -22,7 +22,7 @@ plt.rcParams["mathtext.fontset"] = "cm"  # Computer Modern
 
 
 def render_tex_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek s vykresleným TeX výrazem."""
+    """Do byte bufferu vloží obrázek s vykresleným TeX výrazem. Používá Matplotlib Mathtext."""
     # O vykreslení matematického výrazu se stará Matplotlib
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
@@ -32,7 +32,7 @@ def render_tex_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
 
 
 def render_matrix_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek s vykreslenou maticí."""
+    """Do byte bufferu vloží obrázek s vykreslenou maticí. Syntax maticí podobný MATLABu."""
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
     __render_matrix_at(fig, 0, 0, text_raw)
@@ -40,8 +40,8 @@ def render_matrix_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
 
 
 def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek, kombinuje možnosti render_tex a render_matrix.
-    Umí vykreslit víceřádkové výrazy (\\) a zrovnat je podle ampersandu."""
+    """Do byte bufferu vloží obrázek, kombinuje možnosti `render_tex` a `render_matrix`.
+    Umí vykreslit víceřádkové výrazy (\\\\) a zarovnat je podle ampersandu."""
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
     if "\\\\" in text_raw:  # Víceřádkový výraz:

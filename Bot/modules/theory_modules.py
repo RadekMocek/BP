@@ -13,6 +13,8 @@ from utils.theory_utils import get_theme, list_themes
 
 # region Theory Buttons
 class SubthemeNextButton(discord.ui.Button):
+    """Tlačítko pro zobrazení dalšího podtématu aktuálně zvoleného tématu."""
+
     def __init__(self) -> None:
         super().__init__(emoji="➡️", label="Další")
 
@@ -21,6 +23,8 @@ class SubthemeNextButton(discord.ui.Button):
 
 
 class SubthemePreviousButton(discord.ui.Button):
+    """Tlačítko pro zobrazení předchozího podtématu aktuálně zvoleného tématu."""
+
     def __init__(self) -> None:
         super().__init__(emoji="⬅️", label="Předchozí", disabled=True)
 
@@ -29,6 +33,8 @@ class SubthemePreviousButton(discord.ui.Button):
 
 
 class SubthemeSaveButton(discord.ui.Button):
+    """Tlačítko pro přeposlání aktuálně zobrazovaného podtématu do přímých zpráv."""
+
     def __init__(self) -> None:
         super().__init__(emoji="📨", label="Uložit do DMs", disabled=True, custom_id="SubthemeSaveButton")
 
@@ -61,6 +67,8 @@ class ThemeSelect(discord.ui.Select):
 
 
 class SubthemeSelect(discord.ui.Select):
+    """Výběr podtémat, alternativa pro `SubthemeNextButton` a `SubthemePreviousButton`."""
+
     def __init__(self, subthemes: list[str]) -> None:
         options = []
         for subtheme in subthemes:
@@ -79,12 +87,15 @@ class SubthemeSelect(discord.ui.Select):
 
 # region Theory Views
 class ThemeView(LingeBotView):
+    """Poskytuje uživateli funkcionalitu pro výklad teorie."""
+
     def __init__(self,
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],
                  theme: str,
                  guild: Optional[discord.Guild]) -> None:
         super().__init__(parent_message=parent_message, author=author)
+        # Pokud je None, view se nachází v přímých zprávách a není třeba používat tlačítko pro přeposlání
         self.guild = guild
         # Z utils.theory_utils získat název tématu a názvy+texty podtémat
         self.theme_name, self.subtheme_names, self.subtheme_texts = get_theme(theme)
@@ -104,7 +115,7 @@ class ThemeView(LingeBotView):
                                 author: Union[discord.Member, discord.User],
                                 theme: str,
                                 guild: Optional[discord.Guild]) -> None:
-        # Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")
+        """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")"""
         self = cls(parent_message, author, theme, guild)
         self.add_item(self.subtheme_select)
         self.add_item(self.previous_button)
@@ -130,16 +141,19 @@ class ThemeView(LingeBotView):
         return False
 
     async def next_subtheme(self, itx: discord.Interaction) -> None:
+        """Zobrazit následující podtéma aktuálně zvoleného tématu."""
         if self.subtheme_index < len(self.subtheme_names) - 1:
             self.subtheme_index += 1
         await self.__switch_subtheme(itx)
 
     async def previous_subtheme(self, itx: discord.Interaction) -> None:
+        """Zobrazit předchozí podtéma aktuálně zvoleného tématu."""
         if self.subtheme_index > 0:
             self.subtheme_index -= 1
         await self.__switch_subtheme(itx)
 
     async def select_subtheme(self, itx: discord.Interaction, subtheme_name: str) -> None:
+        """Zobrazit specifické podtéma aktuálně zvoleného tématu."""
         if subtheme_name in self.subtheme_names:
             self.subtheme_index = self.subtheme_names.index(subtheme_name)
         await self.__switch_subtheme(itx)
@@ -154,7 +168,7 @@ class ThemeView(LingeBotView):
         # Text aktuálního podtématu
         body = self.subtheme_texts[index]
         result = raw_text_2_message_text(body)
-        # První odeslanou zprávou bude název podtématu
+        # První odeslanou zprávou bude název podtématu (vložit ji na začátek listu)
         result.insert(0, f"## {header}")
         return result
 
@@ -194,6 +208,7 @@ class ThemeView(LingeBotView):
             await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
 
     async def exit(self, itx: discord.Interaction) -> None:
+        """Vše smazat a ukončit view."""
         await delete_messages(itx, self.subtheme_messages)
         self.stop()
 

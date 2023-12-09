@@ -1,3 +1,5 @@
+"""Ostatní view komponenty."""
+
 import io
 
 import discord

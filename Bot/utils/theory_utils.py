@@ -11,7 +11,7 @@ __files: dict[str, str] = {}
 
 
 def list_themes() -> list[str]:
-    """Vrátí list dostupných teoretických témat. Co téma, to markdown soubor."""
+    """:return: List dostupných teoretických témat. Co téma, to markdown soubor."""
     global __files
     __files = {}
     for theme in __THEORY_FILES_PATH.glob("*.MD"):

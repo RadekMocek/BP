@@ -14,6 +14,7 @@ __PROBLEM_FILES_PATH = pathlib.Path(__file__).parent.parent / "_static" / "probl
 
 
 def get_problem_tutorial(problem_name: str) -> Optional[str]:
+    """:return: Text s návodem pro výpočet dané kategorie příkladů (pokud existuje, jinak None)"""
     return convert_html_tags(txt_read(__PROBLEM_FILES_PATH / f"{problem_name}.MD"))
 
 
@@ -29,16 +30,19 @@ def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
 
 
 class ProblemManager:
+    """Poskytuje generaci příkladů a jejich řešení pro všechny kategorie."""
     def __init__(self) -> None:
         problems_list: list[GeneralProblem] = [
             MatrixMultiplicationProblem(),
         ]
         self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
 
-    def list_problems(self) -> list[str]:
+    def get_problems_list(self) -> list[str]:
+        """:return: List názvů všech dostupných kategorií příkladů."""
         return list(self.problems.keys())
 
     def generate_problem(self, problem_name: str) -> tuple[str, str]:
+        """:return: Vygenerovaný příklad a řešení příkladu z vybrané kategorie."""
         chosen_problem = self.problems[problem_name]
         chosen_problem.generate_problem()
         return chosen_problem.get_task(), chosen_problem.get_answer()

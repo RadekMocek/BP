@@ -11,6 +11,7 @@ from utils.math_render import render_matrix_equation_align_to_buffer
 
 
 def convert_html_tags(text: str) -> str:
+    """Nahradit v řetězci tagy <sub/sup> za unicode znaky a <i> za podtržítka."""
     # <i>
     pattern = r"<\/?i>"
     text = re.sub(pattern, "_", text)
@@ -25,14 +26,15 @@ def __replace_sub_or_sup(match: re.Match[str]) -> str:
     is_sub = match.group(1) == "sub"  # Je tag <sub> nebo <sup>
     tex_char = "_" if is_sub else "^"
     replacement = unicodeit.replace(f"{tex_char}{{{tag_content}}}")
-
+    # Pokud neexistuje unicode reprezentace pro všechny znaky v daném <sub></sub>, obalit vstupní text místo
+    # toho do backquotes (single line codeblock, na Discordu se jedná o dobře vypadající alternativu za sub)
     if is_sub and "_" in replacement:
         replacement = f"`{tag_content}`"
-
     return replacement
 
 
 def raw_text_2_message_text(text: str) -> list[Union[str, io.BytesIO]]:
+    """Text z MD souboru rozdělit na textové a obrázkové části připravené ro odeslání na Discord."""
     result: list[Union[str, io.BytesIO]] = []
     text_parts = text.split("$$")  # Matematické výrazy očekáváme ve specifickém formátu: $$$render\nvýraz\n$$
     for text_part in text_parts:

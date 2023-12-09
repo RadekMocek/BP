@@ -1,4 +1,4 @@
-"""Podpůrný modul pro zápis/čtení ze souborů. (Načtení konfigurace z JSON souboru / teorie z MD souborů)."""
+"""Podpůrný modul pro zápis/čtení ze souborů. (Načtení konfigurace z JSON souboru nebo teorie/tutorial z MD souborů)."""
 
 import json
 from typing import Optional
@@ -14,4 +14,4 @@ def txt_read(path) -> Optional[str]:
         with open(path, "r", encoding="utf-8") as file:
             return file.read()
     except FileNotFoundError:
-        return None
+        return None  # Vrátit prázdný string, pokud soubor neexistuje
