@@ -7,7 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 
-class Error(commands.Cog):
+class OnError(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
@@ -63,4 +63,4 @@ class Error(commands.Cog):
 
 
 async def setup(bot) -> None:
-    await bot.add_cog(Error(bot))
+    await bot.add_cog(OnError(bot))

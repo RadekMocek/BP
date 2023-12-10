@@ -1,6 +1,9 @@
 # Bot configuration
 Bot/config.json
 
+# Bot database
+Bot/_database
+
 # Bot logs
 Bot/_logs
 
@@ -10,5 +13,5 @@ Bot/.idea/
 # Python
 __pycache__
 
-# Bot static files (Temporary?)
+# Bot static files (Temporary)
 Bot/_static

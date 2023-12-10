@@ -34,7 +34,7 @@ def __replace_sub_or_sup(match: re.Match[str]) -> str:
 
 
 def raw_text_2_message_text(text: str) -> list[Union[str, io.BytesIO]]:
-    """Text z MD souboru rozdělit na textové a obrázkové části připravené ro odeslání na Discord."""
+    """Text z MD souboru rozdělit na textové a obrázkové části připravené pro odeslání na Discord."""
     result: list[Union[str, io.BytesIO]] = []
     text_parts = text.split("$$")  # Matematické výrazy očekáváme ve specifickém formátu: $$$render\nvýraz\n$$
     for text_part in text_parts:

@@ -15,7 +15,7 @@ async def send_messages(itx: discord.Interaction,
     """Odeslat zprávy do určitého kanálu nebo určitému uživateli."""
     channel = itx.user if dm else itx.channel
     sent_messages = []
-    # Při větším množství zpráv omezit rychlost jejich odesílání kvůli omezením
+    # Při větším množství zpráv snížit rychlost jejich odesílání kvůli Discord omezením
     delay = len(message_contents) > 5
 
     for message_content in message_contents:
@@ -51,7 +51,8 @@ async def delete_messages(itx: discord.Interaction, messages: list[discord.Messa
 
 
 async def try_dm_user(itx: discord.Interaction, message: str) -> bool:
-    """Zkusit uživateli odeslat přímou zprávu; případně jej upozornit, pokud to nelze."""
+    """Zkusit uživateli odeslat přímou zprávu. Pokud má uživatel zakázané přímé zprávy od
+    členů serveru, informovat jej o tom ephemeral zprávou v kanále, kde vznikla interakce."""
     if not itx.response.is_done():
         await itx.response.defer()
     # Můžeme uživateli posílat přímé zprávy?
