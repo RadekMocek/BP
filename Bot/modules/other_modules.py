@@ -5,6 +5,7 @@ import io
 import discord
 from discord import app_commands
 
+import utils.db_io as database
 from modules.common_modules import LingeBotModal
 from utils.math_render import render_matrix_equation_align_to_buffer
 
@@ -13,15 +14,17 @@ from utils.math_render import render_matrix_equation_align_to_buffer
 class EditMathRenderButton(discord.ui.Button):
     """Tlačítko editace matematického výrazu vyvolá příslušný modal."""
 
-    def __init__(self, text_old: app_commands.Range[str, 1, 1024]) -> None:
+    def __init__(self, text_old: app_commands.Range[str, 1, 1024], render_theme_name: database.ThemeLiteral) -> None:
         """
         :param text_old: Aktuální text matematického výrazu, který bude předvyplněn ve vyvolaném modalu.
+        :param render_theme_name: Název barevného schéma, které bylo použito pro daný obrázek.
         """
-        self.text_old = text_old
         super().__init__(emoji="📝", label="Upravit")
+        self.text_old = text_old
+        self.render_theme_name = render_theme_name
 
     async def callback(self, itx: discord.Interaction) -> None:
-        await itx.response.send_modal(EditMathRenderModal(self, itx))
+        await itx.response.send_modal(EditMathRenderModal(self, itx, self.render_theme_name))
 
 
 # endregion
@@ -30,14 +33,15 @@ class EditMathRenderButton(discord.ui.Button):
 class EditMathRenderModal(LingeBotModal):
     """Modal pro editaci matematického výrazu."""
 
-    def __init__(self, button, itx: discord.Interaction) -> None:
+    def __init__(self, button, itx: discord.Interaction, render_theme_name: database.ThemeLiteral) -> None:
         """
         :param button: Tlačítko, které vyvolalo tento modal
         :param itx: Interakce vyvolaná stisknutím tlačítka button
         """
+        super().__init__(title="Upravit matematický výraz")
         self.button = button
         self.itx = itx
-        super().__init__(title="Upravit matematický výraz")
+        self.render_theme_name = render_theme_name
         self.add_item(discord.ui.TextInput(label="Nový výraz",
                                            default=self.button.text_old,
                                            min_length=1,
@@ -53,7 +57,7 @@ class EditMathRenderModal(LingeBotModal):
         image_buffer = io.BytesIO()
         try:
             # Nahradit obrázek u zprávy. Smazat text zprávy, pokud zde nějaký byl (error message)
-            render_matrix_equation_align_to_buffer(image_buffer, text)
+            render_matrix_equation_align_to_buffer(image_buffer, text, self.render_theme_name)
             await message.edit(content=None, attachments=[discord.File(image_buffer, "lingebot_math_render.png")])
         except ValueError as error:
             # Vypsat chybu. Smazat starý obrázek, pokud zde nějaký byl.

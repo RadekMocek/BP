@@ -12,7 +12,7 @@ class Setup(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
-    setup = app_commands.Group(name="setup", description="(Admin/DM only) Změnit nastavení bota na tomto serveru.")
+    setup = app_commands.Group(name="setup", description="Změnit nastavení bota na tomto serveru.")
 
     @setup.command()
     async def render_theme(self,
@@ -25,7 +25,7 @@ class Setup(commands.Cog):
         :param theme: Barevné schéma
         """
         permissions.admin_or_dm(itx)
-        database.set_theme(itx, theme)
+        database.set_render_theme(itx, theme)
         await itx.response.send_message(content=f"Téma matematických výrazů bylo změneno na `{theme}`.", ephemeral=True)
 
 

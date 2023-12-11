@@ -5,7 +5,7 @@ from discord import app_commands
 from discord.ext import commands
 
 from modules.common_modules import MessageView
-from modules.theory_modules import ThemeSelect
+from modules.theory_modules import TheoryThemeSelect
 
 
 class Theory(commands.Cog):
@@ -20,7 +20,7 @@ class Theory(commands.Cog):
         await MessageView.attach_to_message(180,
                                             await itx.original_response(),
                                             itx.user,
-                                            [ThemeSelect()])
+                                            [TheoryThemeSelect()])
 
 
 async def setup(bot) -> None:

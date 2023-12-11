@@ -9,8 +9,6 @@ import matplotlib.pyplot as plt
 import utils.db_io as database
 
 __DPI = 180  # Rozlišení vykreslených obrázků
-__COLOR_BACKGROUND = "#323338"  # Barva pozadí Discord chatu ve výchozím nastavení
-__COLOR_FOREGROUND = "white"  # Barva písma pro tmavé pozadí
 __CHAR_WIDTH = 0.011  # Šířka krátkého znaku
 __CHAR_HEIGHT = 0.05  # Výška znaku i s mezerou
 __SPACE_WIDTH = 0.02  # Šířka mezery mezi částmi výrazu / prvky v matici
@@ -19,16 +17,32 @@ __MATRIX_BRACES_THICKNESS = 0.75  # Tloušťka závorek vykreslené matice
 
 plt.rcParams["text.usetex"] = False  # Nepoužívat lokální TeX distribuci, ale Matplotlib renderer
 plt.rcParams["text.parse_math"] = True
-plt.rcParams["text.color"] = __COLOR_FOREGROUND
 plt.rcParams["mathtext.fontset"] = "cm"  # Computer Modern
 
 
-def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
+def __get_theme_colors(render_theme_name: database.ThemeLiteral) -> tuple[str, str]:
+    match render_theme_name:
+        case "light":
+            return "#ffffff", "black"
+        case "midnight":
+            return "#000000", "white"
+        case "solar":
+            return "#fdf6e3", "black"
+        case _:  # "dark"
+            return "#323337", "white"
+
+
+def render_matrix_equation_align_to_buffer(buffer: io.BytesIO,
+                                           text_raw: str,
+                                           render_theme_name: database.ThemeLiteral) -> None:
     """Do byte bufferu vloží obrázek s vykresleným matematickým ~TeX výrazem, používá
     Matplotlib Mathtext a přidává možnost vykreslovat matice, jejichž syntax je podobný
     maticím v MATLABu. Umí vykreslit víceřádkové výrazy (\\\\) a zarovnat je podle ampersandu."""
+    color_background, color_foreground = __get_theme_colors(render_theme_name)
+    plt.rcParams["text.color"] = color_foreground
+    plt.rcParams["lines.color"] = color_foreground
     fig = plt.figure()
-    fig.patch.set_facecolor(__COLOR_BACKGROUND)
+    fig.patch.set_facecolor(color_background)
     __render_matrix_equation_align_to_buffer(fig, text_raw)
     __plt_to_image_buffer(buffer)
 
@@ -191,11 +205,9 @@ def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
     # Levá a pravá závorka, každá tvořena čtyřmi body spojenými čárou
     fig.add_artist(lines.Line2D([x + braces_leg_size, x, x, x + braces_leg_size],
                                 [y_bot, y_bot, y_top, y_top],
-                                color=__COLOR_FOREGROUND,
                                 lw=__MATRIX_BRACES_THICKNESS))
     fig.add_artist(lines.Line2D([x_right - braces_leg_size, x_right, x_right, x_right - braces_leg_size],
                                 [y_bot, y_bot, y_top, y_top],
-                                color=__COLOR_FOREGROUND,
                                 lw=__MATRIX_BRACES_THICKNESS))
 
     # Vykreslení prvků matice

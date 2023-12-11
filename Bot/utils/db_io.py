@@ -14,7 +14,7 @@ connection = sqlite3.connect(db_file)
 cursor = connection.cursor()
 
 
-def set_theme(itx: discord.Interaction, theme: ThemeLiteral) -> None:
+def set_render_theme(itx: discord.Interaction, theme: ThemeLiteral) -> None:
     iid = __get_id_from_itx(itx)
     exists = __is_id_in_table(iid, "render")
     if exists:
@@ -24,8 +24,11 @@ def set_theme(itx: discord.Interaction, theme: ThemeLiteral) -> None:
     connection.commit()
 
 
-def get_theme(itx: discord.Interaction) -> ThemeLiteral:
-    iid = __get_id_from_itx(itx)
+def get_render_theme(itx: discord.Interaction, force_user_id: bool = False) -> ThemeLiteral:
+    if force_user_id:  # Pro tlačítka "Uložit do DMs"
+        iid = itx.user.id
+    else:
+        iid = __get_id_from_itx(itx)
     exists = __is_id_in_table(iid, "render")
     if exists:
         cursor.execute("SELECT theme FROM render WHERE id=?", (iid,))
@@ -47,6 +50,6 @@ def __get_id_from_itx(itx: discord.Interaction) -> int:
 
 
 def __is_id_in_table(iid: int, table_name: str) -> bool:
-    cursor.execute("SELECT EXISTS(SELECT 1 FROM ? WHERE id=?)", (table_name, iid))
+    cursor.execute(f"SELECT EXISTS(SELECT 1 FROM {table_name} WHERE id=?)", (iid,))
     exists = cursor.fetchone()
     return exists[0] == 1

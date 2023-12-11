@@ -5,6 +5,7 @@ from typing import Optional, Union
 
 import discord
 
+import utils.db_io as database
 from modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView
 from modules.messages import delete_messages, send_messages, try_dm_user
 from utils.text_utils import raw_text_2_message_text
@@ -12,7 +13,7 @@ from utils.theory_utils import get_theme, list_themes
 
 
 # region Theory Buttons
-class SubthemeNextButton(discord.ui.Button):
+class TheorySubthemeNextButton(discord.ui.Button):
     """Tlačítko pro zobrazení dalšího podtématu aktuálně zvoleného tématu."""
 
     def __init__(self) -> None:
@@ -22,7 +23,7 @@ class SubthemeNextButton(discord.ui.Button):
         await self.view.next_subtheme(itx)
 
 
-class SubthemePreviousButton(discord.ui.Button):
+class TheorySubthemePreviousButton(discord.ui.Button):
     """Tlačítko pro zobrazení předchozího podtématu aktuálně zvoleného tématu."""
 
     def __init__(self) -> None:
@@ -32,7 +33,7 @@ class SubthemePreviousButton(discord.ui.Button):
         await self.view.previous_subtheme(itx)
 
 
-class SubthemeSaveButton(discord.ui.Button):
+class TheorySubthemeSaveButton(discord.ui.Button):
     """Tlačítko pro přeposlání aktuálně zobrazovaného podtématu do přímých zpráv."""
 
     def __init__(self) -> None:
@@ -45,7 +46,7 @@ class SubthemeSaveButton(discord.ui.Button):
 # endregion
 
 # region Theory Selects
-class ThemeSelect(discord.ui.Select):
+class TheoryThemeSelect(discord.ui.Select):
     """Nabízí dostupná teoretická témata a po výběru vytvoří zprávu s ThemeView."""
 
     def __init__(self) -> None:
@@ -59,14 +60,13 @@ class ThemeSelect(discord.ui.Select):
         self.view.stop()
         chosen_theme = self.values[0]
         await itx.response.send_message(content=f"Nahrávám {chosen_theme} ...")
-        await ThemeView.attach_to_message(await itx.original_response(),
-                                          itx.user,
-                                          chosen_theme,
-                                          itx.guild)
+        await TheoryThemeView.attach_to_message(await itx.original_response(),
+                                                itx,
+                                                chosen_theme)
         await itx.message.delete()
 
 
-class SubthemeSelect(discord.ui.Select):
+class TheorySubthemeSelect(discord.ui.Select):
     """Výběr podtémat, alternativa pro `SubthemeNextButton` a `SubthemePreviousButton`."""
 
     def __init__(self, subthemes: list[str]) -> None:
@@ -86,14 +86,15 @@ class SubthemeSelect(discord.ui.Select):
 # endregion
 
 # region Theory Views
-class ThemeView(LingeBotView):
+class TheoryThemeView(LingeBotView):
     """Poskytuje uživateli funkcionalitu pro výklad teorie."""
 
     def __init__(self,
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],
                  theme: str,
-                 guild: Optional[discord.Guild]) -> None:
+                 guild: Optional[discord.Guild],
+                 render_theme_name: database.ThemeLiteral) -> None:
         super().__init__(parent_message=parent_message, author=author)
         # Pokud je None, view se nachází v přímých zprávách a není třeba používat tlačítko pro přeposlání
         self.guild = guild
@@ -104,19 +105,20 @@ class ThemeView(LingeBotView):
         # Všechny zprávy použité pro vypsání  aktuálního podtématu uloženy v listu, aby mohli smazány, až bude třeba
         self.subtheme_messages: list[discord.Message] = [parent_message]
         # Na tato tlačítka si držet referenci, aby mohly být měněny jejich parametry (disabled) dle potřeby
-        self.subtheme_select = SubthemeSelect(self.subtheme_names)
-        self.previous_button = SubthemePreviousButton()
-        self.next_button = SubthemeNextButton()
-        self.save_button = SubthemeSaveButton()
+        self.subtheme_select = TheorySubthemeSelect(self.subtheme_names)
+        self.previous_button = TheorySubthemePreviousButton()
+        self.next_button = TheorySubthemeNextButton()
+        self.save_button = TheorySubthemeSaveButton()
+        # Barevné schéma vykreslovaných matematických výrazů
+        self.render_theme_name = render_theme_name
 
     @classmethod
     async def attach_to_message(cls,
                                 parent_message: discord.Message,
-                                author: Union[discord.Member, discord.User],
-                                theme: str,
-                                guild: Optional[discord.Guild]) -> None:
+                                itx: discord.Interaction,
+                                theme: str) -> None:
         """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")"""
-        self = cls(parent_message, author, theme, guild)
+        self = cls(parent_message, itx.user, theme, itx.guild, database.get_render_theme(itx))
         self.add_item(self.subtheme_select)
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
@@ -158,7 +160,7 @@ class ThemeView(LingeBotView):
             self.subtheme_index = self.subtheme_names.index(subtheme_name)
         await self.__switch_subtheme(itx)
 
-    def __get_subtheme_messages(self) -> list[Union[str, io.BytesIO]]:
+    def __get_subtheme_messages(self, render_theme_name: database.ThemeLiteral) -> list[Union[str, io.BytesIO]]:
         """
         :return:
             List textů/obrázků [str/io.BytesIO], které bude potřeba postupně odeslat pro vypsání aktuálního podtématu.
@@ -167,7 +169,7 @@ class ThemeView(LingeBotView):
         header = self.subtheme_names[index]  # Název aktuálního podtématu
         # Text aktuálního podtématu
         body = self.subtheme_texts[index]
-        result = raw_text_2_message_text(body)
+        result = raw_text_2_message_text(body, render_theme_name)
         # První odeslanou zprávou bude název podtématu (vložit ji na začátek listu)
         result.insert(0, f"## {header}")
         return result
@@ -182,7 +184,7 @@ class ThemeView(LingeBotView):
             # Všechny odeslané zprávy si uložit, aby mohli být při další změně podtématu smazány
             new_messages = [await itx.original_response()]
             # Další zprávy už jsou normální zprávy do kanálu
-            message_contents = self.__get_subtheme_messages()
+            message_contents = self.__get_subtheme_messages(self.render_theme_name)
             new_messages.extend(await send_messages(itx, message_contents))
             # Enable/disable tlačítek
             self.previous_button.disabled = index == 0
@@ -202,7 +204,7 @@ class ThemeView(LingeBotView):
         """Přeposlat aktuálně zobrazované podtéma uživateli do přímých zpráv."""
         if await try_dm_user(itx, f"# {self.theme_name}"):
             # Odeslat zprávy uživateli
-            message_contents = self.__get_subtheme_messages()
+            message_contents = self.__get_subtheme_messages(database.get_render_theme(itx, True))
             await send_messages(itx, message_contents, True)
             # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
             await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)

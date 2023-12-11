@@ -7,6 +7,7 @@ from typing import Union
 
 import unicodeit
 
+import utils.db_io as database
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 
@@ -33,7 +34,7 @@ def __replace_sub_or_sup(match: re.Match[str]) -> str:
     return replacement
 
 
-def raw_text_2_message_text(text: str) -> list[Union[str, io.BytesIO]]:
+def raw_text_2_message_text(text: str, render_theme_name: database.ThemeLiteral) -> list[Union[str, io.BytesIO]]:
     """Text z MD souboru rozdělit na textové a obrázkové části připravené pro odeslání na Discord."""
     result: list[Union[str, io.BytesIO]] = []
     text_parts = text.split("$$")  # Matematické výrazy očekáváme ve specifickém formátu: $$$render\nvýraz\n$$
@@ -44,7 +45,7 @@ def raw_text_2_message_text(text: str) -> list[Union[str, io.BytesIO]]:
                 # případně přiložit chybu, byte buffer se uzavře až později při odesílání zpráv.
                 image_buffer = io.BytesIO()
                 try:
-                    render_matrix_equation_align_to_buffer(image_buffer, text_part[7:].strip())
+                    render_matrix_equation_align_to_buffer(image_buffer, text_part[7:].strip(), render_theme_name)
                     result.append(image_buffer)
                 except ValueError as error:
                     result.append(f"```{error}```")

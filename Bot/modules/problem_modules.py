@@ -6,6 +6,7 @@ from typing import Optional, Union
 
 import discord
 
+import utils.db_io as database
 from modules.common_modules import CustomExitButton, LingeBotView, MessageView
 from modules.messages import delete_messages, send_messages, try_dm_user
 from utils.math_render import render_matrix_equation_align_to_buffer
@@ -64,7 +65,7 @@ class TutorialSaveButton(discord.ui.Button):
 
     async def callback(self, itx: discord.Interaction) -> None:
         if await try_dm_user(itx, f"Jak počítat _{self.problem_name}_?"):
-            await send_messages(itx, raw_text_2_message_text(self.tutorial_text), True)
+            await send_messages(itx, raw_text_2_message_text(self.tutorial_text, database.get_render_theme(itx, True)), True)
             await itx.followup.send(content="Návod přeposlán do DMs.", ephemeral=True)
 
 
@@ -95,7 +96,8 @@ class ProblemView(LingeBotView):
     def __init__(self,
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],
-                 guild: Optional[discord.Guild]) -> None:
+                 guild: Optional[discord.Guild],
+                 render_theme_name: database.ThemeLiteral) -> None:
         super().__init__(parent_message=parent_message, author=author)
         # Pokud je None, view se nachází v přímých zprávách a není třeba používat tlačítko pro přeposlání
         self.guild = guild
@@ -112,14 +114,14 @@ class ProblemView(LingeBotView):
         self.answer = ""  # Příklad s řešením
         self.tutorial_text = ""  # Obsah Jak počítat?
         self.tutorial_messages: list[discord.Message] = []  # Zprávy odeslané v rámci Jak počítat?
+        self.render_theme_name = render_theme_name
 
     @classmethod
     async def attach_to_message(cls,
                                 parent_message: discord.Message,
-                                author: Union[discord.Member, discord.User],
-                                guild: Optional[discord.Guild]) -> None:
+                                itx: discord.Interaction) -> None:
         """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě"""
-        self = cls(parent_message, author, guild)
+        self = cls(parent_message, itx.user, itx.guild, database.get_render_theme(itx))
         self.add_item(self.problem_select)
         self.add_item(self.generate_button)
         self.add_item(self.tutorial_button)
@@ -192,7 +194,7 @@ class ProblemView(LingeBotView):
         # Math výraz vykreslit do obrázku
         image_buffer = io.BytesIO()
         try:
-            render_matrix_equation_align_to_buffer(image_buffer, text_parts[1])
+            render_matrix_equation_align_to_buffer(image_buffer, text_parts[1], self.render_theme_name)
         except ValueError as error:
             content += f"\n```{error}```"
         # Upravit parent_message
@@ -207,7 +209,9 @@ class ProblemView(LingeBotView):
         await itx.response.defer()
         async with itx.channel.typing():
             # Odeslat tutorial zprávy a po nich zprávu s tímto view (novou parent_message, stará zůstala nahoře)
-            new_tutorial_messages = await send_messages(itx, raw_text_2_message_text(self.tutorial_text))
+            new_tutorial_messages = await send_messages(itx,
+                                                        raw_text_2_message_text(self.tutorial_text,
+                                                                                self.render_theme_name))
             new_parent_message = await itx.followup.send(embed=self.__generate_embed(True), view=self)
             # Pokud nejsme v DM, přidat tlačítko pro přeposlání do DM
             if self.guild:

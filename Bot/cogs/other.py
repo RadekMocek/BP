@@ -7,6 +7,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import modules.permissions as permissions
+import utils.db_io as database
 from modules.common_modules import ConfirmButton, DeleteButton, MessageView
 from modules.other_modules import EditMathRenderButton
 from utils.math_render import render_matrix_equation_align_to_buffer
@@ -46,8 +47,9 @@ class Other(commands.Cog):
         # Byte buffer, do kterého bude vložen obrázek s vykresleným matematickým výrazem
         image_buffer = io.BytesIO()
         # Pokusit se výraz vykreslit, případně odpovědět chybovým hlášením
+        render_theme_name = database.get_render_theme(itx)
         try:
-            render_matrix_equation_align_to_buffer(image_buffer, text)
+            render_matrix_equation_align_to_buffer(image_buffer, text, render_theme_name)
             await itx.followup.send(file=discord.File(image_buffer, "lingebot_math_render.png"))
         except ValueError as error:
             await itx.followup.send(f"```{error}```")
@@ -57,7 +59,9 @@ class Other(commands.Cog):
         await MessageView.attach_to_message(30,
                                             await itx.original_response(),
                                             itx.user,
-                                            [ConfirmButton(), EditMathRenderButton(text), DeleteButton()])
+                                            [ConfirmButton(),
+                                             EditMathRenderButton(text, render_theme_name),
+                                             DeleteButton()])
 
 
 async def setup(bot) -> None:
