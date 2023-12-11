@@ -3,7 +3,7 @@
 import discord
 from discord.ext import commands
 
-from d_modules.database_commons import permissions_reset
+from d_modules.database_commons import lingemod_reset
 
 
 class OnJoin(commands.Cog):
@@ -14,7 +14,7 @@ class OnJoin(commands.Cog):
         self.bot.on_guild_join = self.on_guild_join
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
-        await permissions_reset(guild)
+        await lingemod_reset(guild)
 
 
 async def setup(bot) -> None:

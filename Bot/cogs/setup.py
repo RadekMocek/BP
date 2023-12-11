@@ -6,7 +6,7 @@ from discord.ext import commands
 
 import d_modules.permissions as permissions
 import utils.db_io as database
-from d_modules.database_commons import permissions_reset, render_set_theme
+from d_modules.database_commons import lingemod_reset, render_set_theme
 
 
 class Setup(commands.Cog):
@@ -39,12 +39,12 @@ class Setup(commands.Cog):
         :param member: Člen serveru, kterému bude přidána/odebrána role LingeMod.
         """
         guild = itx.guild
-        role_id = database.permissions_get_role_id(guild.id)
+        role_id = database.lingemod_get_role_id(guild.id)
         role = guild.get_role(role_id)
         if role_id == -1 or not role:
             await itx.response.send_message(
-                content="LingeMod role nebyla nalezena. Resetujte nastavení "
-                        "oprávnění napsáním `$> lingemod_reset` do chatu (admin only).",
+                content="LingeMod role nebyla nalezena.\n"
+                        "Napsáním `$> lingemod_reset` do chatu ji znovu vytvoříte (admin only).",
                 ephemeral=True)
             return
         if role in member.roles:
@@ -60,8 +60,8 @@ class Setup(commands.Cog):
     @commands.has_permissions(administrator=True)
     async def lingemod_reset(self, ctx: commands.Context) -> None:
         """Resetovat LingeMod roli pro daný server."""
-        await permissions_reset(ctx.guild)
-        await ctx.send("Role LingeMod byla znovu vytvořena. Oprávnění byla resetována.")
+        await lingemod_reset(ctx.guild)
+        await ctx.send("Role LingeMod byla úspěšně vytvořena.")
 
 
 async def setup(bot) -> None:

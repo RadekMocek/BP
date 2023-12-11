@@ -29,20 +29,19 @@ def render_get_theme(iid: int) -> ThemeLiteral:
     return "dark"
 
 
-def permissions_reset(gid: int, role_id: int) -> None:
-    if __is_id_in_table(gid, "permissions"):
-        cursor.execute("DELETE FROM permissions WHERE id=?", (gid,))
-    default_values = (gid, role_id, 1, 1, 2, 1, 2, 0, 2)
-    cursor.execute("INSERT INTO permissions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", default_values)
+def lingemod_reset(gid: int, role_id: int) -> None:
+    if __is_id_in_table(gid, "lingemod"):
+        cursor.execute("DELETE FROM lingemod WHERE id=?", (gid,))
+    cursor.execute("INSERT INTO lingemod VALUES (?, ?)", (gid, role_id))
     connection.commit()
 
 
-def permissions_get_role_id(gid: int) -> int:
+def lingemod_get_role_id(gid: int) -> int:
     """
     :param gid: ID Discord serveru
     :return: ID LingeMod role na daném serveru. Pokud záznam neexistuje, vrací -1.
     """
-    cursor.execute("SELECT role_id FROM permissions WHERE id=?", (gid,))
+    cursor.execute("SELECT role_id FROM lingemod WHERE id=?", (gid,))
     result = cursor.fetchone()
     if result:
         return result[0]

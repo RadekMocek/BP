@@ -10,4 +10,5 @@ if __name__ == "__main__":
     connection = sqlite3.connect(db_file)
     cursor = connection.cursor()
     cursor.execute("CREATE TABLE IF NOT EXISTS render(id, theme)")
-    cursor.execute("CREATE TABLE IF NOT EXISTS permissions(id, role_id, clear, explain, explain_btns, generate, generate_btns, render, render_btns)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS lingemod(id, role_id)")
+    cursor.execute("CREATE TABLE IF NOT EXISTS permissions(id, clear, explain, explain_btns, generate, generate_btns, render, render_btns)")

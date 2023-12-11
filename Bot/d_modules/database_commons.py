@@ -23,6 +23,6 @@ def __get_id_from_itx(itx: discord.Interaction) -> int:
         return itx.user.id
 
 
-async def permissions_reset(guild: discord.Guild):
+async def lingemod_reset(guild: discord.Guild):
     role = await guild.create_role(name="LingeMod")
-    database.permissions_reset(guild.id, role.id)
+    database.lingemod_reset(guild.id, role.id)
