@@ -7,6 +7,7 @@ import discord
 
 import utils.db_io as database
 from modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView
+from modules.database import render_get_theme
 from modules.messages import delete_messages, send_messages, try_dm_user
 from utils.text_utils import raw_text_2_message_text
 from utils.theory_utils import get_theme, list_themes
@@ -118,7 +119,7 @@ class TheoryThemeView(LingeBotView):
                                 itx: discord.Interaction,
                                 theme: str) -> None:
         """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě ("úvodní obrazovce")"""
-        self = cls(parent_message, itx.user, theme, itx.guild, database.get_render_theme(itx))
+        self = cls(parent_message, itx.user, theme, itx.guild, render_get_theme(itx))
         self.add_item(self.subtheme_select)
         self.add_item(self.previous_button)
         self.add_item(self.next_button)
@@ -204,7 +205,7 @@ class TheoryThemeView(LingeBotView):
         """Přeposlat aktuálně zobrazované podtéma uživateli do přímých zpráv."""
         if await try_dm_user(itx, f"# {self.theme_name}"):
             # Odeslat zprávy uživateli
-            message_contents = self.__get_subtheme_messages(database.get_render_theme(itx, True))
+            message_contents = self.__get_subtheme_messages(render_get_theme(itx, True))
             await send_messages(itx, message_contents, True)
             # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
             await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)

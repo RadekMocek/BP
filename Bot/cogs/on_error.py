@@ -22,7 +22,7 @@ class OnError(commands.Cog):
         # Reagovat podle typu chyby:
         if isinstance(error, app_commands.MissingPermissions):
             # Pokud uživatel nemá dostatečná práva, informovat ho emphemeral zprávou
-            content = "Pro spuštění tohoto příkazu nemáte dostatečná práva."
+            content = "Pro spuštění tohoto příkazu (v této konverzaci) nemáte dostatečná práva."
             ephemeral = True
         else:
             # Pokud daná chyba není jinak specificky ošetřena, odeslat do chatu výpis chyby (červeně)

@@ -20,9 +20,9 @@ class Developer(commands.Cog):
     @commands.command()
     @commands.dm_only()
     @commands.is_owner()
-    async def purge_database(self, ctx: commands.Context) -> None:
+    async def purge_table(self, ctx: commands.Context, *, table_name: str) -> None:
         """Smazat všechny hodnoty z databáze."""
-        database.purge()
+        database.purge_table(table_name)
         await ctx.send("Ok")
 
 

@@ -18,7 +18,8 @@ class LingeBot(commands.Bot):
         command_prefix = "$> "
         # Gateway intents určují, ke kterým událostem bude mít bot přístup
         intents = discord.Intents.default()
-        intents.message_content = True  # Umožňuje botu číst zprávy
+        intents.message_content = True  # Umožňuje botu číst zprávy (mj.)
+        intents.guilds = True  # Umožňuje vytvářet role (mj.)
         # Status "Poslouchá /help"
         activity = discord.Activity(type=discord.ActivityType.listening, name="/help")
         # LingeBot dědí od obecného bota

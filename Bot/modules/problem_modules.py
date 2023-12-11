@@ -8,6 +8,7 @@ import discord
 
 import utils.db_io as database
 from modules.common_modules import CustomExitButton, LingeBotView, MessageView
+from modules.database import render_get_theme
 from modules.messages import delete_messages, send_messages, try_dm_user
 from utils.math_render import render_matrix_equation_align_to_buffer
 from utils.problem_utils import ProblemManager, get_problem_tutorial
@@ -65,7 +66,7 @@ class TutorialSaveButton(discord.ui.Button):
 
     async def callback(self, itx: discord.Interaction) -> None:
         if await try_dm_user(itx, f"Jak počítat _{self.problem_name}_?"):
-            await send_messages(itx, raw_text_2_message_text(self.tutorial_text, database.get_render_theme(itx, True)), True)
+            await send_messages(itx, raw_text_2_message_text(self.tutorial_text, render_get_theme(itx, True)), True)
             await itx.followup.send(content="Návod přeposlán do DMs.", ephemeral=True)
 
 
@@ -121,7 +122,7 @@ class ProblemView(LingeBotView):
                                 parent_message: discord.Message,
                                 itx: discord.Interaction) -> None:
         """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě"""
-        self = cls(parent_message, itx.user, itx.guild, database.get_render_theme(itx))
+        self = cls(parent_message, itx.user, itx.guild, render_get_theme(itx))
         self.add_item(self.problem_select)
         self.add_item(self.generate_button)
         self.add_item(self.tutorial_button)

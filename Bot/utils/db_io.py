@@ -4,8 +4,6 @@ import pathlib
 import sqlite3
 from typing import Literal
 
-import discord
-
 ThemeLiteral = Literal["dark", "light", "midnight", "solar"]
 
 path = pathlib.Path(__file__).parent.parent / "_database"
@@ -14,8 +12,7 @@ connection = sqlite3.connect(db_file)
 cursor = connection.cursor()
 
 
-def set_render_theme(itx: discord.Interaction, theme: ThemeLiteral) -> None:
-    iid = __get_id_from_itx(itx)
+def render_set_theme(iid: int, theme: ThemeLiteral) -> None:
     exists = __is_id_in_table(iid, "render")
     if exists:
         cursor.execute("UPDATE render SET theme=? WHERE id=?", (theme, iid))
@@ -24,11 +21,7 @@ def set_render_theme(itx: discord.Interaction, theme: ThemeLiteral) -> None:
     connection.commit()
 
 
-def get_render_theme(itx: discord.Interaction, force_user_id: bool = False) -> ThemeLiteral:
-    if force_user_id:  # Pro tlačítka "Uložit do DMs"
-        iid = itx.user.id
-    else:
-        iid = __get_id_from_itx(itx)
+def render_get_theme(iid: int) -> ThemeLiteral:
     exists = __is_id_in_table(iid, "render")
     if exists:
         cursor.execute("SELECT theme FROM render WHERE id=?", (iid,))
@@ -36,17 +29,22 @@ def get_render_theme(itx: discord.Interaction, force_user_id: bool = False) -> T
     return "dark"
 
 
-def purge():
-    cursor.execute("DELETE FROM render")
-    cursor.execute("DELETE FROM permissions")
+def permissions_reset(gid: int, role_id: int) -> None:
+    if __is_id_in_table(gid, "permissions"):
+        cursor.execute("DELETE FROM permissions WHERE id=?", (gid,))
+    default_values = (gid, role_id, 1, 1, 2, 1, 2, 0, 2)
+    cursor.execute("INSERT INTO permissions VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", default_values)
     connection.commit()
 
 
-def __get_id_from_itx(itx: discord.Interaction) -> int:
-    if itx.guild:
-        return itx.guild.id
-    else:
-        return itx.user.id
+def permissions_get_role_id(gid: int) -> int:
+    cursor.execute("SELECT role_id FROM permissions WHERE id=?", (gid,))
+    return cursor.fetchone()[0]
+
+
+def purge_table(table_name: str):
+    cursor.execute(f"DELETE FROM {table_name}")
+    connection.commit()
 
 
 def __is_id_in_table(iid: int, table_name: str) -> bool:
