@@ -6,10 +6,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-import modules.permissions as permissions
-from modules.common_modules import ConfirmButton, DeleteButton, MessageView
-from modules.database import render_get_theme
-from modules.other_modules import EditMathRenderButton
+import d_modules.permissions as permissions
+from d_modules.common_modules import ConfirmButton, DeleteButton, MessageView
+from d_modules.database import render_get_theme
+from d_modules.other_modules import EditMathRenderButton
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 

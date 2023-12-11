@@ -4,7 +4,7 @@ import logging
 import pathlib
 from logging.handlers import RotatingFileHandler
 
-from modules.bot import LingeBot, TOKEN
+from d_modules.bot import LingeBot, TOKEN
 
 if __name__ == "__main__":
     # Upravit nastavení logování (přidat logování do souboru)

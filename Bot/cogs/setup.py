@@ -4,9 +4,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-import modules.permissions as permissions
+import d_modules.permissions as permissions
 import utils.db_io as database
-from modules.database import render_set_theme
+from d_modules.database import render_set_theme
 
 
 class Setup(commands.Cog):

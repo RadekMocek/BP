@@ -4,7 +4,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
-from modules.problem_modules import ProblemView
+from d_modules.problem_modules import ProblemView
 
 
 class Problem(commands.Cog):

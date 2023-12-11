@@ -6,7 +6,7 @@ import discord
 from discord import app_commands
 
 import utils.db_io as database
-from modules.common_modules import LingeBotModal
+from d_modules.common_modules import LingeBotModal
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 

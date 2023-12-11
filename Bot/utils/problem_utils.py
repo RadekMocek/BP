@@ -31,6 +31,7 @@ def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
 
 class ProblemManager:
     """Poskytuje generaci příkladů a jejich řešení pro všechny kategorie."""
+
     def __init__(self) -> None:
         problems_list: list[GeneralProblem] = [
             MatrixMultiplicationProblem(),
