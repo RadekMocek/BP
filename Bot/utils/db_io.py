@@ -38,8 +38,16 @@ def permissions_reset(gid: int, role_id: int) -> None:
 
 
 def permissions_get_role_id(gid: int) -> int:
+    """
+    :param gid: ID Discord serveru
+    :return: ID LingeMod role na daném serveru. Pokud záznam neexistuje, vrací -1.
+    """
     cursor.execute("SELECT role_id FROM permissions WHERE id=?", (gid,))
-    return cursor.fetchone()[0]
+    result = cursor.fetchone()
+    if result:
+        return result[0]
+    else:
+        return -1
 
 
 def purge_table(table_name: str):

@@ -51,6 +51,8 @@ class OnError(commands.Cog):
         if isinstance(error, (commands.NotOwner, commands.PrivateMessageOnly)):
             # Běžný uživatel se pokouší spustit developer-only příkaz, ignorujeme
             return
+        elif isinstance(error, commands.MissingPermissions):
+            content = f"```ansi\n[2;33mPro spuštění tohoto příkazu (v této konverzaci) nemáte dostatečná práva.```"
         else:
             # Pokud daná chyba není jinak specificky ošetřena, odeslat do chatu výpis chyby (červeně)
             content = f"```ansi\n[2;31m{error}```"

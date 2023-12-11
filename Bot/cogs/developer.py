@@ -23,7 +23,7 @@ class Developer(commands.Cog):
     async def purge_table(self, ctx: commands.Context, *, table_name: str) -> None:
         """Smazat všechny hodnoty z databáze."""
         database.purge_table(table_name)
-        await ctx.send("Ok")
+        await ctx.send(f"Tabulka `{table_name}` vyčištěna.")
 
 
 async def setup(bot) -> None:

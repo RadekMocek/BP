@@ -3,7 +3,7 @@
 import discord
 from discord.ext import commands
 
-import utils.db_io as database
+from d_modules.database_commons import permissions_reset
 
 
 class OnJoin(commands.Cog):
@@ -14,8 +14,7 @@ class OnJoin(commands.Cog):
         self.bot.on_guild_join = self.on_guild_join
 
     async def on_guild_join(self, guild: discord.Guild) -> None:
-        role = await guild.create_role(name="LingeMod")
-        database.permissions_reset(guild.id, role.id)
+        await permissions_reset(guild)
 
 
 async def setup(bot) -> None:
