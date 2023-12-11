@@ -13,7 +13,7 @@ from utils.math_render import render_matrix_equation_align_to_buffer
 class EditMathRenderButton(discord.ui.Button):
     """Tlačítko editace matematického výrazu vyvolá příslušný modal."""
 
-    def __init__(self, text_old: app_commands.Range[str, 1, 256]) -> None:
+    def __init__(self, text_old: app_commands.Range[str, 1, 1024]) -> None:
         """
         :param text_old: Aktuální text matematického výrazu, který bude předvyplněn ve vyvolaném modalu.
         """
@@ -41,7 +41,7 @@ class EditMathRenderModal(LingeBotModal):
         self.add_item(discord.ui.TextInput(label="Nový výraz",
                                            default=self.button.text_old,
                                            min_length=1,
-                                           max_length=256))
+                                           max_length=1024))
 
     async def on_submit(self, itx: discord.Interaction) -> None:
         await itx.response.defer()  # "Modal přemýšlí"

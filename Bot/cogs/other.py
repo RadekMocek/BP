@@ -6,6 +6,7 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+import modules.permissions as permissions
 from modules.common_modules import ConfirmButton, DeleteButton, MessageView
 from modules.other_modules import EditMathRenderButton
 from utils.math_render import render_matrix_equation_align_to_buffer
@@ -22,11 +23,9 @@ class Other(commands.Cog):
         await itx.response.send_message(f"Pong!\nProdleva: {latency} ms")
 
     @app_commands.command()
-    # @app_commands.checks.has_permissions(administrator=True)
     async def clear(self, itx: discord.Interaction) -> None:
         """Poslat dlouhou prázdnou zprávu (admin only)."""
-        if itx.guild and not itx.user.guild_permissions.administrator:
-            raise discord.app_commands.MissingPermissions(["Není admin."])
+        permissions.admin_or_dm(itx)
         await itx.response.send_message("⠀\n" * 45)
 
     @app_commands.command()
@@ -35,7 +34,7 @@ class Other(commands.Cog):
         await itx.response.send_message("Nápověda.")
 
     @app_commands.command()
-    async def render(self, itx: discord.Interaction, text: app_commands.Range[str, 1, 256]) -> None:
+    async def render(self, itx: discord.Interaction, text: app_commands.Range[str, 1, 1024]) -> None:
         """
         Vykreslit matematický výraz. Podporuje základní TeX výrazy. Syntax matic podobný MATLABu.
 

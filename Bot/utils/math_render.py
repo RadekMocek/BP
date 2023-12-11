@@ -6,6 +6,8 @@ import re
 import matplotlib.lines as lines
 import matplotlib.pyplot as plt
 
+import utils.db_io as database
+
 __DPI = 180  # Rozlišení vykreslených obrázků
 __COLOR_BACKGROUND = "#323338"  # Barva pozadí Discord chatu ve výchozím nastavení
 __COLOR_FOREGROUND = "white"  # Barva písma pro tmavé pozadí
@@ -21,69 +23,63 @@ plt.rcParams["text.color"] = __COLOR_FOREGROUND
 plt.rcParams["mathtext.fontset"] = "cm"  # Computer Modern
 
 
-def render_tex_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek s vykresleným TeX výrazem. Používá Matplotlib Mathtext."""
-    # O vykreslení matematického výrazu se stará Matplotlib
-    fig = plt.figure()
-    fig.patch.set_facecolor(__COLOR_BACKGROUND)
-    __render_tex_at(fig, 0, 0, text_raw)
-    # Obrázek není třeba ukládat lokálně, je uložen do byte bufferu a rovnou odeslán
-    __plt_to_image_buffer(buffer)
-
-
-def render_matrix_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek s vykreslenou maticí. Syntax maticí podobný MATLABu."""
-    fig = plt.figure()
-    fig.patch.set_facecolor(__COLOR_BACKGROUND)
-    __render_matrix_at(fig, 0, 0, text_raw)
-    __plt_to_image_buffer(buffer)
-
-
 def render_matrix_equation_align_to_buffer(buffer: io.BytesIO, text_raw: str) -> None:
-    """Do byte bufferu vloží obrázek, kombinuje možnosti `render_tex` a `render_matrix`.
-    Umí vykreslit víceřádkové výrazy (\\\\) a zarovnat je podle ampersandu."""
+    """Do byte bufferu vloží obrázek s vykresleným matematickým ~TeX výrazem, používá
+    Matplotlib Mathtext a přidává možnost vykreslovat matice, jejichž syntax je podobný
+    maticím v MATLABu. Umí vykreslit víceřádkové výrazy (\\\\) a zarovnat je podle ampersandu."""
     fig = plt.figure()
     fig.patch.set_facecolor(__COLOR_BACKGROUND)
+    __render_matrix_equation_align_to_buffer(fig, text_raw)
+    __plt_to_image_buffer(buffer)
+
+
+def __render_matrix_equation_align_to_buffer(fig: plt.figure, text_raw: str) -> None:
     if "\\\\" in text_raw:  # Víceřádkový výraz:
         align_lines = text_raw.split("\\\\")
         align_y = 0  # Souřadnice y aktuálně vykreslovaného řádku
         for line_raw in align_lines:  # Pro každý řádek výrazu:
             line = line_raw.strip()
             ampersand_index = line.find("&")
+            any_matrices = line.count("[") > line.count("\\sqrt[")
             if ampersand_index != -1:
                 # Pokud text obsahuje "&", zahodit tento znak a vykreslit tak, aby se byl nacházel na souřadnici x=0
                 text_left = line[:ampersand_index]
                 text_right = line[ampersand_index + 1:]
-                # Pokud tento řádek obsahuje matice, nelze použít horizontal align (ha),
-                # využije se přibližná délka levé strany řádku:
-                if line.count("[") > line.count("\\sqrt["):
+                # Pokud tento řádek obsahuje matice, nelze použít horizontal align (ha).
+                # Využije se tedy přibližná délka levé strany řádku:
+                if any_matrices:
                     line_height = __render_matrix_equation_at(fig,
                                                               text_left + text_right,
                                                               -__approx_tex_len(text_left) * __CHAR_WIDTH,
-                                                              align_y)
+                                                              align_y,
+                                                              True)
                 # Jinak využít ha:
                 else:
-                    line_height = __render_matrix_equation_at(fig, text_left, 0, align_y, "right")
-                    __render_matrix_equation_at(fig, text_right, 0, align_y)
+                    line_height = __render_matrix_equation_at(fig, text_left, 0, align_y, False, "right")
+                    __render_matrix_equation_at(fig, text_right, 0, align_y, False)
             else:
-                line_height = __render_matrix_equation_at(fig, line, 0, align_y)
+                line_height = __render_matrix_equation_at(fig, line, 0, align_y, any_matrices)
             align_y -= line_height
     else:  # Jednořádkový výraz:
-        __render_matrix_equation_at(fig, text_raw, 0, 0)
-    # Uložit do bufferu
-    __plt_to_image_buffer(buffer)
+        any_matrices = text_raw.count("[") > text_raw.count("\\sqrt[")
+        __render_matrix_equation_at(fig, text_raw, 0, 0, any_matrices)
 
 
 def __render_matrix_equation_at(fig: plt.figure,
                                 text_raw: str,
                                 start_x: float,
                                 start_y: float,
+                                any_matrices: bool,
                                 ha: str = "left") -> float:
     """
     Vykreslit matematický výraz s maticemi `text_raw` do `fig` na souřadnice `start_x`, `start_y`.
 
     :return: Výška vykresleného výrazu.
     """
+    if not any_matrices and text_raw:
+        __render_tex_at(fig, start_x, start_y, text_raw, ha)
+        return __CHAR_HEIGHT + __ALIGN_SPACE_HEIGHT_ADDITION
+
     items_raw = re.split(r"([\[\]])", text_raw)  # Split podle hranatých závorek, závorky ponechat
     items = []  # Pole bude obsahovat finální TeX a matrix výrazy pro vykreslení
     index = 0

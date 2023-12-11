@@ -1,10 +1,11 @@
 """Cog pro administraci."""
 
-from typing import Literal
-
 import discord
 from discord import app_commands
 from discord.ext import commands
+
+import modules.permissions as permissions
+import utils.db_io as database
 
 
 class Setup(commands.Cog):
@@ -16,14 +17,16 @@ class Setup(commands.Cog):
     @setup.command()
     async def render_theme(self,
                            itx: discord.Interaction,
-                           theme: Literal["dark", "light", "midnight", "solar"]) -> None:
+                           theme: database.ThemeLiteral) -> None:
         """
         (Admin/DM only) Nastavit barevné schéma pro vykreslování matematických výrazů.
 
         :param itx
         :param theme: Barevné schéma
         """
-        await itx.response.send_message(content=f"Zvolené téma: {theme}.", ephemeral=True)
+        permissions.admin_or_dm(itx)
+        database.set_theme(itx, theme)
+        await itx.response.send_message(content=f"Téma matematických výrazů bylo změneno na `{theme}`.", ephemeral=True)
 
 
 async def setup(bot) -> None:
