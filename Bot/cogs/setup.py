@@ -25,7 +25,7 @@ class Setup(commands.Cog):
         :param itx
         :param theme: Barevné schéma
         """
-        permissions.admin_or_dm(itx)
+        permissions.admin_or_dm_only(itx)
         render_set_theme(itx, theme)
         await itx.response.send_message(content=f"Téma matematických výrazů bylo změneno na `{theme}`.", ephemeral=True)
 

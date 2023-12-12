@@ -5,6 +5,7 @@ import sqlite3
 from typing import Literal
 
 ThemeLiteral = Literal["dark", "light", "midnight", "solar"]
+ActionLiteral = Literal["clear", "explain", "explain_btns", "generate", "generate_btns", "render", "render_btns"]
 
 path = pathlib.Path(__file__).parent.parent / "_database"
 db_file = path / "database.db"
@@ -12,8 +13,14 @@ connection = sqlite3.connect(db_file)
 cursor = connection.cursor()
 
 
+def is_id_in_table(iid: int, table_name: str) -> bool:
+    cursor.execute(f"SELECT EXISTS(SELECT 1 FROM {table_name} WHERE id=?)", (iid,))
+    exists = cursor.fetchone()
+    return exists[0] == 1
+
+
 def render_set_theme(iid: int, theme: ThemeLiteral) -> None:
-    exists = __is_id_in_table(iid, "render")
+    exists = is_id_in_table(iid, "render")
     if exists:
         cursor.execute("UPDATE render SET theme=? WHERE id=?", (theme, iid))
     else:
@@ -22,7 +29,7 @@ def render_set_theme(iid: int, theme: ThemeLiteral) -> None:
 
 
 def render_get_theme(iid: int) -> ThemeLiteral:
-    exists = __is_id_in_table(iid, "render")
+    exists = is_id_in_table(iid, "render")
     if exists:
         cursor.execute("SELECT theme FROM render WHERE id=?", (iid,))
         return cursor.fetchone()[0]
@@ -30,7 +37,7 @@ def render_get_theme(iid: int) -> ThemeLiteral:
 
 
 def lingemod_reset(gid: int, role_id: int) -> None:
-    if __is_id_in_table(gid, "lingemod"):
+    if is_id_in_table(gid, "lingemod"):
         cursor.execute("DELETE FROM lingemod WHERE id=?", (gid,))
     cursor.execute("INSERT INTO lingemod VALUES (?, ?)", (gid, role_id))
     connection.commit()
@@ -49,12 +56,11 @@ def lingemod_get_role_id(gid: int) -> int:
         return -1
 
 
+def permissions_get(gid: int, action: ActionLiteral) -> int:
+    cursor.execute(f"SELECT {action} FROM permissions WHERE id=?", (gid,))
+    return cursor.fetchone()[0]
+
+
 def purge_table(table_name: str):
     cursor.execute(f"DELETE FROM {table_name}")
     connection.commit()
-
-
-def __is_id_in_table(iid: int, table_name: str) -> bool:
-    cursor.execute(f"SELECT EXISTS(SELECT 1 FROM {table_name} WHERE id=?)", (iid,))
-    exists = cursor.fetchone()
-    return exists[0] == 1

@@ -26,7 +26,7 @@ class Other(commands.Cog):
     @app_commands.command()
     async def clear(self, itx: discord.Interaction) -> None:
         """Poslat dlouhou prázdnou zprávu (admin only)."""
-        permissions.admin_or_dm(itx)
+        await permissions.command(itx, "clear")
         await itx.response.send_message("⠀\n" * 45)
 
     @app_commands.command()
