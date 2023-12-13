@@ -5,6 +5,7 @@ from typing import Optional, Union
 
 import discord
 
+import d_modules.permissions as permissions
 import utils.db_io as database
 from d_modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView
 from d_modules.database_commons import render_get_theme
@@ -135,8 +136,8 @@ class TheoryThemeView(LingeBotView):
         # Tlačítko pro přeposlání podtématu do přímých zpráv může použít kdokoliv
         if itx.data["custom_id"] == "SubthemeSaveButton":
             return True
-        # Ostatní View itemy může použít původní uživatel příkazu /explain nebo admin
-        if itx.user == self.author or itx.user.guild_permissions.administrator:
+        # Ostatní View itemy určeny oprávněním daného serveru
+        if permissions.view_interaction(itx, self.author, "explain_btns"):
             return True
         # Při nedostatečných právech informovat uživatele ephemeral zprávou
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."

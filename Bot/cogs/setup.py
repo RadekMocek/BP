@@ -6,7 +6,7 @@ from discord.ext import commands
 
 import d_modules.permissions as permissions
 import utils.db_io as database
-from d_modules.database_commons import lingemod_reset, render_set_theme
+from d_modules.database_commons import lingemod_get_role, lingemod_reset, render_set_theme
 
 
 class Setup(commands.Cog):
@@ -30,17 +30,16 @@ class Setup(commands.Cog):
         await itx.response.send_message(content=f"Téma matematických výrazů bylo změneno na `{theme}`.", ephemeral=True)
 
     @setup.command()
-    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(manage_roles=True)
     async def lingemod(self, itx: discord.Interaction, member: discord.Member) -> None:
         """
-        (Admin only) Přidat/odebrat LingeMod roli danému členovi.
+        (Admin/RoleManager only) Přidat/odebrat LingeMod roli danému členovi.
 
         :param itx
         :param member: Člen serveru, kterému bude přidána/odebrána role LingeMod.
         """
         guild = itx.guild
-        role_id = database.lingemod_get_role_id(guild.id)
-        role = guild.get_role(role_id)
+        role_id, role = lingemod_get_role(itx)
         if role_id == -1 or not role:
             await itx.response.send_message(
                 content="LingeMod role nebyla nalezena.\n"

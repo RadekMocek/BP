@@ -6,6 +6,7 @@ from typing import Optional, Union
 
 import discord
 
+import d_modules.permissions as permissions
 import utils.db_io as database
 from d_modules.common_modules import CustomExitButton, LingeBotView, MessageView
 from d_modules.database_commons import render_get_theme
@@ -130,8 +131,7 @@ class ProblemView(LingeBotView):
         await parent_message.edit(view=self)
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
-        # View může použít původní uživatel příkazu /generate nebo admin
-        if itx.user == self.author or itx.user.guild_permissions.administrator:
+        if permissions.view_interaction(itx, self.author, "generate_btns"):
             return True
         # Při nedostatečných právech informovat uživatele ephemeral zprávou
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."
@@ -219,8 +219,7 @@ class ProblemView(LingeBotView):
                 await MessageView.attach_to_message(840,
                                                     new_tutorial_messages[-1],
                                                     itx.user,
-                                                    [TutorialSaveButton(self.problem_name, self.tutorial_text)],
-                                                    True)
+                                                    [TutorialSaveButton(self.problem_name, self.tutorial_text)])
             # Smazat starou parent_message a případně zprávy z předešlého tutorialu
             self.tutorial_messages.append(self.parent_message)
             await delete_messages(itx, self.tutorial_messages)

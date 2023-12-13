@@ -34,7 +34,7 @@ class OnError(commands.Cog):
         match itx.response.type:
             case discord.InteractionResponseType.deferred_channel_message:
                 # Pokud "Bot přemýšlí"
-                await itx.followup.send(content=content, ephemeral=ephemeral)
+                await itx.followup.send(content=content, ephemeral=ephemeral)  # ???: Ephemeral nefunguje u followups
             case _:
                 # Ostatní případy
                 await itx.response.send_message(content=content, ephemeral=ephemeral)

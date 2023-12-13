@@ -26,3 +26,9 @@ def __get_id_from_itx(itx: discord.Interaction) -> int:
 async def lingemod_reset(guild: discord.Guild):
     role = await guild.create_role(name="LingeMod")
     database.lingemod_reset(guild.id, role.id)
+
+
+def lingemod_get_role(itx: discord.Interaction) -> tuple[int, discord.Role]:
+    role_id = database.lingemod_get_role_id(itx.guild.id)
+    role = itx.guild.get_role(role_id)
+    return role_id, role

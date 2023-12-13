@@ -26,7 +26,7 @@ class Other(commands.Cog):
     @app_commands.command()
     async def clear(self, itx: discord.Interaction) -> None:
         """Poslat dlouhou prázdnou zprávu (admin only)."""
-        await permissions.command(itx, "clear")
+        permissions.command(itx, "clear")
         await itx.response.send_message("⠀\n" * 45)
 
     @app_commands.command()
@@ -42,6 +42,8 @@ class Other(commands.Cog):
         :param itx
         :param text: Např. "2 \\cdot [1, 2; 3, \\sqrt{4}] = [2, 4; 6, 4]"
         """
+        # Zkontrolovat, zdali má uživatel na daném serveru oprávnění tento příkaz použít
+        permissions.command(itx, "render")
         # Po zavolání defer Discord napíše, že "Bot přemýšlí", followup s odpovědí může pak být odeslán později
         await itx.response.defer()
         # Byte buffer, do kterého bude vložen obrázek s vykresleným matematickým výrazem
@@ -61,7 +63,8 @@ class Other(commands.Cog):
                                             itx.user,
                                             [ConfirmButton(),
                                              EditMathRenderButton(text, render_theme_name),
-                                             DeleteButton()])
+                                             DeleteButton()],
+                                            "render_btns")
 
 
 async def setup(bot) -> None:

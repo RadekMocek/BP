@@ -1,9 +1,12 @@
 """Obecné view komponenty."""
 
 import logging
-from typing import Any, Union
+from typing import Any, Optional, Union
 
 import discord
+
+import d_modules.permissions as permissions
+import utils.db_io as database
 
 
 # region Common Buttons
@@ -89,9 +92,9 @@ class MessageView(LingeBotView):
                  timeout: int,  # Pokud od poslední interakce uběhne tento počet vteřin, zavolá se on_timeout()
                  parent_message: discord.Message,
                  author: Union[discord.Member, discord.User],
-                 is_public: bool) -> None:
+                 action: Optional[database.ActionLiteral]) -> None:
         super().__init__(timeout=timeout, parent_message=parent_message, author=author)
-        self.is_public = is_public
+        self.action = action
 
     @classmethod
     async def attach_to_message(cls,
@@ -99,18 +102,15 @@ class MessageView(LingeBotView):
                                 parent_message: discord.Message,
                                 author: Union[discord.Member, discord.User],
                                 items: list[discord.ui.Item],
-                                is_public: bool = False) -> None:
+                                action: Optional[database.ActionLiteral] = None) -> None:
         """Vytvořit instanci sebe sama, přidat do ní dané itemy a přiřadit ji k dané zprávě."""
-        self = cls(timeout, parent_message, author, is_public)
+        self = cls(timeout, parent_message, author, action)
         for item in items:
             self.add_item(item)
         await self.parent_message.edit(view=self)
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
-        if self.is_public:
-            return True
-        # View itemy může použít pouze autor původní zprávy nebo admin
-        if itx.user == self.author or itx.user.guild_permissions.administrator:
+        if not self.action or permissions.view_interaction(itx, self.author, self.action):
             return True
         # Při nedostatečných právech informovat uživatele tzv. ephemeral zprávou (zprávu vidí pouze daný uživatel)
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."
