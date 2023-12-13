@@ -1,4 +1,4 @@
-"""Modul nastaví logování a spustí bota."""
+"""Nastavit logování a spustit bota."""
 
 import logging
 import pathlib

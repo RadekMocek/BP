@@ -14,4 +14,4 @@ def txt_read(path) -> Optional[str]:
         with open(path, "r", encoding="utf-8") as file:
             return file.read()
     except FileNotFoundError:
-        return None  # Vrátit prázdný string, pokud soubor neexistuje
+        return None  # Vrátit nic, pokud soubor neexistuje

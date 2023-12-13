@@ -1,4 +1,4 @@
-"""Ostatní view komponenty."""
+"""View / view komponenty pro příkaz /render."""
 
 import io
 
@@ -10,7 +10,7 @@ from d_modules.common_modules import LingeBotModal
 from utils.math_render import render_matrix_equation_align_to_buffer
 
 
-# region Other Buttons
+# region Render Buttons
 class EditMathRenderButton(discord.ui.Button):
     """Tlačítko editace matematického výrazu vyvolá příslušný modal."""
 
@@ -29,7 +29,7 @@ class EditMathRenderButton(discord.ui.Button):
 
 # endregion
 
-# region Other Modals
+# region Render Modals
 class EditMathRenderModal(LingeBotModal):
     """Modal pro editaci matematického výrazu."""
 
