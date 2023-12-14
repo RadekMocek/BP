@@ -1,29 +1,40 @@
-from typing import Union
+from typing import Literal, Union
 
 import discord
 
 import utils.db_io as database
 from d_modules.database_commons import lingemod_get_role
 
+PermissionCommandLiteral = Literal["Anyone", "Admin+LingeMod Only", "Admin Only"]
+PermissionViewInteractionLiteral = Literal["Any Admin+LingeMod", "Any Admin", "Author Only"]
+
+__COMMAND_2_INT: dict[PermissionCommandLiteral, int] = {
+    "Anyone": 0,
+    "Admin+LingeMod Only": 1,
+    "Admin Only": 2
+}
+
+__VIEWINTERACTION_2_INT: dict[PermissionViewInteractionLiteral, int] = {
+    "Any Admin+LingeMod": 0,
+    "Any Admin": 1,
+    "Author Only": 2
+}
+
 
 def __is_admin_or_dm(itx: discord.Interaction) -> bool:
     return not itx.guild or itx.user.guild_permissions.administrator
 
 
+def __get_permission(itx: discord.Interaction, action: database.ActionLiteral) -> int:
+    if database.is_id_in_table(itx.guild.id, "permissions"):
+        return database.permissions_get(itx.guild.id, action)
+    else:
+        return database.DEFAULT_PERMISSIONS[action]  # Pokud oprávnění nenajdeme v databázi, použijeme ta defaultní
+
+
 def admin_or_dm_only(itx: discord.Interaction) -> None:
     if not __is_admin_or_dm(itx):
         raise discord.app_commands.MissingPermissions(["Nedostatečná práva."])
-
-
-__DEFAULT_PERMISSIONS: dict[database.ActionLiteral, int] = {
-    "clear": 1,
-    "explain": 1,
-    "explain_btns": 2,
-    "generate": 1,
-    "generate_btns": 2,
-    "render": 0,
-    "render_btns": 2
-}
 
 
 def command(itx: discord.Interaction, action: database.ActionLiteral) -> None:
@@ -69,8 +80,5 @@ def view_interaction(itx: discord.Interaction,
     return False
 
 
-def __get_permission(itx: discord.Interaction, action: database.ActionLiteral) -> int:
-    if database.is_id_in_table(itx.guild.id, "permissions"):
-        return database.permissions_get(itx.guild.id, action)
-    else:
-        return __DEFAULT_PERMISSIONS[action]  # Pokud oprávnění nenajdeme v databázi, použijeme ta defaultní
+def set_permission():
+    pass  # TODO

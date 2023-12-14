@@ -36,9 +36,8 @@ class Setup(commands.Cog):
         (Admin/RoleManager only) Přidat/odebrat LingeMod roli danému členovi.
 
         :param itx
-        :param member: Člen serveru, kterému bude přidána/odebrána role LingeMod.
+        :param member: Člen serveru, kterému bude přidána/odebrána role LingeMod
         """
-        guild = itx.guild
         role_id, role = lingemod_get_role(itx)
         if role_id == -1 or not role:
             await itx.response.send_message(
@@ -54,6 +53,46 @@ class Setup(commands.Cog):
             await member.add_roles(role)
         await itx.response.send_message(content=f"Role `{role}` byla {action_str} uživateli `{member}`.",
                                         ephemeral=True)
+
+    setup_permissions = app_commands.Group(name="permissions",
+                                           description="Změnit nastavení oprávnění na tomto serveru.",
+                                           parent=setup)
+
+    @setup_permissions.command()
+    @app_commands.checks.has_permissions(administrator=True)
+    async def get(self, itx: discord.Interaction) -> None:
+        """(Admin only) Vypsat aktuální nastavení oprávnění na tomto serveru."""
+        await itx.response.send_message(content="Oprávnění1", ephemeral=True)
+
+    @setup_permissions.command()
+    @app_commands.checks.has_permissions(administrator=True)
+    async def set_command(self,
+                          itx: discord.Interaction,
+                          action: database.ActionCommandLiteral,
+                          permission: permissions.PermissionCommandLiteral) -> None:
+        """
+        (Admin only) Změnit nastavení oprávnění pro příkaz na tomto serveru.
+
+        :param itx
+        :param action: Příkaz
+        :param permission: Nové oprávnění pro tento příkaz
+        """
+        await itx.response.send_message(content="Oprávnění2", ephemeral=True)
+
+    @setup_permissions.command()
+    @app_commands.checks.has_permissions(administrator=True)
+    async def set_buttons(self,
+                          itx: discord.Interaction,
+                          action: database.ActionViewInteractionLiteral,
+                          permission: permissions.PermissionViewInteractionLiteral) -> None:
+        """
+        (Admin only) Změnit nastavení oprávnění pro interakci s tlačítky na tomto serveru.
+
+        :param itx
+        :param action: Typ interakce
+        :param permission: Nové oprávnění pro tuto interakci
+        """
+        await itx.response.send_message(content="Oprávnění3", ephemeral=True)
 
     @commands.command()
     @commands.has_permissions(administrator=True)

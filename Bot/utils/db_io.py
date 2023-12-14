@@ -5,7 +5,20 @@ import sqlite3
 from typing import Literal
 
 ThemeLiteral = Literal["dark", "light", "midnight", "solar"]
-ActionLiteral = Literal["clear", "explain", "explain_btns", "generate", "generate_btns", "render", "render_btns"]
+
+ActionCommandLiteral = Literal["clear", "explain", "generate", "render"]
+ActionViewInteractionLiteral = Literal["explain_btns", "generate_btns", "render_btns"]
+ActionLiteral = Literal[ActionCommandLiteral, ActionViewInteractionLiteral]
+
+DEFAULT_PERMISSIONS: dict[ActionLiteral, int] = {
+    "clear": 0,
+    "explain": 0,
+    "explain_btns": 2,
+    "generate": 0,
+    "generate_btns": 2,
+    "render": 0,
+    "render_btns": 2
+}
 
 path = pathlib.Path(__file__).parent.parent / "_database"
 db_file = path / "database.db"
@@ -61,6 +74,14 @@ def permissions_get(gid: int, action: ActionLiteral) -> int:
     return cursor.fetchone()[0]
 
 
-def purge_table(table_name: str):
+def permissions_set(gid: int, action: ActionLiteral, permission: int) -> None:
+    if not is_id_in_table(gid, "permissions"):
+        cursor.execute("INSERT INTO permissions VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                       (gid,) + tuple(DEFAULT_PERMISSIONS.values()))
+    cursor.execute(f"UPDATE pemissions SET {action}=? WHERE gid=?", (permission, gid))
+    connection.commit()
+
+
+def purge_table(table_name: str) -> None:
     cursor.execute(f"DELETE FROM {table_name}")
     connection.commit()
