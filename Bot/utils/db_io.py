@@ -2,7 +2,7 @@
 
 import pathlib
 import sqlite3
-from typing import Literal
+from typing import Any, Literal
 
 ThemeLiteral = Literal["dark", "light", "midnight", "solar"]
 
@@ -69,7 +69,12 @@ def lingemod_get_role_id(gid: int) -> int:
         return -1
 
 
-def permissions_get(gid: int, action: ActionLiteral) -> int:
+def permissions_get_all(gid: int) -> Any:
+    cursor.execute(f"SELECT * FROM permissions WHERE id=?", (gid,))
+    return cursor.fetchone()[1:]
+
+
+def permissions_get_one(gid: int, action: ActionLiteral) -> int:
     cursor.execute(f"SELECT {action} FROM permissions WHERE id=?", (gid,))
     return cursor.fetchone()[0]
 
@@ -78,7 +83,7 @@ def permissions_set(gid: int, action: ActionLiteral, permission: int) -> None:
     if not is_id_in_table(gid, "permissions"):
         cursor.execute("INSERT INTO permissions VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                        (gid,) + tuple(DEFAULT_PERMISSIONS.values()))
-    cursor.execute(f"UPDATE pemissions SET {action}=? WHERE gid=?", (permission, gid))
+    cursor.execute(f"UPDATE permissions SET {action}=? WHERE id=?", (permission, gid))
     connection.commit()
 
 

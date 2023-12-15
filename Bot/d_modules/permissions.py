@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Literal, Union, get_args
 
 import discord
 
@@ -14,10 +14,18 @@ __COMMAND_2_INT: dict[PermissionCommandLiteral, int] = {
     "Admin Only": 2
 }
 
+__INT_2_COMMAND: dict[int, PermissionCommandLiteral] = {
+    y: x for x, y in __COMMAND_2_INT.items()
+}
+
 __VIEWINTERACTION_2_INT: dict[PermissionViewInteractionLiteral, int] = {
     "Any Admin+LingeMod": 0,
     "Any Admin": 1,
     "Author Only": 2
+}
+
+__INT_2_VIEWINTERACTION: dict[int, PermissionViewInteractionLiteral] = {
+    y: x for x, y in __VIEWINTERACTION_2_INT.items()
 }
 
 
@@ -27,7 +35,7 @@ def __is_admin_or_dm(itx: discord.Interaction) -> bool:
 
 def __get_permission(itx: discord.Interaction, action: database.ActionLiteral) -> int:
     if database.is_id_in_table(itx.guild.id, "permissions"):
-        return database.permissions_get(itx.guild.id, action)
+        return database.permissions_get_one(itx.guild.id, action)
     else:
         return database.DEFAULT_PERMISSIONS[action]  # Pokud oprávnění nenajdeme v databázi, použijeme ta defaultní
 
@@ -80,5 +88,39 @@ def view_interaction(itx: discord.Interaction,
     return False
 
 
-def set_permission():
-    pass  # TODO
+def set_command_permission(gid: int,
+                           action: database.ActionCommandLiteral,
+                           permission: PermissionCommandLiteral) -> None:
+    database.permissions_set(gid, action, __COMMAND_2_INT[permission])
+
+
+def set_view_interaction_permission(gid: int,
+                                    action: database.ActionViewInteractionLiteral,
+                                    permission: PermissionViewInteractionLiteral) -> None:
+    database.permissions_set(gid, action, __VIEWINTERACTION_2_INT[permission])
+
+
+def get_permissions_info(gid: int) -> str:
+    permission_numbers = database.permissions_get_all(gid)
+    if not permission_numbers:
+        permission_numbers = tuple(database.DEFAULT_PERMISSIONS.values())
+    permission_tuples = tuple(zip(database.DEFAULT_PERMISSIONS.keys(), permission_numbers))
+    result = "".join([
+        f"{__permission_info_optional_newline(x[0])}{x[0].ljust(15)}\t{__int_2_permission(x)}\n"
+        for x in permission_tuples
+    ])
+    return f"```{result}```"
+
+
+def __permission_info_optional_newline(permission_name: str) -> str:
+    if permission_name[-5:] == "_btns":
+        return ""
+    return "\n"
+
+
+def __int_2_permission(permission_tuple: tuple[str, int]) -> str:
+    name, number = permission_tuple
+    if name in get_args(database.ActionCommandLiteral):
+        return __INT_2_COMMAND[number]
+    else:
+        return __INT_2_VIEWINTERACTION[number]

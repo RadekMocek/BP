@@ -62,7 +62,7 @@ class Setup(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     async def get(self, itx: discord.Interaction) -> None:
         """(Admin only) Vypsat aktuální nastavení oprávnění na tomto serveru."""
-        await itx.response.send_message(content="Oprávnění1", ephemeral=True)
+        await itx.response.send_message(content=f"{permissions.get_permissions_info(itx.guild.id)}", ephemeral=True)
 
     @setup_permissions.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -77,7 +77,9 @@ class Setup(commands.Cog):
         :param action: Příkaz
         :param permission: Nové oprávnění pro tento příkaz
         """
-        await itx.response.send_message(content="Oprávnění2", ephemeral=True)
+        permissions.set_command_permission(itx.guild.id, action, permission)
+        await itx.response.send_message(content=f"Oprávnění příkazu `{action}` bylo úspěšně změněno na `{permission}`.",
+                                        ephemeral=True)
 
     @setup_permissions.command()
     @app_commands.checks.has_permissions(administrator=True)
@@ -92,7 +94,11 @@ class Setup(commands.Cog):
         :param action: Typ interakce
         :param permission: Nové oprávnění pro tuto interakci
         """
-        await itx.response.send_message(content="Oprávnění3", ephemeral=True)
+        permissions.set_view_interaction_permission(itx.guild.id, action, permission)
+        await itx.response.send_message(
+            content=f"Oprávnění interakce `{action}` bylo úspěšně změněno na `{permission}`.",
+            ephemeral=True
+        )
 
     @commands.command()
     @commands.has_permissions(administrator=True)
