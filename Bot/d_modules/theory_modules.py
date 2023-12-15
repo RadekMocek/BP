@@ -209,7 +209,7 @@ class TheoryThemeView(LingeBotView):
             message_contents = self.__get_subtheme_messages(render_get_theme(itx, True))
             await send_messages(itx, message_contents, True)
             # Na interakci je třeba nějak zareagovat, jinak Discord hlásí, že se interakce nezdařila
-            await itx.followup.send(content="Podtéma přeposláno do DMs.", ephemeral=True)
+            await itx.followup.send(content="Podtéma bylo přeposláno do DMs.", ephemeral=True)
 
     async def exit(self, itx: discord.Interaction) -> None:
         """Vše smazat a ukončit view."""

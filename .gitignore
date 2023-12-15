@@ -14,4 +14,4 @@ Bot/.idea/
 __pycache__
 
 # Bot static files (Temporary)
-Bot/_static
+Bot/_static/theory

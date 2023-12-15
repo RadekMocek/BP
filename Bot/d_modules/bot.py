@@ -1,7 +1,7 @@
 """Hlavní modul – bot samotný."""
 
 import os
-
+from datetime import datetime
 import discord
 from discord.ext import commands
 
@@ -28,6 +28,8 @@ class LingeBot(commands.Bot):
             intents=intents,
             activity=activity
         )
+        # Ping stats
+        self.uptime_start = datetime.now()
 
     # Úvodní nastavení, metoda je spuštěna jednou po přihlášení
     async def setup_hook(self) -> None:
@@ -42,3 +44,6 @@ class LingeBot(commands.Bot):
 
     async def on_ready(self) -> None:
         print("Bot je připraven.")
+
+    def get_uptime(self) -> str:
+        return str(datetime.now() - self.uptime_start).strip()

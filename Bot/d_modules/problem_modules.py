@@ -68,7 +68,7 @@ class TutorialSaveButton(discord.ui.Button):
     async def callback(self, itx: discord.Interaction) -> None:
         if await try_dm_user(itx, f"Jak počítat _{self.problem_name}_?"):
             await send_messages(itx, raw_text_2_message_text(self.tutorial_text, render_get_theme(itx, True)), True)
-            await itx.followup.send(content="Návod přeposlán do DMs.", ephemeral=True)
+            await itx.followup.send(content="Návod byl přeposlán do DMs.", ephemeral=True)
 
 
 # endregion
