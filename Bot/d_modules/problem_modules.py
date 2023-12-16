@@ -12,7 +12,8 @@ from d_modules.common_modules import CustomExitButton, LingeBotView, MessageView
 from d_modules.database_commons import render_get_theme
 from d_modules.messages import delete_messages, send_messages, try_dm_user
 from utils.math_render import render_matrix_equation_align_to_buffer
-from utils.problem_utils import ProblemManager, get_problem_tutorial
+from utils.problems.problem_manager import ProblemManager
+from utils.problems.problem_utils import get_problem_tutorial
 from utils.text_utils import raw_text_2_message_text
 
 

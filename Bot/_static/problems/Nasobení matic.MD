@@ -1,6 +1,9 @@
 # Násobení matic
 
+* Prvek v _i_-tém řádku a _j_-tém sloupci lze chápat jako součet součinů prvků _i_-tého řádku první matice s _j_-tým sloupcem druhé matice
+
 $$$render
+c_{ij}=\sum_{k=1}^na_{ik}b_{kj}\\
 [1,2;3,4]\cdot[5,6;7,8]=[1\cdot5+2\cdot7,1\cdot6+2\cdot8;3\cdot5+4\cdot7,3\cdot6+4\cdot8]=[19,22;43,50]
 $$
 
