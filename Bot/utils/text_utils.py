@@ -13,6 +13,8 @@ from utils.math_render import render_matrix_equation_align_to_buffer
 
 def convert_html_tags(text: str) -> str:
     """Nahradit v řetězci tagy <sub/sup> za unicode znaky a <i> za podtržítka."""
+    if not text:
+        return text
     # <i>
     pattern = r"<\/?i>"
     text = re.sub(pattern, "_", text)

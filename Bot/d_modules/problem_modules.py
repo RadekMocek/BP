@@ -161,6 +161,8 @@ class ProblemView(LingeBotView):
         if tutorial_text:
             self.tutorial_text = tutorial_text
             self.tutorial_button.disabled = False
+        else:
+            self.tutorial_button.disabled = True
         # Aktualizovat Select s kategoriemi (aktuální kategorie předvybrána)
         for option in self.problem_select.options:
             option.default = option.label == problem_name

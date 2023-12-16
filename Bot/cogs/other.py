@@ -1,6 +1,7 @@
 """Cog obstarávající ostatní nezařezené příkazy."""
 
 import platform
+from importlib.metadata import version
 
 import discord
 from discord import app_commands
@@ -31,10 +32,14 @@ class Other(commands.Cog):
             f"```Prodleva         {round(self.bot.latency * 1000)} ms```"
             f"```Uptime           {self.bot.get_uptime()}```"
             f"```Pčt. serverů     {len(self.bot.guilds)}```"
-            f"```Python verze     {platform.python_version()}```"
-            f"```OS               {platform.system()} {platform.release()}```"
+            f"```Hosting OS       {platform.system()} {platform.release()}```"
+            f"```Python verze     {platform.python_version()}```\n"
+            f"` discord.py{version('discord.py').rjust(16)}`\n"
+            f"` matplotlib{version('matplotlib').rjust(16)}`\n"
+            f"` numpy     {version('numpy').rjust(16)}`\n"
+            f"` unicodeit {version('unicodeit').rjust(16)}`"
         ))
-        await itx.response.send_message(embed=embed_message, ephemeral=True)
+        await itx.response.send_message(embed=embed_message, ephemeral=False)
 
 
 async def setup(bot) -> None:
