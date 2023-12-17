@@ -28,16 +28,19 @@ class Other(commands.Cog):
     @app_commands.command()
     async def ping(self, itx: discord.Interaction) -> None:
         """Ověřit dostupnost bota."""
+        ljust_amount = 7
+        rjust_amount = 16
         embed_message = discord.Embed(title="Pong!", description=(
             f"```Prodleva         {round(self.bot.latency * 1000)} ms```"
             f"```Uptime           {self.bot.get_uptime()}```"
             f"```Pčt. serverů     {len(self.bot.guilds)}```"
             f"```Hosting OS       {platform.system()} {platform.release()}```"
             f"```Python verze     {platform.python_version()}```\n"
-            f"` discord.py{version('discord.py').rjust(16)}`\n"
-            f"` matplotlib{version('matplotlib').rjust(16)}`\n"
-            f"` numpy     {version('numpy').rjust(16)}`\n"
-            f"` unicodeit {version('unicodeit').rjust(16)}`"
+            f"` discord.py{version('discord.py').ljust(ljust_amount).rjust(rjust_amount)}`\n"
+            f"` matplotlib{version('matplotlib').ljust(ljust_amount).rjust(rjust_amount)}`\n"
+            f"` numpy     {version('numpy').ljust(ljust_amount).rjust(rjust_amount)}`\n"
+            f"` sympy     {version('sympy').ljust(ljust_amount).rjust(rjust_amount)}`\n"
+            f"` unicodeit {version('unicodeit').ljust(ljust_amount).rjust(rjust_amount)}`"
         ))
         await itx.response.send_message(embed=embed_message, ephemeral=False)
 

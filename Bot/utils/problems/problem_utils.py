@@ -18,14 +18,14 @@ def get_problem_tutorial(problem_name: str) -> Optional[str]:
 
 
 def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
-    # → [[1, 2],\n [3, 4]]
     result = np.array2string(array, separator=",")
-    # → [[1,2],[3,4]]
+    # → [[1, 2],\n [3, 4]]
     result = "".join(result.split())
-    # → [[1,2;3,4]]
+    # → [[1,2],[3,4]]
     result = result.replace("],[", ";")
-    # → [1,2;3,4]
+    # → [[1,2;3,4]]
     return result[1:-1]
+    # → [1,2;3,4]
 
 
 class GeneralProblem(ABC):
