@@ -8,7 +8,8 @@ class ProblemManager:
     def __init__(self) -> None:
         problems_list: list[GeneralProblem] = [
             matrix_multiplication.Problem(),
-            gauss_jordan.Problem()
+            gauss_jordan.Problem(),
+            inverse_matrix.Problem()
         ]
         self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
 

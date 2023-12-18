@@ -42,6 +42,7 @@ class Problem(GeneralProblem):
         # TODO: Vertikální oddělovač pravé strany
         # TODO: Vypsat sympy matice vedle sebe
         # TODO: Příklady typu lin.komb., případně mx1*mx?=mx2
+        # TODO: Postup (?)
 
         self.answer = (f"```{sp.pretty(mx_initial)}\n\n{sp.pretty(mx_gaussed)}\n\n{sp.pretty(mx_final)}```"
                        f"$$$x&={x}\\\\y&={y}\\\\z&={z}")
