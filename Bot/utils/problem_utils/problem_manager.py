@@ -1,5 +1,5 @@
-import utils.problems.problem_problems as problems
-from utils.problems.problem_utils import GeneralProblem
+from utils.problem_utils.problem_utils import GeneralProblem
+from utils.problem_utils.problems import *
 
 
 class ProblemManager:
@@ -7,8 +7,8 @@ class ProblemManager:
 
     def __init__(self) -> None:
         problems_list: list[GeneralProblem] = [
-            problems.MatrixMultiplicationProblem(),
-            problems.GaussJordanProblem()
+            matrix_multiplication.Problem(),
+            gauss_jordan.Problem()
         ]
         self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
 

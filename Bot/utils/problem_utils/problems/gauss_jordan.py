@@ -3,26 +3,10 @@ import random
 import numpy as np
 import sympy as sp
 
-from utils.problems.problem_utils import GeneralProblem, numpy_array_2_lingebot_matrix as mx
+from utils.problem_utils.problem_utils import GeneralProblem
 
 
-class MatrixMultiplicationProblem(GeneralProblem):
-    def __str__(self) -> str:
-        return "Nasobení matic"
-
-    def generate_problem(self) -> None:
-        dim1 = random.randint(2, 4)
-        dim23 = random.randint(2, 4)
-        dim4 = random.randint(2, 4)
-        mx1 = np.random.randint(low=-5, high=12, size=(dim1, dim23))
-        mx2 = np.random.randint(low=-5, high=12, size=(dim23, dim4))
-        mx3 = mx1 @ mx2
-        self.task = (f"Vynásobte matice:"
-                     f"$$${mx(mx1)}\\cdot{mx(mx2)}=?")
-        self.answer = f"{self.task[:-1]}{mx(mx3)}"
-
-
-class GaussJordanProblem(GeneralProblem):
+class Problem(GeneralProblem):
     def __str__(self) -> str:
         return "Soustavy rovnic"
 
@@ -56,6 +40,8 @@ class GaussJordanProblem(GeneralProblem):
 
         # TODO: Vydělit řádky matice U nejvyšším společným dělitelem daného řádku
         # TODO: Vertikální oddělovač pravé strany
+        # TODO: Vypsat sympy matice vedle sebe
+        # TODO: Příklady typu lin.komb., případně mx1*mx?=mx2
 
         self.answer = (f"```{sp.pretty(mx_initial)}\n\n{sp.pretty(mx_gaussed)}\n\n{sp.pretty(mx_final)}```"
                        f"$$$x&={x}\\\\y&={y}\\\\z&={z}")
