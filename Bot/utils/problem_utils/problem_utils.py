@@ -1,10 +1,12 @@
 """Podpůrný modul pro příklady."""
 
 import pathlib
+import random
 from abc import ABC, abstractmethod
 from typing import Optional
 
 import numpy as np
+import sympy as sp
 
 from utils.file_io import txt_read
 from utils.text_utils import convert_html_tags
@@ -26,6 +28,23 @@ def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
     # → [[1,2;3,4]]
     return result[1:-1]
     # → [1,2;3,4]
+
+
+def random_det1_matrix(values: list[int]) -> sp.Matrix:
+    # https://math.stackexchange.com/a/19529
+    # https://math.stackexchange.com/a/1028487
+    letters = [random.choice(values) for _ in range(6)]
+    mx1 = sp.Matrix([
+        [1, letters[0], letters[1]],
+        [0, 1, letters[2]],
+        [0, 0, 1],
+    ])
+    mx2 = sp.Matrix([
+        [1, 0, 0],
+        [letters[3], 1, 0],
+        [letters[4], letters[5], 1],
+    ])
+    return mx1 * mx2
 
 
 class GeneralProblem(ABC):

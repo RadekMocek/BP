@@ -9,7 +9,8 @@ class ProblemManager:
         problems_list: list[GeneralProblem] = [
             matrix_multiplication.Problem(),
             gauss_jordan.Problem(),
-            inverse_matrix.Problem()
+            inverse_matrix.Problem(),
+            eigen.Problem()
         ]
         self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
 
