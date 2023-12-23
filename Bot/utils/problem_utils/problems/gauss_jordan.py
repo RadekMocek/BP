@@ -1,14 +1,19 @@
+import math
 import random
 
 import numpy as np
 import sympy as sp
 
-from utils.problem_utils.problem_utils import GeneralProblem
+from utils.problem_utils.problem_utils import GeneralProblem, sympy_matrices_2_string
 
 
 class Problem(GeneralProblem):
     def __str__(self) -> str:
         return "Soustavy rovnic"
+
+    def mx_row_gcd(self, row):
+        row_gcd = math.gcd(*row)
+        return [0 if row_gcd == 0 else element // row_gcd for element in row]
 
     def generate_problem(self) -> None:
         x, y, z = (random.randint(-10, 10), random.randint(-10, 10), random.randint(-10, 10))
@@ -38,11 +43,12 @@ class Problem(GeneralProblem):
         _, _, _, mx_gaussed = mx_initial.LUdecompositionFF()
         mx_final = sp.Matrix(rows)
 
-        # TODO: Vydělit řádky matice U nejvyšším společným dělitelem daného řádku
+        # Vydělit řádky matice nejvyšším společným dělitelem daného řádku
+        mx_gaussed = sp.Matrix([self.mx_row_gcd(row) for row in mx_gaussed.tolist()])
+
         # TODO: Vertikální oddělovač pravé strany
-        # TODO: Vypsat sympy matice vedle sebe
         # TODO: Příklady typu lin.komb., případně mx1*mx?=mx2
         # TODO: Postup (?)
 
-        self.answer = (f"```{sp.pretty(mx_initial)}\n\n{sp.pretty(mx_gaussed)}\n\n{sp.pretty(mx_final)}```"
-                       f"$$$x&={x}\\\\y&={y}\\\\z&={z}")
+        self.answer = (f"```{sympy_matrices_2_string([mx_initial, mx_gaussed, mx_final])}"
+                       f"\n\nx = {x}\ny = {y}\nz = {z}```")

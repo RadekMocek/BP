@@ -30,7 +30,13 @@ def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
     # → [1,2;3,4]
 
 
-def random_det1_matrix(values: list[int]) -> sp.Matrix:
+def random_det1_22_matrix(values: list[int]) -> sp.Matrix:
+    mx1 = sp.Matrix([[1, random.choice(values)], [0, 1]])
+    mx2 = sp.Matrix([[1, 0], [random.choice(values), 1]])
+    return mx1 * mx2
+
+
+def random_det1_33_matrix(values: list[int]) -> sp.Matrix:
     # https://math.stackexchange.com/a/19529
     # https://math.stackexchange.com/a/1028487
     letters = [random.choice(values) for _ in range(6)]
@@ -45,6 +51,19 @@ def random_det1_matrix(values: list[int]) -> sp.Matrix:
         [letters[4], letters[5], 1],
     ])
     return mx1 * mx2
+
+
+def sympy_matrices_2_string(matrices: list[sp.Matrix]) -> str:
+    n_matrices = len(matrices)
+    lines = ["", "", "", "", ""]
+    for matrix_index, matrix in enumerate(matrices):
+        pretty = sp.pretty(matrix)
+        mx_lines = pretty.split("\n")
+        for mx_line_index, mx_line in enumerate(mx_lines):
+            space = " ~ ... ~ " if mx_line_index == 2 and matrix_index < n_matrices - 1 else "         "
+            lines[mx_line_index] += mx_line + space
+    result = "".join([f"{x}\n" for x in lines])
+    return result
 
 
 class GeneralProblem(ABC):

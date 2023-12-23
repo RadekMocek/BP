@@ -23,7 +23,18 @@ class Other(commands.Cog):
     @app_commands.command()
     async def help(self, itx: discord.Interaction) -> None:
         """Zobrazit nápovědu."""
-        await itx.response.send_message("Nápověda.")
+        embed_message = discord.Embed(title="Nápověda", description="""
+        `/explain`
+        `/generate`
+        `/render`
+        
+        `/clear`
+        `/help`
+        `/ping`
+        
+        `/setup`
+        """)
+        await itx.response.send_message(embed=embed_message)
 
     @app_commands.command()
     async def ping(self, itx: discord.Interaction) -> None:

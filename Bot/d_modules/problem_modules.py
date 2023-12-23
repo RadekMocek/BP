@@ -192,21 +192,27 @@ class ProblemView(LingeBotView):
 
     async def __edit_message(self, itx: discord.Interaction, text: str):
         """Upravit zprávu."""
-        # Content - očekváváme nejdřív normální text, poté tři dolary následované math výrazem
-        text_parts = text.split("$$$")
-        content = text_parts[0]
-        # Math výraz vykreslit do obrázku
-        image_buffer = io.BytesIO()
-        try:
-            render_matrix_equation_align_to_buffer(image_buffer, text_parts[1], self.render_theme_name)
-        except ValueError as error:
-            content += f"\n```{error}```"
-        # Upravit parent_message
-        await itx.response.edit_message(content=content,
-                                        embed=self.__generate_embed(False),
-                                        attachments=[discord.File(image_buffer, "lingebot_math_render.png")],
-                                        view=self)
-        image_buffer.close()
+        if "$$$" in text:
+            # Content - očekváváme nejdřív normální text, poté tři dolary následované math výrazem
+            text_parts = text.split("$$$")
+            content = text_parts[0]
+            # Math výraz vykreslit do obrázku
+            image_buffer = io.BytesIO()
+            try:
+                render_matrix_equation_align_to_buffer(image_buffer, text_parts[1], self.render_theme_name)
+            except ValueError as error:
+                content += f"\n```{error}```"
+            # Upravit parent_message
+            await itx.response.edit_message(content=content,
+                                            embed=self.__generate_embed(False),
+                                            attachments=[discord.File(image_buffer, "lingebot_math_render.png")],
+                                            view=self)
+            image_buffer.close()
+        else:
+            await itx.response.edit_message(content=text,
+                                            embed=self.__generate_embed(False),
+                                            attachments=[],
+                                            view=self)
 
     async def tutorial(self, itx: discord.Interaction) -> None:
         """Odeslat zpávy popisující jak počítat příklady z vybrané kategorie."""
