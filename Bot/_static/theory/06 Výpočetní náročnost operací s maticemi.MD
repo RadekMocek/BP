@@ -1,5 +1,9 @@
 # Výpočetnı́ náročnost operacı́ s maticemi
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 6\. přednáška z lineární algebry: Výpočetnı́ náročnost maticových operacı́, Strassenův algoritmus
+
 ## Výpočty
 
 * Kalkulátory neobsahují paměť s tabulkami, to by zabíralo příliš mnoho místa
@@ -27,7 +31,7 @@
 
 * Násobení matice <i>m</i>×<i>n</i> _n_-složkovým vektorem
 * Při výpočtu každé složky vektoru se musí provést _n_ násobení a výsledný vektor má _m_ složek
-* ⟹ Náročnost je _m_ · _n_, stejně jako konstantní násobek matice
+* ⟹ Náročnost je _m_ · _n_, stejně jako konstantní násobek matice (sčítání je zadarmo)
 
 ## Násobenı́ matic
 
@@ -46,17 +50,17 @@
 ## Výpočet determinantu pomocí Gaussovy eliminace
 
 * Jsou-li už v matici nulami nahrazeny poddiagonální prvky v prvních (_n_ - _k_) sloupcích, pro vynulování prvků v prvním sloupci submatice <i>k</i>×<i>k</i> potřebujeme:
-  * Najít koeficienty, kterým budeme násobit prvky prvního řádku submatice → jedno dělení
+  * Najít koeficienty, kterými budeme násobit prvky prvního řádku submatice → jedno dělení
   * Zbývajících (_k_ - 1) prvků koeficientem vynásobit → (_k_ - 1) násobení
 * Celkem tedy _k_ operací na jeden řádek submatice a _k_(_k_ - 1) operací na všechny řádky (první řádek, kde hledáme koeficienty, nenulujeme)
 * Toto se musí provést pro všechny sloupce matice <i>n</i>×<i>n</i>
 * Ještě musíme přičíst (_n_ - 1) → počet násobení diagonálních prvků (pro výpočet determinantu)
 
 $$$render
-\sum_{k=1}^n\left(k(k-1)\right)+n-1=2\sum_{k=1}^n\left(\binom{k}{2}\right)+n-1=2\binom{n+1}{3}+n-1=\frac{1}{3}(n^3+2n-3)
+\sum_{k=1}^n\left\lbrack k(k-1)\right\rbrack+n-1=2\sum_{k=1}^n\left\lbrack\binom{k}{2}\right\rbrack+n-1=2\binom{n+1}{3}+n-1=\frac{1}{3}(n^3+2n-3)
 $$
 
-* Náročnost GEM bez výpočtu determinantu je pak 1/3(_n_<sup>3</sup> - _n_)
+* Náročnost GEM bez výpočtu determinantu je pak ⅓(_n_<sup>3</sup> - _n_)
 
 ## Výpočet inverzní matice pomocí Gaussovy-Jordanovy eliminace
 

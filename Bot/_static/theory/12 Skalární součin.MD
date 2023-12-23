@@ -1,15 +1,18 @@
 # Skalární součin
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 10\. přednáška z lineární algebry: Skalární součin, Ortogonalita
+
 ## Skalární součin
 
-* Je-li _V_=(_M_, ⊕, ⊗) vektorový prostor nad tělesem _T_ a je definováno zobrazení _M_ x _M_ → _T_ (značíme ⟨ ⋅ | ⋅ ⟩) s těmito vlastnostmi:
-    1. ⟨_u_|_v_ ⊕ _w_⟩ = ⟨_u_|_v_⟩ + ⟨_u_|_w_⟩
-    2. ⟨_u_|_α_ ⊗ _v_⟩ = _α_ ⋅ ⟨_u_|_v_⟩
-    3. ⟨_u_|_v_⟩ = ⟨_v_|_u_⟩
-        * Platí v reálných prostorech, v komplexních je prohození komplexně sdružené
-    4. ⟨_u_|_u_⟩ ≥ 0
-        * ⟨_u_|_u_⟩ = 0 ⟺ _u_ = _o_
-  * (pro ∀ _u_, _v_, _w_ ∈ _M_; ∀ _α_ ∈ _T_)
+* Je-li _V_=(_M_, ⊕, ⊗) vektorový prostor nad tělesem _T_ a je definováno zobrazení _M_ x _M_ → _T_ (značíme ⟨ ⋅ | ⋅ ⟩) s těmito vlastnostmi: ||(pro ∀ _u_, _v_, _w_ ∈ _M_; ∀ _α_ ∈ _T_)||
+  1. ⟨_u_|_v_ ⊕ _w_⟩ = ⟨_u_|_v_⟩ + ⟨_u_|_w_⟩
+  2. ⟨_u_|_α_ ⊗ _v_⟩ = _α_ ⋅ ⟨_u_|_v_⟩
+  3. ⟨_u_|_v_⟩ = ⟨_v_|_u_⟩
+     * Platí v reálných prostorech, v komplexních je prohození komplexně sdružené
+  4. ⟨_u_|_u_⟩ ≥ 0
+     * ⟨_u_|_u_⟩ = 0 ⟺ _u_ = _o_
 * nazveme hodnotu ⟨_u_|_v_⟩ skalární součin vektorů _u_ a _v_ a prostor _V_ nazveme unitární prostor (prostor se skalárním součinem)
 * V komplexních prostorech je skalární součin závislý na pořadí vektorů
 * Na prostorech _n_-tic čísel můžeme zavést skalární součin nejjednodušeji jako
@@ -36,7 +39,7 @@ $$
 * Na unitárním vektorovém prostoru zavádíme normu vektoru _u_ jako
 
 $$$render
-\||u\||=\sqrt{\langle u|u\rangle}
+\|u\|=\sqrt{\langle u|u\rangle}
 $$
 
   * \||_α_ ⊗ _u_\|| = |_α_| · \||_u_\||
@@ -79,7 +82,7 @@ $$
 
 $$$render
 0&=\langle f_i|g\rangle+\beta_i\langle f_i|f_i\rangle\\
-0&=\langle f_i|g\rangle+\beta_i||f_i||^2\\
-\beta_i&=-\frac{\langle f_i|g\rangle}{||f_i||^2}\\
-\tilde{f}_{n+1}&=g\bigoplus_{j=1}^n\left(-\frac{\langle f_j|g\rangle}{||f_j||^2}\otimes f_j\right)
+0&=\langle f_i|g\rangle+\beta_i\|f_i\|^2\\
+\beta_i&=-\frac{\langle f_i|g\rangle}{\|f_i\|^2}\\
+\tilde{f}_{n+1}&=g\bigoplus_{j=1}^n\left(-\frac{\langle f_j|g\rangle}{\|f_j\|^2}\otimes f_j\right)
 $$

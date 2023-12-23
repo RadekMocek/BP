@@ -1,5 +1,9 @@
 # Maticová reprezentace lineárnı́ho zobrazenı́
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 7\. přednáška z lineární algebry: Maticová reprezentace lineárního zobrazení
+
 ## Maticová reprezentace lineárního zobrazení
 
 * Cíl: Najít souřadnice vektoru _f(u)_ v bazi _F_, pokud známe souřadnice _u_ v bazi _E_
@@ -29,4 +33,4 @@
   * Identita v různých bazích je pak matice přechodu
 * Maticová reprezentace lineární kombinace lineárních zobrazení je lineární kombinací maticových reprezentací původních zobrazení (ve stejných bazích se stejnými koeficienty)
 * Maticová reprezentace složeného lineárního zobrazení je součinem maticových reprezentací jednotlivých zobrazení
-* Maticová reprezentace případného inverzního lineárního zobrazení je rovna inverzní matici reprezentující původní lineární zobrazení (v&nbsp;příslušných bazích obou prostorů)
+* Maticová reprezentace případného inverzního lineárního zobrazení je rovna inverzní matici reprezentující původní lineární zobrazení (v příslušných bazích obou prostorů)

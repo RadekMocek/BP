@@ -7,7 +7,7 @@ import discord
 
 import d_modules.permissions as permissions
 import utils.db_io as database
-from d_modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView
+from d_modules.common_modules import ConfirmButton, CustomExitButton, LingeBotView, MessageView
 from d_modules.database_commons import render_get_theme
 from d_modules.messages import delete_messages, send_messages, try_dm_user
 from utils.text_utils import raw_text_2_message_text
@@ -145,10 +145,20 @@ class TheoryThemeView(LingeBotView):
         return False
 
     async def next_subtheme(self, itx: discord.Interaction) -> None:
-        """Zobrazit následující podtéma aktuálně zvoleného tématu."""
+        """Zobrazit následující podtéma aktuálně zvoleného tématu,
+        nebo (pokud jsme na konci) ukončit a odeslat zprávu se selectem pro nové téma."""
         if self.subtheme_index < len(self.subtheme_names) - 1:
             self.subtheme_index += 1
-        await self.__switch_subtheme(itx)
+            await self.__switch_subtheme(itx)
+        else:
+            await itx.response.send_message("Zvolte si téma:")
+            await MessageView.attach_to_message(840,
+                                                await itx.original_response(),
+                                                itx.user,
+                                                [TheoryThemeSelect()],
+                                                "explain_btns")
+            await delete_messages(itx, self.subtheme_messages)
+            self.stop()
 
     async def previous_subtheme(self, itx: discord.Interaction) -> None:
         """Zobrazit předchozí podtéma aktuálně zvoleného tématu."""
@@ -188,10 +198,15 @@ class TheoryThemeView(LingeBotView):
             # Další zprávy už jsou normální zprávy do kanálu
             message_contents = self.__get_subtheme_messages(self.render_theme_name)
             new_messages.extend(await send_messages(itx, message_contents))
-            # Enable/disable tlačítek
+            # Enable/disable/... tlačítek
             self.previous_button.disabled = index == 0
-            self.next_button.disabled = index == len(self.subtheme_names) - 1
             self.save_button.disabled = False  # True pouze při "úvodní obrazovce", na kterou se nelze vrátit
+            if index == len(self.subtheme_names) - 1:
+                self.next_button.label = "Změnit téma"
+                self.next_button.emoji = "⤴️"
+            else:
+                self.next_button.label = "Další"
+                self.next_button.emoji = "➡️"
             # Aktualizovat Select s podtématy (aktuální podtéma předvybráno)
             for option in self.subtheme_select.options:
                 option.default = option.label == header

@@ -1,5 +1,9 @@
 # Determinant
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * Lineární algebra: Determinanty
+
 ## Determinant lineárního zobrazení
 
 * U (lineárního) endomorfismu _f_ patří vzory i obrazy do stejné množiny, můžeme je tedy navzájem porovnávat
@@ -12,12 +16,6 @@
   * Pro každou množinu vektorů _Ω_ je **_μ(f(Ω))_ = det(_f_) ⋅ _μ(Ω)_**
 * Determinant složeného zobrazení je součinem determinantů
   * det(_g(f)_) = det(_g_)⋅det(_f_)
-
-$$$render
-\mu(f(\Omega))&=n_s\cdot\mu(f(O))\\
-n_s&=\frac{\mu(\Omega)}{\mu(O)}\\
-\frac{\mu(f(\Omega))}{\mu(\Omega)}&=\frac{\mu(f(O))}{\mu(O)}
-$$
 
 ## Determinant matice
 

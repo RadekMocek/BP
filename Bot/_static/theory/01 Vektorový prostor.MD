@@ -1,5 +1,9 @@
 # Vektorový prostor
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 2\. přednáška z lineární algebry: Vektorový prostor, Podprostory, Příklady vektorových prostorů
+
 ## Vektorový prostor
 
 * Definujeme vektorový prostor _V_=(_M_, ⊕, ⊗) nad tělesem _T_
@@ -18,10 +22,10 @@
     * pro ∀ (_a_, _b_, _c_) ∈ _M_ × _M_ × _M_
   * `[A4]` **_a_ ⊕ _o_ = _a_**
     * Existence nulového vektoru
-    * pro ∃! _o_ ∈ _M_: ∀ _a_ ∈ _M_
+    * ∃! _o_ ∈ _M_ pro ∀ _a_ ∈ _M_
   * `[A5]` **_a_ ⊕ (-_a_) = _o_**
     * Existence opačného vektoru; výsledkem je nulový vektor, nikoliv skalár nula
-    * pro ∀ _a_ ∈ _M_ ∃ (-_a_) ∈ _M_
+    * ∃ (-_a_) ∈ _M_ pro ∀ _a_ ∈ _M_
   * `[N1]` **_D_(⊗) = _T_ × _M_**
     * Ke každému číslu a vektoru existuje příslušný násobek vektoru, který je také vektorem
   * `[N2]` **1 ⊗ _a_ = _a_**
@@ -71,7 +75,7 @@ $$
 * (_P_ ⊕ _Q_)(_x_) = (_aₙ + bₙ_) _xⁿ_ + (_aₙ₋₁ + bₙ₋₁_) _xⁿ⁻¹_ + ... + (_a₁ + b₁_) _x_ + (_a₀ + b₀_)
   * _P(x)_ = _aₙ xⁿ_ + _aₙ₋₁ xⁿ⁻¹_ + ... + _a₁ x_ + _a₀_
   * _Q(x)_ = _bₙ xⁿ_ + _bₙ₋₁ xⁿ⁻¹_ + ... + _b₁ x_ + _b₀_
-* (_α_ ⊗ _Q_)(_x_) = (_α_ ⋅ _aₙ_) _xⁿ_ + (_α_ ⋅ _aₙ₋₁_) _xⁿ⁻¹_ + ... + (_α_ ⋅ _a₁_) _x_ + (_α_ ⋅ _a₀_)
+* (_α_ ⊗ _P_)(_x_) = (_α_ ⋅ _aₙ_) _xⁿ_ + (_α_ ⋅ _aₙ₋₁_) _xⁿ⁻¹_ + ... + (_α_ ⋅ _a₁_) _x_ + (_α_ ⋅ _a₀_)
 * Omezení stupně není nutné
 
 ### Mnohočleny dvou proměnných
@@ -115,7 +119,8 @@ $$
 
 ### Rovnice
 
-* Rovnice _f(x)_ = _b_ → tvoří-li možné funkce na levé straně vektorový prostor s "přirozeně" zavedeným sčítáním a násobením, můžeme tyto operace zavést i pro celé rovnice
+* Rovnice _f(x)_ = _b_
+  * tvoří-li možné funkce na levé straně vektorový prostor s "přirozeně" zavedeným sčítáním a násobením, můžeme tyto operace zavést i pro celé rovnice
 * _R_ : _f(x)_ = _a_
 * _S_ : _g(x)_ = _b_
 * _R_ ⊕ _S_ = rovnice _f(x)_ ⊕ _g(x)_ = _a_ + _b_

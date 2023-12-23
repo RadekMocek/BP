@@ -1,5 +1,9 @@
 # Zobrazení
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * Vstupní přednáška z Úvodu do lineární algebry a DM: Zobrazení
+
 ## Definice zobrazení
 
 * Zobrazení _f_ z množiny _M_ do množiny _N_ je předpis, který každému prvku _m_ ∈ _M_ (vzor) přiřazuje nejvýše jeden prvek _n_ ∈ _N_ (obraz)
@@ -43,7 +47,7 @@
 ## Inverzní zobrazení
 
 * Je-li zobrazení _f_ : _M_ → _N_ prosté, pak zobrazení, které každému prvku _w_ ∈ _W(f)_ přiřazuje prvek _m_ ∈ _M_, kde platí _w_ = _f(m)_, nazveme zobrazením inverzním k _f_
-  * Značíme ho symbolem _f_ <sup>-1</sup> a píšeme _m_ = _f_ <sup>-1</sup>(_w_)
+  * Značíme ho jako _f_ <sup>-1</sup> a píšeme _m_ = _f_ <sup>-1</sup>(_w_)
 * Poté platí následující tvrzení:
   1. Je-li _f_ : _M_ → _N_, pak _f_ <sup>-1</sup> : _N_ → _M_
   2. _D(f <sup>-1</sup>)_ = _W(f)_

@@ -1,5 +1,9 @@
 # Lineárnı́ závislost vektorů
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 4\. přednáška z lineární algebry: Lineárnı́ závislost vektorů, Baze vektorového prostoru, Souřadnice vektoru v bazi
+
 ## Lineární závislost
 
 * Množina vektorů _A_ = {_a<sub>1</sub>_, _a<sub>2</sub>_, (...)} je lineárně závislá, pokud existuje vektor _a<sub>j</sub>_ ∈ _A_, který je lineární kombinací **ostatních** vektorů z _A_

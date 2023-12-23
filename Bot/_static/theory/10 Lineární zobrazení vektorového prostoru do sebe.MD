@@ -1,5 +1,9 @@
 # Lineárnı́ zobrazenı́ vektorového prostoru do sebe
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 8 a 9\. přednáška z lineární algebry: Lineárnı́ endomorfismy vektorových prostorů a vlastní čísla
+
 ## Lineární zobrazení vektorového prostoru do sebe
 
 * Pokud _U_=(_M_, ⊕, ⊗) je vektorový prostor, můžeme uvažovat i o zobrazeních z množiny _M_ znovu do množiny _M_

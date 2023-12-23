@@ -1,5 +1,9 @@
 # Čı́selné matice a operace s nimi
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 5\. přednáška z lineární algebry: Matice a jejich násobení vektory, Speciální matice, Inverzní matice
+
 ## Násobení matic
 
 * Matici <i>m<sub>1</sub></i>×<i>n<sub>1</sub></i> můžeme vynásobit maticí <i>m<sub>2</sub></i>×<i>n<sub>2</sub></i>, pokud <i>n<sub>1</sub></i> = <i>m<sub>2</sub></i>
@@ -36,20 +40,20 @@ $$
 * Gaussovské operace s řádky matice se dají chápat jako násobení eliminované matice speciální "gaussovskou" maticí _G_ **zleva**
 
 1. Výměna řádků _i_, _j_
-    * Matice _G_ je stejná jako jednotková matice, jen má prohozené řádky _i_ a _j_
-    * _g<sub>ij</sub>_ = _g<sub>ji</sub>_ = 1
-    * _g<sub>kk</sub>_ = 1 pro všechna _k_ kromě _k_ = _i_ a _k_ = _j_
+   * Matice _G_ je stejná jako jednotková matice, jen má prohozené řádky _i_ a _j_
+   * _g<sub>ij</sub>_ = _g<sub>ji</sub>_ = 1
+   * _g<sub>kk</sub>_ = 1 pro všechna _k_ kromě _k_ = _i_ a _k_ = _j_
 2. Vynásobení _i_-tého řádku číslem _α_
-    * Matice _G_ je stejná jako jednotková matice, na řádku _i_ je ale místo jedničky číslo _α_
-    * _g<sub>kk</sub>_ = 1 pro všechna _k_ kromě _k_ = _i_
-    * _g<sub>ii</sub>_ = _α_
+   * Matice _G_ je stejná jako jednotková matice, na řádku _i_ je ale místo jedničky číslo _α_
+   * _g<sub>kk</sub>_ = 1 pro všechna _k_ kromě _k_ = _i_
+   * _g<sub>ii</sub>_ = _α_
 3. Přičtení _α_-násobku _i_-tého řádku k _j_-tému řádku
-    * _g<sub>ji</sub>_ = _α_
-    * _g<sub>kk</sub>_ = 1
+   * _g<sub>ji</sub>_ = _α_
+   * _g<sub>kk</sub>_ = 1
 4. Vynechání _i_-tého řádku
-    * _G_ je matice s _n_-1 řádky a _n_ sloupci
-    * _g<sub>k,k</sub>_ = 1 pro všechna _k_ < _i_
-    * _g<sub>k,k+1</sub>_ = 1 pro všechna _k_ ≥ _i_
+   * _G_ je matice s _n_-1 řádky a _n_ sloupci
+   * _g<sub>k,k</sub>_ = 1 pro všechna _k_ < _i_
+   * _g<sub>k,k+1</sub>_ = 1 pro všechna _k_ ≥ _i_
 
 ## Jednotková matice
 

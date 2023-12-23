@@ -1,5 +1,9 @@
 # Soustavy lineárnı́ch rovnic
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 3\. přednáška z lineární algebry: Soustavy rovnic o _n_ neznámých a jejich řešení Gaussovou eliminací
+
 ## Rovnice s _n_ neznámými
 
 * _f(x<sub>1</sub>, x<sub>2</sub>, ..., x<sub>n</sub>)_ = _b_

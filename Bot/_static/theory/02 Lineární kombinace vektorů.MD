@@ -1,5 +1,11 @@
 # Lineárnı́ kombinace vektorů
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 1\. přednáška z lineární algebry: Gaussova eliminační metoda
+    * 2\. přednáška z lineární algebry: Lineární kombinace vektorů
+    * 3\. přednáška z lineární algebry: Lineární obal množiny
+
 ## Lineární kombinace vektorů
 
 _b_ = _α<sub>1</sub>_ ⊗ _a<sub>1</sub>_ ⊕ _α<sub>2</sub>_ ⊗ _a<sub>2</sub>_ ⊕ · · · ⊕ _α<sub>n</sub>_ ⊗ _a<sub>n</sub>_

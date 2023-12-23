@@ -18,7 +18,7 @@ class Theory(commands.Cog):
         """Otevřít rozhraní pro výklad teorie."""
         permissions.command(itx, "explain")
         await itx.response.send_message("Zvolte si téma:")
-        await MessageView.attach_to_message(180,
+        await MessageView.attach_to_message(840,
                                             await itx.original_response(),
                                             itx.user,
                                             [TheoryThemeSelect()],

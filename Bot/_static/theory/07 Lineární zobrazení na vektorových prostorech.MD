@@ -1,5 +1,9 @@
 # Lineárnı́ zobrazenı́ na vektorových prostorech
 
+* Zdroje:
+  * [RNDr. Zdeněk Kalousek CSc.](https://kma.fp.tul.cz/?view=article&id=600&catid=147)
+    * 6\. přednáška z lineární algebry: Lineární zobrazení a jejich vlastnosti
+
 ## Lineární zobrazení
 
 * Jsou-li _U_=(_M_, ⊕<sub>u</sub>, ⊗<sub>u</sub>), _V_=(_N_, ⊕<sub>v</sub>, ⊗<sub>v</sub>) vektorové prostory nad tělesem _T_ a _f_ zobrazení _M_ → _N_, řekneme, že zobrazení _f_ je lineární, pokud platí:
@@ -41,7 +45,7 @@
 
 ## Linearita lineární kombinace
 
-* Lineární kombinace lineárních zobrazení je lineární zobrazení (vše nad stejným tělesem)
+* Lineární kombinace lineárních zobrazení je lineární zobrazení (vše musí být nad stejným tělesem)
 
 ## Linearita složeného zobrazení
 
