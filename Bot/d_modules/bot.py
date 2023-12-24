@@ -11,6 +11,7 @@ from utils.file_io import json_read
 __config = json_read("config.json")
 TOKEN = __config["token"]  # Botův ověřovací token pro komunikaci s Discord API
 TEST_GUILD = discord.Object(id=__config["test_guild_id"])  # Id testovacího serveru
+EMAIL = __config["email"]
 
 
 class LingeBot(commands.Bot):

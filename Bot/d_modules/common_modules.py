@@ -42,6 +42,16 @@ class CustomExitButton(discord.ui.Button):
         await self.view.exit(itx)
 
 
+class UrlGitBookButton(discord.ui.Button):
+    def __init__(self) -> None:
+        super().__init__(label="GitBook", url="https://lingebot.gitbook.io/lingebot-napoveda/")
+
+
+class UrlGitHubButton(discord.ui.Button):
+    def __init__(self) -> None:
+        super().__init__(label="GitHub", url="https://github.com/RadekMocek/BP/issues")
+
+
 # endregion
 
 # region Common Modals
