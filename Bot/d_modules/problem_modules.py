@@ -156,7 +156,9 @@ class ProblemView(LingeBotView):
     async def select_problem(self, itx: discord.Interaction, problem_name: str) -> None:
         """Zvolit kategorii příkladů."""
         self.problem_name = problem_name
-        # Získat si obsah pro Jak počítat?, pokud nějaký existuje; případný enable tlačítka
+        # Je pro toto téma generování příkladů k dispozici? -> enable/disable tlačítka
+        self.generate_button.disabled = not self.problem_manager.can_generate_problem(self.problem_name)  # FIXME
+        # Získat si obsah pro "Jak počítat?", pokud nějaký existuje; případný enable tlačítka
         tutorial_text = get_problem_tutorial(self.problem_name)
         if tutorial_text:
             self.tutorial_text = tutorial_text

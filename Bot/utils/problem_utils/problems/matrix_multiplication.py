@@ -16,6 +16,5 @@ class Problem(GeneralProblem):
         mx1 = np.random.randint(low=-5, high=12, size=(dim1, dim23))
         mx2 = np.random.randint(low=-5, high=12, size=(dim23, dim4))
         mx3 = mx1 @ mx2
-        self.task = (f"Vynásobte matice:"
-                     f"$$${mx(mx1)}\\cdot{mx(mx2)}=?")
+        self.task = f"Vynásobte matice:$$${mx(mx1)}\\cdot{mx(mx2)}=?"
         self.answer = f"{self.task[:-1]}{mx(mx3)}"

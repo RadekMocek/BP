@@ -2,6 +2,7 @@
 
 import pathlib
 import random
+import re
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -53,15 +54,41 @@ def random_det1_33_matrix(values: list[int]) -> sp.Matrix:
     return mx1 * mx2
 
 
-def sympy_matrices_2_string(matrices: list[sp.Matrix]) -> str:
+def sympy_matrix_pretty(mx: sp.Matrix, vertical_line_index: int = 0) -> str:
+    pretty = sp.pretty(mx)
+    if vertical_line_index >= 0:
+        return pretty
+    pretty_lines = pretty.split("\n")
+    pattern = re.compile(r"\S(\s)")
+    min_index = len(pretty)
+    for line in pretty_lines:
+        rev = line[::-1][1:]
+        matches = [x.start(1) for x in pattern.finditer(rev)]
+        if not matches:
+            continue
+        index = len(rev) - matches[-vertical_line_index - 1] - 1
+        if index < min_index:
+            min_index = index
+    return "\n".join([x[:min_index] + "⎥" + x[min_index:] for x in pretty_lines])
+
+
+def sympy_matrices_2_string(matrices: list[sp.Matrix], vertical_line_index: int = 0) -> str:
     n_matrices = len(matrices)
-    lines = ["", "", "", "", ""]
+    lines = []
+    first_iter = True
     for matrix_index, matrix in enumerate(matrices):
-        pretty = sp.pretty(matrix)
+        pretty = sympy_matrix_pretty(matrix, vertical_line_index)
         mx_lines = pretty.split("\n")
         for mx_line_index, mx_line in enumerate(mx_lines):
-            space = " ~ ... ~ " if mx_line_index == 2 and matrix_index < n_matrices - 1 else "         "
-            lines[mx_line_index] += mx_line + space
+            if mx_line_index == int(len(mx_lines) / 2) and matrix_index < n_matrices - 1:
+                space = " ~ ... ~ "
+            else:
+                space = "         "
+            if first_iter:
+                lines.append(mx_line + space)
+            else:
+                lines[mx_line_index] += mx_line + space
+        first_iter = False
     result = "".join([f"{x}\n" for x in lines])
     return result
 
@@ -75,6 +102,9 @@ class GeneralProblem(ABC):
 
     def get_answer(self) -> str:
         return self.answer
+
+    def can_generate_problem(self) -> bool:
+        return True
 
     @abstractmethod
     def generate_problem(self) -> None:

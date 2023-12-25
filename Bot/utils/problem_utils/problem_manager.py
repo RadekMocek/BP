@@ -10,13 +10,18 @@ class ProblemManager:
             matrix_multiplication.Problem(),
             gauss_jordan.Problem(),
             inverse_matrix.Problem(),
-            eigen.Problem()
+            eigen.Problem(),
+            gram_schmidt.Problem()
         ]
         self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
 
     def get_problems_list(self) -> list[str]:
         """:return: List názvů všech dostupných kategorií příkladů."""
         return list(self.problems.keys())
+
+    def can_generate_problem(self, problem_name: str) -> bool:
+        """:return: Je pro tuto kategorii k dispozici generování příkladů?"""
+        return self.problems[problem_name].can_generate_problem()
 
     def generate_problem(self, problem_name: str) -> tuple[str, str]:
         """:return: Vygenerovaný příklad a řešení příkladu z vybrané kategorie."""
