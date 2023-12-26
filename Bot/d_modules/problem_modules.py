@@ -157,7 +157,7 @@ class ProblemView(LingeBotView):
         """Zvolit kategorii příkladů."""
         self.problem_name = problem_name
         # Je pro toto téma generování příkladů k dispozici? -> enable/disable tlačítka
-        self.generate_button.disabled = not self.problem_manager.can_generate_problem(self.problem_name)  # FIXME
+        self.generate_button.disabled = not self.problem_manager.can_generate_problem(self.problem_name)
         # Získat si obsah pro "Jak počítat?", pokud nějaký existuje; případný enable tlačítka
         tutorial_text = get_problem_tutorial(self.problem_name)
         if tutorial_text:
@@ -168,8 +168,6 @@ class ProblemView(LingeBotView):
         # Aktualizovat Select s kategoriemi (aktuální kategorie předvybrána)
         for option in self.problem_select.options:
             option.default = option.label == problem_name
-        # Enable tlačítka pro generaci příkladů v dané kategorii
-        self.generate_button.disabled = False
         await itx.response.edit_message(embed=self.__generate_embed(True), view=self)
 
     async def generate(self, itx: discord.Interaction) -> None:

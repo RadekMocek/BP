@@ -27,6 +27,7 @@ class Other(commands.Cog):
         """Zobrazit nápovědu."""
         embed_message = discord.Embed(title="Nápověda", description=f"""
         LingeBot je bot zaměřený na výklad a příklady z lineární algebry a vznikl jako součást BP na FM TUL
+        
         ### Dostupné příkazy
         `/explain ` – Otevřít rozhraní pro výklad teorie
         `/generate` – Otevřít rozhraní pro příklady
@@ -37,13 +38,15 @@ class Other(commands.Cog):
         `/ping ` – Ověřit dostupnost bota
         
         `/setup` – Nastavení pro administrátory (viz podrobná nápověda)
+        
         ### Podrobná nápověda
         Kompletní nápověda se nachází na [GitBook](https://lingebot.gitbook.io/lingebot-napoveda/)
+        
         ### Zpětná vazba
         Jedním z bodů mé práce je také __**vyhodnotit zpětnou vazbu od uživatelů**__
         
-        Pokud budete bota používat,
-        pošlete mi pak prosím svoje dojmy na `{EMAIL}`
+        Pokud budete bota používat, pošlete mi pak prosím
+        své dojmy (chválu/dotazy/problémy/nedostatky/...) na `{EMAIL}`
         
         Přání a stížnosti lze také směřovat na [GitHub Issues](https://github.com/RadekMocek/BP/issues)
         

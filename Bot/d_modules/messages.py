@@ -6,7 +6,7 @@ from typing import Union
 
 import discord
 
-__DELAY_DURATION = 0.1
+__DELAY_DURATION = 0.15
 
 
 async def send_messages(itx: discord.Interaction,
