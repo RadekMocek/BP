@@ -3,5 +3,6 @@ __all__ = [
     "gauss_jordan",
     "inverse_matrix",
     "eigen",
+    "determinant",
     "gram_schmidt"
 ]

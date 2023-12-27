@@ -11,6 +11,7 @@ class ProblemManager:
             gauss_jordan.Problem(),
             inverse_matrix.Problem(),
             eigen.Problem(),
+            determinant.Problem(),
             gram_schmidt.Problem()
         ]
         self.problems: dict[str, GeneralProblem] = {str(x): x for x in problems_list}
