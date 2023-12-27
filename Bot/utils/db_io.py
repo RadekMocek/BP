@@ -70,8 +70,9 @@ def lingemod_get_role_id(gid: int) -> int:
 
 
 def permissions_get_all(gid: int) -> Any:
+    """:return: Řádek tabulky permissions kde id serveru == gid; None pokud záznam neexistuje"""
     cursor.execute(f"SELECT * FROM permissions WHERE id=?", (gid,))
-    return cursor.fetchone()[1:]
+    return cursor.fetchone()
 
 
 def permissions_get_one(gid: int, action: ActionLiteral) -> int:

@@ -101,10 +101,15 @@ def set_view_interaction_permission(gid: int,
 
 
 def get_permissions_info(gid: int) -> str:
-    permission_numbers = database.permissions_get_all(gid)
-    if not permission_numbers:
+    """:return: Formátovaný řetězec informující o nastavení oprávnění na daném serveru"""
+    permission_numbers = database.permissions_get_all(gid)  # Získat si oprávnění z SQLite databáze
+    if not permission_numbers:  # Pokud v tabulce záznam není, server používá výchozí nastavení oprávnění
         permission_numbers = tuple(database.DEFAULT_PERMISSIONS.values())
+    else:  # Pokud jsme dostali záznam z databáze, zahodit první sloupec s guild id
+        permission_numbers = permission_numbers[1:]
+    # Přiřadit k číslům oprávnění názvy akcí, ke kterým se vztahují; tuple tuplů (action: str, permission: int)
     permission_tuples = tuple(zip(database.DEFAULT_PERMISSIONS.keys(), permission_numbers))
+    # Formátovaný výpis
     result = "".join([
         f"{__permission_info_optional_newline(x[0])}{x[0].ljust(15)}\t{__int_2_permission(x)}\n"
         for x in permission_tuples
@@ -113,13 +118,20 @@ def get_permissions_info(gid: int) -> str:
 
 
 def __permission_info_optional_newline(permission_name: str) -> str:
+    """Pomocná metoda pro formátovaný výpis oprávnění; má být před dalším řádkem přidán řádek prázdný?"""
+    # Pokud další řádek končí na "_btns", pak se vztahuje k tomu nad ním
     if permission_name[-5:] == "_btns":
         return ""
+    # jinak se jedná o novou kategorii akcí, kterou oddělíme od té předchozí prázdným řádkem
     return "\n"
 
 
 def __int_2_permission(permission_tuple: tuple[str, int]) -> str:
-    name, number = permission_tuple
+    """
+    :param permission_tuple: Tuple (action: str, permission: int)
+    :return: Pojmenování pro dané oprávnění, které je na vstupu vyjádřené číslem
+    """
+    name, number = permission_tuple  # Podle jména akce se rozhodne, zdali se jedná o příkaz nebo interakci s View
     if name in get_args(database.ActionCommandLiteral):
         return __INT_2_COMMAND[number]
     else:
