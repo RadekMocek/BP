@@ -14,7 +14,7 @@ def list_themes() -> list[str]:
     """:return: List dostupných teoretických témat. Co téma, to markdown soubor."""
     global __files
     __files = {}
-    for theme in __THEORY_FILES_PATH.glob("*.MD"):
+    for theme in sorted(__THEORY_FILES_PATH.glob("*.MD")):
         __files[theme.name[:-3]] = theme.name
     return list(__files.keys())
 
