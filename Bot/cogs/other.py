@@ -62,7 +62,7 @@ class Other(commands.Cog):
     async def ping(self, itx: discord.Interaction) -> None:
         """Ověřit dostupnost bota."""
         ljust_amount = 7
-        rjust_amount = 16
+        rjust_amount = 17
         embed_message = discord.Embed(title="Pong!", description=(
             f"```Prodleva         {round(self.bot.latency * 1000)} ms```"
             f"```Uptime           {self.bot.get_uptime()}```"

@@ -36,10 +36,13 @@ async def delete_messages(itx: discord.Interaction, messages: list[discord.Messa
     """Smazat zprávy."""
     if not itx.response.is_done():
         await itx.response.defer()
-    # ???: channel.delete_messages() dělá problémy, občas nic nesmaže
-    # if self.guild:
-    #     await itx.channel.delete_messages(self.subtheme_messages)
-    # else:  # 'DMChannel' object has no attribute 'delete_messages'
+
+    # ???: channel.delete_messages() dělá problémy a občas nic nesmaže
+    # ???: klasické mazání po jednom zavolané po něm pak taky nefunguje
+    # if itx.guild:  # 'DMChannel' object has no attribute 'delete_messages'
+    #     await itx.channel.delete_messages(messages)
+
+    # V přímých zprávách je nutné zprávy mazat po jednom, (na serveru taky kvůli problémům s channel.delete_messages())
     delay = len(messages) > 5
     for old_message in messages:
         try:
