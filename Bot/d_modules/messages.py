@@ -53,18 +53,20 @@ async def delete_messages(itx: discord.Interaction, messages: list[discord.Messa
             pass  # Zpráva již byla smazána
 
 
-async def try_dm_user(itx: discord.Interaction, message: str) -> bool:
+async def try_dm_user(itx: discord.Interaction, message: str, defer: bool = True) -> bool:
     """Zkusit uživateli odeslat přímou zprávu. Pokud má uživatel zakázané přímé zprávy od
     členů serveru, informovat jej o tom ephemeral zprávou v kanále, kde vznikla interakce."""
-    if not itx.response.is_done():
+    if defer and not itx.response.is_done():
         await itx.response.defer()
     # Můžeme uživateli posílat přímé zprávy?
-    try:
+    try:  # Pokusit se odeslat zprávu
         await itx.user.send(message)
-    except discord.Forbidden:
-        await itx.followup.send(
-            content="Nemáte povolené přímé zprávy od členů tohoto serveru.\n"
-                    "`Right click na ikonu serveru → Nastavení soukromí → Přímé zprávy`",
-            ephemeral=True)
+    except discord.Forbidden:  # Pokud se zprávu nepodařilo odeslat, informovat o tom uživatele a vrátit False
+        content = ("Nemáte povolené přímé zprávy od členů tohoto serveru.\n"
+                   "`Right click na ikonu serveru → Nastavení soukromí → Přímé zprávy`")
+        if defer:
+            await itx.followup.send(content=content, ephemeral=True)
+        else:
+            await itx.response.send_message(content=content, ephemeral=True)
         return False
-    return True
+    return True  # Jinak vrátit True

@@ -10,6 +10,7 @@ from discord.ext import commands
 import d_modules.permissions as permissions
 from d_modules.bot import EMAIL, LingeBot
 from d_modules.common_modules import MessageView, UrlGitBookButton, UrlGitHubButton
+from d_modules.messages import try_dm_user
 
 
 class Other(commands.Cog):
@@ -18,9 +19,15 @@ class Other(commands.Cog):
 
     @app_commands.command()
     async def clear(self, itx: discord.Interaction) -> None:
-        """Poslat dlouhou prázdnou zprávu (admin only)."""
+        """Poslat dlouhou prázdnou zprávu (admin/DM only)."""
         permissions.command(itx, "clear")
         await itx.response.send_message("⠀\n" * 45)
+
+    @app_commands.command()
+    async def dm(self, itx: discord.Interaction) -> None:
+        """Zahájit konverzaci v přímých zprávách."""
+        if await try_dm_user(itx, "Zdravíčko!", False):
+            await itx.response.send_message(content="Konverzace v DMs úspěšně zahájena.", ephemeral=True)
 
     @app_commands.command()
     async def help(self, itx: discord.Interaction) -> None:
@@ -34,6 +41,7 @@ class Other(commands.Cog):
         `/render  ` – Vykreslit matematický výraz
         
         `/clear` – Pročistit chat (poslat dlouhou prázdnou zprávu)
+        `/dm   ` – Zahájit konverzaci v přímých zprávách
         `/help ` – Zobrazit tuto nápovědu
         `/ping ` – Ověřit dostupnost bota
         

@@ -41,6 +41,7 @@ class LingeBot(commands.Bot):
                 await self.load_extension(f"cogs.{filename[:-3]}")
                 print(f"{filename} načteno.")
         # Synchronizovat slash commands na testovacím serveru
+        # ???
         # self.tree.clear_commands(guild=TEST_GUILD)
         # await self.tree.sync(guild=TEST_GUILD)
 
