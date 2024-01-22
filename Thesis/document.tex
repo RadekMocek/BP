@@ -1,0 +1,103 @@
+% !TEX TS-program = xelatex
+
+% Inicializace tulthesis
+\documentclass[FM]{tulthesis}
+% Typografie pro češtinu; xelatex alternativa pro babel
+\usepackage{polyglossia}
+\setdefaultlanguage{czech}
+% Automatické pevné mezery
+\usepackage{xevlna}
+
+% Pro seznam použité literatury
+\usepackage[backend=biber, style=iso-numeric]{biblatex}
+\addbibresource{zdroje.bib}
+
+% Titulní strana
+\TULtitle{Tvorba a využití botu pro výuku matematiky na platformě Discord}{Creating and using a bot for teaching mathematics on the Discord platform}
+\TULprogramme{B0613A140005}{Informační technologie}{Information technology}
+%\TULbranch{B0613A140005AI}{Aplikovaná informatika}{Applied Informatics}
+\TULauthor{Radek Mocek}
+\TULsupervisor{Ing.  Igor Kopetschke}
+\TULyear{2024}
+
+% Začátek dokumentu
+\begin{document}
+	% Prohlášení
+	\ThesisStart{male}
+	
+	% Poděkování
+	\begin{acknowledgement}
+		Děkuji
+	\end{acknowledgement}
+	
+	% Abstrakt česky
+	\begin{abstractCZ}
+		Abstrakt česky
+	\end{abstractCZ}
+	
+	% Klíčová slova česky
+	\begin{keywordsCZ}
+		Klíčová slova česky
+	\end{keywordsCZ}
+	\vspace{2cm}
+	
+	% Abstrakt anglicky
+	\begin{abstractEN}
+		Abstrakt anglicky
+	\end{abstractEN}
+	
+	% Klíčová slova anglicky
+	\begin{keywordsEN}
+		Klíčová slova anglicky
+	\end{keywordsEN}
+	
+	% Obsah
+	\tableofcontents
+	
+	% Seznam obrázků
+	\listoffigures
+	
+	% Seznam tabulek
+	%\listoftables
+	
+	\clearpage
+	
+	% Zkratky
+	\begin{abbrList}
+		\textbf{zkratka} & význam zkratky \\
+	\end{abbrList}
+	
+	% Začátek hlavního textu
+	
+	% 1. Vypracujte rešerši sociálních platforem, které umožňují integraci botů.
+	% 2. Analyzujte vybranou skupinu existujících botů na platformě Discord a knihoven pro jejich tvorbu.
+	% 3. Navrhněte bot zaměřený na výklad a příklady z lineární algebry při využití specifických funkcí Discordu včetně administrace a interaktivních zpráv.
+	% 4. Navržené řešení implementujte a nasaďte do testovacího provozu pro vybranou skupinu uživatelů.
+	% 5. Vyhodnoďte zpětnou vazbu od uživatelů a navrhněte případné úpravy a vylepšení.
+	
+	\chapter{Úvod}
+	
+	Úvod.
+	
+	\chapter{Boti na sociálních platformách}
+	
+	\chapter{Platforma Discord}
+	
+	\chapter{Tvorba Discord bota}
+	
+	\section{Návrh}
+	
+	\section{Implementace}
+	
+	\section{Zhodnocení}
+	
+	\chapter{Závěr}
+	
+	Závěr.
+	
+	% Zdroje
+	\chapter*{Seznam použité literatury}
+	\addcontentsline{toc}{chapter}{Seznam použité literatury}
+	\printbibliography[heading=none]
+	
+\end{document}
