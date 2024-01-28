@@ -65,7 +65,9 @@
 	% Zkratky
 	\begin{abbrList}
 		\textbf{API} & application programming interface \\
+		\textbf{SDK} & software development kit \\
 		\textbf{VoIP} & Voice over Internet Protocol \\
+		\textbf{UI} & user interface \\
 	\end{abbrList}
 	
 	% Začátek hlavního textu
@@ -92,16 +94,27 @@
 	
 	Z populárních a hojně používaných platforem se Discordu vzhledově i funkčně nejvíce podobá program Slack. Ten byl spuštěn již v roce 2013 a od té doby si vybudoval reputaci jako standard pro komunikaci v technologických společnostech. \cite{lit3}
 	
-	Slack se prezentuje jako software usnadňující interní komunikaci v nějaké organizaci a dal by se nazvat jako \quotedblbase Discord pro firmy\textquotedblleft\,. Tomu odpovídá i zdejší výběr tzv. aplikací (\textit{Apps}), které se podobají zkoumaným botům. Tyto aplikace %typy obvyklých apps; jak je tvořit; pricing
+	Slack se prezentuje jako software usnadňující interní komunikaci v nějaké organizaci a dal by se nazvat jako \quotedblbase Discord pro firmy\textquotedblleft\,. Tomu odpovídá i zdejší výběr tzv. aplikací (\textit{Apps}), které se podobají zkoumaným botům. Tyto aplikace se zaměřují především na zvýšení produktivity, teambuilding, nebo integraci již existující služby třetí strany do prostředí Slacku.
 	
-	% Legacy boti https://api.slack.com/legacy/enabling-bot-users#limitations https://api.slack.com/legacy/custom-integrations/bot-users
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/SlackApps}
+		\caption{Doporučené Slack aplikace}
+	\end{figure}
+	
+	Stejně jako uživatelé mohou Slack aplikace spravovat konverzace a odesílat do nich textové zprávy. % TODO https://api.slack.com/start/apps
+	
+	Zorientovat se v procesu tvorby Slack aplikací nemusí být jednoduché. Tyto aplikace se totiž dělí na klasické (\textit{classic}) a nové (zvané \textit{modern} nebo \textit{next-generation}, představené v roce 2021), jejichž API se liší. Ani slovo bot není ve Slack ekosystému jednoznačné. U klasických aplikací se jedná o jejich speciální typ, se kterým je komunikace vedena běžnou řečí namísto příkazů nebo UI (chatbot). Tento bot je označen jako \textit{legacy} a v budoucnu pravděpodobně nebude podporován. U nového typu aplikací se z pohledu uživatele slovo bot nikde nevyskytuje (maximálně v názvu nějaké aplikace), z dokumentace je ale zjevné, že se (stejně jako u Discordu) jedná o speciálního uživatele ovládaného danou aplikací, tato informace však není nikde explicitně zmíněna. Při práci s dokumentací nebo neoficiálními návody je tedy nutné dávat pozor na to, s jakou technologií daný manuál pracuje, protože může dojít ke snadné záměně výše zmíněných pojmů.
+	
+	Klasické Slack aplikace lze vyvíjet v řadě komunitních knihoven a musí být hostovány na vlastním serveru. \textit{Next-generation apps} pak mají připravené oficiální SDK a o hosting se stará přímo Slack, pro jejich vývoj a následné nasazení je ale nutné mít Slack ve placené verzi.
 	
 	% https://revolt.chat/
-	% https://element.io/
+	% https://matrix.org/
 	% https://www.guilded.gg/
-	% Teamspeak ?
-	% https://www.proofhub.com/articles/discord-alternatives etc
-	% Top sociální platformy
+	% Teams
+	% flock
+	% rocket.chat
+	% FB Messenger
 	
 	\chapter{Boti na platformě Discord}
 	
