@@ -89,7 +89,7 @@
 	Discord je vcelku obtížné zařadit do jedné konkrétní kategorie softwaru. Dokud se nově zaregistrovaný uživatel nepřipojí na žádný server, pak se Discord chová jako VoIP a instant messaging aplikace, kde lze komunikovat pouze s lidmi, které si uživatel přidá do přátel. Po připojení na nějaký veřejný Discord server se ale aplikace přibližuje ke kategorii sociálních médií, kdy uživatel může sdílet a konzumovat obsah v rámci moderované komunity. Pojem sociální platforma je zde tedy myšlen spíše jako zastřešující termín pro Discord a jemu podobné aplikace, u nichž o zařazení do této kapitoly především rozhodovalo, zdali nějakým způsobem podporují integraci botů.
 	
 	Uživatelé sociálních médií často vnímají pojem bot negativně, jelikož se mezi boty mimo jiné řadí i programy generující spam nebo umělou návštěvnost za účelem zkreslení statistik \cite{lit_Discord}. Na platformách zkoumaných v této kapitole je ale bot speciální typ uživatele, jehož chování je automatizované a určené programem. Tento bot je obvykle přidán do skupinové konverzace, kde pak za pomoci volání API dané platformy dokáže provádět stejné akce jako běžný uživatel. Jedná se například o odesílání zpráv a čtení jejich obsahu, moderaci členů serveru, nebo i připojení do hlasového hovoru. Nemusí se jednat o chatbota, který se snaží imitovat lidské chování. Bot obvykle reaguje na předem danou sadu příkazů vykonáním nějaké činnosti.
-	
+	% TODO (?) Bot hosting, (ne)knihovny
 	\section{Discord}
 	
 	Platforma Discord vznikla v roce 2015 jako reakce na nedostatky tehdejších služeb pro online komunikaci mezi hráči videoher \cite{lit_Discord}. S nabývající popularitou se ale na Discordu začaly objevovat veřejné komunity zaměřené i na jiná témata, než ta herní. Často se jedná o oficiálně vytvořené servery náležící k nějakému produktu, které slouží jako diskuzní fórum a propagace zároveň. Momentálně je například největší komunitou (podle počtu členů) server Midjourney, který patří ke stejnojmennému nástroji pro tvorbu obrázků pomocí umělé inteligence. Uživatelé zde mohou o nástroji diskutovat, hlásit chyby, sdílet vytvořené obrázky, nebo je nechat generovat pomocí Midjourney bota.
@@ -136,15 +136,19 @@
 	
 	\section{Guilded a Revolt}
 	
-	Guilded.gg a Revolt.chat jsou platformy, které jsou přímo inspirované Discordem a podobnost mezi nimi je nepřehlédnutelná. Ekosystém uživatelů, přímých zpráv, serverů a botů je u těchto tří platforem takřka identický. Guilded ani Revolt nemají ekvivalent k podpůrným příkazům. Boti tedy musí kontrolovat obsah každé odeslané zprávy na serveru, jestli neobsahuje nějaký z jejich příkazů. Každý bot má obvykle svůj prefix (např. vykřičník) a problém nastává, když má více botů stejný prefix a příkaz se stejným názvem (např. po napsání \quotedblbase!help\textquotedblleft\ do chatu zobrazí svou nápovědu všichni boti)\footnote{Tímto způsobem se před představením podpůrných příkazů ovládali i boti na Discordu. Problém stejných příkazů se řešil buď víceznakovými prefixy (menší šance na kolizi), nebo nastavitelným prefixem (to vyžaduje nějaké úložiště uchovávající dvojice id serveru a prefix). Tento starý typ příkazů lze stále používat např. pro příkazy, které chce vývojář skrýt před běžnými uživateli (tyto příkazy se neobjeví v našeptávači).}. Obě platformy mají oproti Discordu znatelně menší uživatelskou základnu a počet jejich veřejných botů se pohybuje v řádu desítek.
+	Guilded a Revolt jsou platformy, které jsou přímo inspirované Discordem a podobnost mezi nimi je nepřehlédnutelná. Ekosystém uživatelů, přímých zpráv, serverů a botů je u těchto tří platforem takřka identický. Guilded ani Revolt nemají ekvivalent k podpůrným příkazům. Boti tedy musí kontrolovat obsah každé odeslané zprávy na serveru, jestli neobsahuje nějaký z jejich příkazů. Každý bot má obvykle svůj prefix (např. vykřičník) a problém nastává, když má více botů stejný prefix a příkaz se stejným názvem (např. po napsání \quotedblbase!help\textquotedblleft\ do chatu zobrazí svou nápovědu všichni takoví boti)\footnote{Tímto způsobem se před představením podpůrných příkazů ovládali i boti na Discordu. Problém stejných příkazů se řešil buď víceznakovými prefixy (menší šance na kolizi), nebo nastavitelným prefixem (to vyžaduje nějaké úložiště uchovávající dvojice id serveru a prefix). Tento starý typ příkazů lze stále používat např. pro příkazy, které chce vývojář skrýt před běžnými uživateli (tyto příkazy se neobjeví v našeptávači).}. Obě platformy mají oproti Discordu znatelně menší uživatelskou základnu a počet jejich veřejných botů se pohybuje v řádu desítek.
 	
-	Guilded ... \cite{web_guilded}
+	Guilded (2017) lze považovat za konkurenci Discordu, která se zaměřuje na jeho původní účel. Tím je komunikace pro hráče videoher. Guilded přidává funkcionalitu pro pořádání pravidelných událostí a speciální funkce po propojení účtu s vybranými herními tituly. Licence je proprietární a program je zdarma. Administrátoři ale mohou na svém serveru zapnout dobrovolné měsíční předplatné, ze kterého je část odváděna Guilded. Pro tvorbu botů lze využít komunitních knihoven. \cite{web_guilded}
 	
-	Revolt ...
+	Revolt (2021) je Discord alternativa s otevřeným zdrojovým kódem. Oproti konkurenci nemá Revolt žádné speciální funkce, díky tomu je ale méně komplikovaný. Kromě řady komunitních knihoven pro tvorbu botů je k dispozici i oficiální revolt.js. Tato knihovna byla vytvořena tak, aby do ní šel snadno migrovat bot napsaný pomocí knihovny discord.js.
 	
 	\section{Další platformy}
+	
+	Tato sekce obsahuje\dots
+	
+	Matrix je otevřený protokol pro šifrovanou komunikaci po síti.
+	
 	% [Základní popis/Historie, (FEATURES)], [kompatibilita, pricing, licence], [BOTI]
-	% https://matrix.org/
 	% Teams
 	% flock
 	% rocket.chat
