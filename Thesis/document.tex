@@ -86,15 +86,17 @@
 	
 	Tato kapitola představuje Discord a některé další sociální platformy, které přímo podporují tvorbu a integraci botů. Nejdříve je ale nutné upřesnit, jak jsou v tomto kontextu myšleny výrazy \textit{sociální platforma} a \textit{bot}.
 	
-	Discord je vcelku obtížné zařadit do jedné konkrétní kategorie softwaru. Dokud se nově zaregistrovaný uživatel nepřipojí na žádný server, pak se Discord chová jako VoIP a instant messaging aplikace, kde lze komunikovat pouze s lidmi, které si uživatel přidá do přátel. Po připojení na nějaký veřejný Discord server se ale aplikace přibližuje ke kategorii sociálních médií, kdy uživatel může sdílet a konzumovat obsah v rámci moderované komunity. Pojem sociální platforma je zde tedy myšlen spíše jako zastřešující termín pro Discord a jemu podobné aplikace, u nichž o zařazení do této kapitoly především rozhodovalo, zdali nějakým způsobem podporují integraci botů.
+	Discord je vcelku obtížné zařadit do jedné konkrétní kategorie softwaru. Dokud se nově zaregistrovaný uživatel nepřipojí na žádný server, pak se Discord chová jako VoIP a instant messaging aplikace, kde lze komunikovat pouze s lidmi, které si uživatel přidá do přátel. Po připojení na nějaký veřejný Discord server se ale aplikace přibližuje ke kategorii sociálních médií, kdy uživatel může sdílet a konzumovat obsah v rámci moderované komunity. Pojem sociální platforma je zde tedy myšlen spíše jako zastřešující termín pro Discord a jemu podobné aplikace, u nichž o zařazení do této kapitoly především rozhodovalo, zdali nějakým způsobem podporují integraci botů. Společnou vlastností níže zmíněných platforem je také to, že všechny mají k dispozici aplikace pro web, desktop a mobilní zařízení.
 	
 	Uživatelé sociálních médií často vnímají pojem bot negativně, jelikož se mezi boty mimo jiné řadí i programy generující spam nebo umělou návštěvnost za účelem zkreslení statistik \cite{lit_Discord}. Na platformách zkoumaných v této kapitole je ale bot speciální typ uživatele, jehož chování je automatizované a určené programem. Tento bot je obvykle přidán do skupinové konverzace, kde pak za pomoci volání API dané platformy dokáže provádět stejné akce jako běžný uživatel. Jedná se například o odesílání zpráv a čtení jejich obsahu, moderaci členů serveru, nebo i připojení do hlasového hovoru. Nemusí se jednat o chatbota, který se snaží imitovat lidské chování. Bot obvykle reaguje na předem danou sadu příkazů vykonáním nějaké činnosti.
-	% TODO (?) Bot hosting, (ne)knihovny
+		
+	Aby byl bot online a funkční, musí být program, který definuje jeho chování, neustále spuštěný. O tohle se zkoumané platformy zpravidla nestarají, a proto je nutné mít program spuštěný na vlastním serveru nebo využít hosting třetí strany. Tento program pak komunikuje s danou platformou (např. pomocí protokolu \mbox{WebSocket}). Komunikace může být velmi komplexní, proto vznikají komunitní i oficiální knihovny, které tvorbu bota značně usnadňují.
+	
 	\section{Discord}
 	
 	Platforma Discord vznikla v roce 2015 jako reakce na nedostatky tehdejších služeb pro online komunikaci mezi hráči videoher \cite{lit_Discord}. S nabývající popularitou se ale na Discordu začaly objevovat veřejné komunity zaměřené i na jiná témata, než ta herní. Často se jedná o oficiálně vytvořené servery náležící k nějakému produktu, které slouží jako diskuzní fórum a propagace zároveň. Momentálně je například největší komunitou (podle počtu členů) server Midjourney, který patří ke stejnojmennému nástroji pro tvorbu obrázků pomocí umělé inteligence. Uživatelé zde mohou o nástroji diskutovat, hlásit chyby, sdílet vytvořené obrázky, nebo je nechat generovat pomocí Midjourney bota.
 	
-	Discord lze používat ve webovém prohlížeči, nebo jsou k dispozici aplikace pro počítače a mobilní zařízení. Základní verze je zdarma s možností měsíčního předplatného \textit{Discord Nitro}. Předplatitelé mají navíc k dispozici kosmetické prvky (např. vlastní emotikony nebo animovaný avatar) a některé základní funkce jsou pro ně vylepšeny (např. nahrávání větších souborů nebo streamování videa ve vyšším rozlišení). Licence Discordu je proprietární.	
+	Základní verze Discordu je zdarma s možností měsíčního předplatného \textit{Discord Nitro}. Předplatitelé mají navíc k dispozici kosmetické prvky (např. vlastní emotikony nebo animovaný avatar) a některé základní funkce jsou pro ně vylepšeny (např. nahrávání větších souborů nebo streamování videa ve vyšším rozlišení).	
 
 	Program disponuje obvyklou instant messaging a VoIP funkcionalitou. V tzv. přímých zprávách si mezi sebou uživatelé mohou posílat textové zprávy a soubory. Dále je k dispozici hlasová komunikace s případným sdílením obrazovky nebo videa z webkamery. Tyto akce lze provádět i v soukromých skupinách, které ale mají omezený počet deseti uživatelů. Textové zprávy lze formátovat pomocí Markdown (např. tučný text, nadpisy, seznamy, zdrojové kódy se zvýrazněním klíčových slov).
 	
@@ -120,7 +122,7 @@
 	
 	Slack se prezentuje jako software usnadňující interní komunikaci v nějaké organizaci a dal by se nazvat jako \quotedblbase Discord pro firmy\textquotedblleft\,. Namísto serverů jsou zde tzv. workspaces. Workspace má své členy a textové kanály, ve kterých lze zahájit i hlasová komunikace. Členové jednoho workspace si mezi sebou mohou posílat přímé zprávy a pomocí funkce \textit{Slack Connect} je možné komunikovat i s lidmi z jiného workspace. Na rozdíl od Discordu, kde jsou přímé zprávy kompletně oddělené od ekosystému serverů, se zde všechny prováděné akce dějí uvnitř nějakého workspace.
 	
-	Stejně jako Discord lze Slack používat na webu, desktopu a mobilních zařízeních. Licence je také proprietární. K dispozici je několik verzí měsíčního předplatného a verze zdarma je značně omezena. V bezplatné verzi nelze např. zobrazit zprávy starší než 90 dnů a provozovat hlasovou komunikaci ve více než dvou lidech. Omezené je i použití tzv. aplikací.
+	Slack má k dispozici několik úrovní měsíčního předplatného a verze zdarma je značně omezena. V bezplatné verzi nelze např. zobrazit zprávy starší než 90 dnů a provozovat hlasovou komunikaci ve více než dvou lidech. Omezené je i použití tzv. aplikací.
 	
 	Zdejší aplikace (\textit{Apps}) se podobají zkoumaným botům a jejich výběr odpovídá cílové skupině Slacku. Zaměřují se především na zvýšení produktivity, teambuilding, nebo integraci již existující služby třetí strany do prostředí Slacku. Stejně jako uživatelé mohou Slack aplikace spravovat konverzace a odesílat do nich textové zprávy. Ovládání aplikací probíhá buď pomocí příkazů začínajících lomítkem, nebo má každá aplikace svou domovskou stránku a může také generovat vyskakovací okna. Aplikací odeslané zprávy, její domovská stránka a vyskakovací okna mohou obsahovat širokou škálu interaktivních prvků (tlačítko, zaškrtávací pole, výběr data a času apod.).
 	
@@ -132,27 +134,40 @@
 	
 	Zorientovat se v procesu tvorby Slack aplikací nemusí být jednoduché. Tyto aplikace se totiž dělí na klasické (\textit{classic}) a nové (zvané \textit{modern} nebo \textit{next-generation}, představené v roce 2021), jejichž API se liší. Ani slovo bot není ve Slack ekosystému jednoznačné. U klasických aplikací se jedná o jejich speciální typ, se kterým je komunikace vedena běžnou řečí namísto příkazů nebo UI (chatbot). Tento bot je označen jako \textit{legacy} a v budoucnu pravděpodobně nebude podporován. U nového typu aplikací se z pohledu uživatele slovo bot nikde nevyskytuje (maximálně v názvu nějaké aplikace), z dokumentace je ale zjevné, že se (stejně jako u Discordu) jedná o speciálního uživatele ovládaného danou aplikací, tato informace však není nikde explicitně zmíněna. Při práci s dokumentací nebo neoficiálními návody je tedy nutné dávat pozor na to, s jakou technologií daný manuál pracuje, protože může dojít ke snadné záměně výše zmíněných pojmů.
 	
-	Klasické Slack aplikace lze vyvíjet v řadě komunitních knihoven a musí být hostovány na vlastním serveru. \textit{Next-generation apps} pak mají připravené oficiální \mbox{TypeScript} SDK a o hosting se stará přímo Slack, pro jejich vývoj a následné nasazení je ale nutné mít placenou verzi Slacku.
+	Klasické Slack aplikace lze vyvíjet v řadě komunitních knihoven. \textit{Next-generation apps} pak mají připravené oficiální \mbox{TypeScript} SDK a o hosting se stará přímo Slack, pro jejich vývoj a následné nasazení je ale nutné mít placenou verzi Slacku.
 	
 	\section{Guilded a Revolt}
 	
 	Guilded a Revolt jsou platformy, které jsou přímo inspirované Discordem a podobnost mezi nimi je nepřehlédnutelná. Ekosystém uživatelů, přímých zpráv, serverů a botů je u těchto tří platforem takřka identický. Guilded ani Revolt nemají ekvivalent k podpůrným příkazům. Boti tedy musí kontrolovat obsah každé odeslané zprávy na serveru, jestli neobsahuje nějaký z jejich příkazů. Každý bot má obvykle svůj prefix (např. vykřičník) a problém nastává, když má více botů stejný prefix a příkaz se stejným názvem (např. po napsání \quotedblbase!help\textquotedblleft\ do chatu zobrazí svou nápovědu všichni takoví boti)\footnote{Tímto způsobem se před představením podpůrných příkazů ovládali i boti na Discordu. Problém stejných příkazů se řešil buď víceznakovými prefixy (menší šance na kolizi), nebo nastavitelným prefixem (to vyžaduje nějaké úložiště uchovávající dvojice id serveru a prefix). Tento starý typ příkazů lze stále používat např. pro příkazy, které chce vývojář skrýt před běžnými uživateli (tyto příkazy se neobjeví v našeptávači).}. Obě platformy mají oproti Discordu znatelně menší uživatelskou základnu a počet jejich veřejných botů se pohybuje v řádu desítek.
 	
-	Guilded (2017) lze považovat za konkurenci Discordu, která se zaměřuje na jeho původní účel. Tím je komunikace pro hráče videoher. Guilded přidává funkcionalitu pro pořádání pravidelných událostí a speciální funkce po propojení účtu s vybranými herními tituly. Licence je proprietární a program je zdarma. Administrátoři ale mohou na svém serveru zapnout dobrovolné měsíční předplatné, ze kterého je část odváděna Guilded. Pro tvorbu botů lze využít komunitních knihoven. \cite{web_guilded}
+	Guilded (2017) lze považovat za konkurenci Discordu, která se zaměřuje na jeho původní účel. Tím je komunikace pro hráče videoher. Guilded přidává funkcionalitu pro pořádání pravidelných událostí a speciální funkce po propojení účtu s vybranými herními tituly. Program je zdarma, ale správci mohou na svém serveru zapnout dobrovolné měsíční předplatné, ze kterého je část odváděna Guilded. Pro tvorbu botů lze využít komunitních knihoven. \cite{web_guilded}
 	
 	Revolt (2021) je Discord alternativa s otevřeným zdrojovým kódem. Oproti konkurenci nemá Revolt žádné speciální funkce, díky tomu je ale méně komplikovaný. Kromě řady komunitních knihoven pro tvorbu botů je k dispozici i oficiální revolt.js. Tato knihovna byla vytvořena tak, aby do ní šel snadno migrovat bot napsaný pomocí knihovny discord.js.
-	
+	% [Základní popis/Historie, (FEATURES)], [kompatibilita, pricing, licence], [BOTI]
 	\section{Další platformy}
 	
-	Tato sekce obsahuje\dots
+	Do této sekce byly zařazeny platformy, které\dots%todo
 	
-	Matrix je otevřený protokol pro šifrovanou komunikaci po síti.
+	\subsection{Matrix}
 	
-	% [Základní popis/Historie, (FEATURES)], [kompatibilita, pricing, licence], [BOTI]
-	% Teams
-	% flock
-	% rocket.chat
-	% FB Messenger
+	Matrix je otevřený protokol pro šifrovanou a decentralizovanou komunikaci po síti. Existuje pro něj několik klientských aplikací (např. Element) a poskytovatelů, nebo je možné protokol provozovat na vlastním serveru. Komunikace zde probíhá v tzv. místnostech. Místnost je jeden textový kanál s možností zahájení hlasové komunikace, který může být soukromý i veřejný. Pak jsou zde tzv. prostory, které jsou v podstatě jen spravované seznamy různých místností. Podle dokumentace jsou prostory podobné Discord serverům nebo Slack workspaces, avšak zde připojení do prostoru uživatele automaticky nepřipojí do všech místností (uživatel si může vybrat, kam se připojí) a místnosti nejsou na prostorech závislé (místnost může existovat bez prostoru, může ale být i součástí více prostorů). Matrix umožňuje komunikaci uživatelů s různými poskytovateli tohoto protokolu ve stejné místnosti.
+	
+	Bot zde není speciálním typem uživatele, ale je pro něj zaregistrován běžný uživatelský účet. Program s logikou bota tedy může ovládat jakýkoliv účet (pokud má jeho přihlašovací token)\footnote{V terminologii Discordu se běžné uživatelské účty řízené programem nazývají \textit{self-bots} a jejich provoz porušuje podmínky používání.}. Pro tvorbu takovýchto botů je připraveno oficiální \mbox{TypeScript} SDK. Veřejných botů pro Matrix není mnoho, mezi populární boty ale patří i boti modulární, do nichž mohou ostatní vývojáři přidávat vlastní funkcionalitu.
+	
+	Specifickou vlastností Matrixu jsou mosty (\textit{bridges}). Ty umožňují propojit místnost s nějakou jinou platformou (např. Discord, Slack nebo Messenger). Chat z platformy třetí strany by se pak měl zrcadlit s vybranou místností. Uživatelé z jiné platformy mají v Matrix místnosti svou reprezentaci zvanou \textit{ghost}. Pokud to daná platforma podporuje, tak v jejím ekvivalentu místnosti budou uživatelé ze strany Matrixu reprezentováni jako tzv. \textit{puppets}. \cite{doc_Matrix}
+	
+	\subsection{Microsoft Teams}
+	
+	Microsoft Teams je, stejně jako Slack, platforma zaměřená především na firemní komunikaci.%todo
+	
+	\subsection{Flock}
+	
+	Flock je platforma zaměřující se na firemní komunikaci, která podle jejich webu nabízí oproti konkurenčním platformám Slack a Teams více funkcí za méně peněz. Některá jejich tvrzení o konkurenčních platformách jsou ale zavádějící nebo přímo nepravdivá.
+	%todo
+	
+	\subsection{Rocket.Chat}
+	
+	\subsection{Facebook Messenger}	
 	
 	\chapter{Matematika na platformě Discord}	
 		
