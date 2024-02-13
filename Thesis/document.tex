@@ -7,6 +7,8 @@
 \setdefaultlanguage{czech}
 % Automatické pevné mezery
 \usepackage{xevlna}
+% Zabránění vdov a sirotků
+\usepackage[all]{nowidow}
 
 % Pro seznam použité literatury
 \usepackage[backend=biber, style=iso-numeric]{biblatex}
@@ -17,7 +19,7 @@
 \TULprogramme{B0613A140005}{Informační technologie}{Information technology}
 %\TULbranch{B0613A140005AI}{Aplikovaná informatika}{Applied Informatics}
 \TULauthor{Radek Mocek}
-\TULsupervisor{Ing.  Igor Kopetschke}
+\TULsupervisor{Ing. Igor Kopetschke}
 \TULyear{2024}
 
 % Začátek dokumentu
@@ -92,6 +94,8 @@
 		
 	Aby byl bot online a funkční, musí být program, který definuje jeho chování, neustále spuštěný. O tohle se zkoumané platformy zpravidla nestarají, a proto je nutné mít program spuštěný na vlastním serveru nebo využít hosting třetí strany. Tento program pak komunikuje s danou platformou (např. pomocí protokolu \mbox{WebSocket}). Komunikace může být velmi komplexní, proto vznikají komunitní i oficiální knihovny, které tvorbu bota značně usnadňují.
 	
+	Účet pro bota může být založen v rozhraní pro vývojáře (např. \textit{Discord Developer Portal}), kde je následně vygenerován jeho ověřovací token. Ten se pak používá při komunikaci programu s platformou a měl by zůstat tajný, jinak může dojít k tzv. odcizení bota. To znamená, že někdo jiný použije svůj vlastní program společně s uniklým tokenem pro předefinování chování bota, k jehož účtu daný token náleží.
+	
 	\section{Discord}
 	
 	Platforma Discord vznikla v roce 2015 jako reakce na nedostatky tehdejších služeb pro online komunikaci mezi hráči videoher \cite{lit_Discord}. S nabývající popularitou se ale na Discordu začaly objevovat veřejné komunity zaměřené i na jiná témata, než ta herní. Často se jedná o oficiálně vytvořené servery náležící k nějakému produktu, které slouží jako diskuzní fórum a propagace zároveň. Momentálně je například největší komunitou (podle počtu členů) server Midjourney, který patří ke stejnojmennému nástroji pro tvorbu obrázků pomocí umělé inteligence. Uživatelé zde mohou o nástroji diskutovat, hlásit chyby, sdílet vytvořené obrázky, nebo je nechat generovat použitím Midjourney bota.
@@ -112,9 +116,9 @@
 		\caption{Discord: Uživatelské rozhraní a použití bota}
 	\end{figure}
 	
-	Boti tedy operují především na serverech, kam jsou pozváni přes svůj speciální odkaz (\textit{bot invite link}), lze je ale používat i v přímých zprávách. Bot se sice tváří jako uživatel, do přátel ho ale přidat nelze a pro zahájení přímé konverzace je nutné s ním nejdříve mít nějaký společný server. Bota nelze přidat do soukromé skupiny. 
+	Boti tedy operují především na serverech\footnote{Boty lze ale používat i v přímých zprávách. Bot se sice tváří jako uživatel, do přátel ho ale přidat nelze a pro zahájení přímé konverzace je nutné s ním nejdříve mít nějaký společný server. Bota nelze přidat do soukromé skupiny.} a existuje několik možností, jak je na nějaký server pozvat. Na konci roku 2022 byl do Discordu přidán tzv. adresář aplikací (\textit{App Directory}), který momentálně obsahuje seznam více než 5500 dostupných botů, kde každý z nich má svou stránku s podrobnějším popisem a tlačítkem pro přidání na server. Aby byl bot v tomto adresáři obsažen, musí nejprve projít schvalovacím procesem, a proto se jich zde nachází pouze zlomek ze všech existujících. Každý bot pak má svůj speciální zvací odkaz (\textit{bot invite link}) a existuje několik neoficiálních databází (např. \href{https://top.gg}{top.gg}), které opět obsahují seznam botů s jejich popisem a zvacím odkazem. Poslední možností jsou boti s otevřeným zdrojovým kódem, které si uživatel stáhne a spustí na vlastním stroji. Tento způsob vyžaduje botu založit účet a vygenerovat token.
 	
-	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu YouTube. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty poskytující jednoduché hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem.
+	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu YouTube. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty poskytující \mbox{jednoduché} hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem. % mbox je zde použit, protože bylo slovo rozděleno na konci stránky
 	
 	\section{Slack}
 	
@@ -140,7 +144,9 @@
 	
 	Guilded a Revolt jsou platformy, které jsou přímo inspirované Discordem a podobnost mezi nimi je nepřehlédnutelná. Ekosystém uživatelů, přímých zpráv, serverů a botů je u těchto tří platforem takřka identický. Guilded ani Revolt nemají ekvivalent k podpůrným příkazům. Boti tedy musí kontrolovat obsah každé odeslané zprávy na serveru, jestli neobsahuje nějaký z jejich příkazů. Každý bot má obvykle svůj prefix (např. vykřičník) a problém nastává, když má více botů stejný prefix a příkaz se stejným názvem (např. po napsání \quotedblbase!help\textquotedblleft\ do chatu zobrazí svou nápovědu všichni takoví boti)\footnote{Tímto způsobem se před představením podpůrných příkazů ovládali i boti na Discordu. Problém stejných příkazů se řešil buď víceznakovými prefixy (menší šance na kolizi), nebo nastavitelným prefixem (to vyžaduje nějaké úložiště uchovávající dvojice id serveru a prefix). Tento starý typ příkazů lze stále používat např. pro příkazy, které chce vývojář skrýt před běžnými uživateli (tyto příkazy se neobjeví v našeptávači).}. Obě platformy mají oproti Discordu znatelně menší uživatelskou základnu a počet jejich veřejných botů se pohybuje v řádu desítek.
 	
-	Guilded (2017) lze považovat za konkurenci Discordu, která se zaměřuje na jeho původní účel. Tím je komunikace pro hráče videoher. Guilded přidává funkcionalitu pro pořádání pravidelných událostí a speciální funkce po propojení účtu s vybranými herními tituly. Program je zdarma, ale správci mohou na svém serveru zapnout dobrovolné měsíční předplatné, ze kterého je část odváděna Guilded. Pro tvorbu botů lze využít komunitních knihoven. \cite{web_guilded}
+	Guilded (2017) lze považovat za konkurenci Discordu, která se zaměřuje na jeho původní účel. Tím je komunikace pro hráče videoher. Guilded přidává funkcionalitu pro pořádání pravidelných událostí a speciální funkce po propojení účtu s vybranými herními tituly. \cite{web_guilded} 
+	
+	Program je zdarma, ale správci mohou na svém serveru zapnout dobrovolné měsíční předplatné, ze kterého je část odváděna Guilded. Pro tvorbu botů lze využít komunitních knihoven.
 	
 	Revolt (2021) je Discord alternativa s otevřeným zdrojovým kódem. Oproti konkurenci nemá Revolt žádné speciální funkce, díky tomu je ale méně komplikovaný. Kromě řady komunitních knihoven pro tvorbu botů je k dispozici i oficiální revolt.js. Tato knihovna byla vytvořena tak, aby do ní šel snadno migrovat bot napsaný v knihovně discord.js.
 	
@@ -152,7 +158,7 @@
 	
 	Matrix je otevřený protokol pro šifrovanou a decentralizovanou komunikaci po síti. Existuje pro něj několik klientských aplikací (např. Element) a poskytovatelů (např. matrix.org). Protokol je také možné provozovat na vlastním serveru. Komunikace zde probíhá v tzv. místnostech. Místnost je jeden textový kanál s možností zahájení hlasového hovoru, který může být soukromý i veřejný. Pak jsou zde tzv. prostory, které jsou v podstatě jen spravované seznamy různých místností. Podle dokumentace jsou prostory podobné Discord serverům nebo Slack workspaces, avšak zde připojení do prostoru uživatele automaticky nepřipojí do všech místností (uživatel si může vybrat, kam se připojí) a místnosti nejsou na prostorech závislé (místnost může existovat bez prostoru, může ale být i součástí více prostorů). Matrix podporuje komunikaci uživatelů s různými poskytovateli tohoto protokolu ve stejné místnosti.
 	
-	Bot zde není speciálním typem uživatele, ale je pro něj zaregistrován běžný uživatelský účet. Program s logikou bota tedy může ovládat jakýkoliv účet (pokud zná jeho přihlašovací token)\footnote{V terminologii Discordu se běžné uživatelské účty řízené programem nazývají \textit{self-bots} a jejich provoz porušuje podmínky používání.}. Pro tvorbu takovýchto botů je připraveno oficiální \mbox{TypeScript} SDK. Veřejných botů pro Matrix není mnoho, mezi populární boty ale patří i boti modulární, do nichž mohou ostatní vývojáři přidávat vlastní funkcionalitu.
+	Bot zde není speciálním typem uživatele, ale je pro něj zaregistrován běžný uživatelský účet. Program s logikou bota tedy může ovládat jakýkoliv účet (pokud zná jeho přístupový token)\footnote{V terminologii Discordu se běžné uživatelské účty řízené programem nazývají \textit{self-bots} a jejich provoz porušuje podmínky používání.}. Pro tvorbu takovýchto botů je připraveno oficiální \mbox{TypeScript} SDK. Veřejných botů pro Matrix není mnoho, mezi populární boty ale patří i boti modulární, do nichž mohou ostatní vývojáři přidávat vlastní funkcionalitu.
 	
 	Specifickou vlastností Matrixu jsou mosty (\textit{bridges}). Ty umožňují propojit místnost s nějakou jinou platformou (např. Discord, Slack nebo Messenger). Chat z platformy třetí strany by se pak měl zrcadlit s vybranou místností. Uživatelé z jiné platformy mají v Matrix místnosti svou reprezentaci zvanou \textit{ghost}. Pokud to daná platforma podporuje, tak v jejím ekvivalentu místnosti budou uživatelé ze strany Matrixu reprezentováni jako tzv. \textit{puppets}. \cite{doc_Matrix}
 	
@@ -178,14 +184,33 @@
 	
 	Mattermost nemá žádnou knihovnu pro tvorbu botů, veškerou logiku komunikace s jejich API tedy musí zajistit vývojář bota. Pro Rocket.Chat je možné vyvíjet boty v oficiálním JavaScript SDK, nebo je vytvořit v grafickém rozhraní na platformě Botpress. Zulip má pro vývoj botů k dispozici oficiální Python knihovnu.
 		
-	\chapter{Matematika na platformě Discord}	
-		
-	% Discord není na matiku dělaný
-	% Kde hledat Discord boty ?
-	% TeX rendering
-	% Kalkulkačky
-	% AI chatbot
-		
+	\chapter{Matematika na platformě Discord}
+	
+	Ačkoliv nebyl Discord vytvořen pro účely výuky a nemá žádné speciální matematické nástroje, \textit{vzdělávání} je jednou z pěti hlavních kategorií veřejných Discord serverů a patří do ní i servery specializované na matematiku. \textit{Mathematics} je nejpopulárnější server s tímto zaměřením, na kterém mohou uživatelé diskutovat a řešit matematické problémy různých úrovní vzdělání.
+	
+	Na serveru je také automatický systém přiřazování textových kanálů uživatelům s konkrétním matematickým problémem. Ostatní uživatelé se v daném kanále mohou pokusit zadaný problém vyřešit. Jakmile je zadavatelova otázka zodpovězena, textový kanál se může použít pro problém dalšího uživatele. O logiku přiřazování kanálů se stará místní bot.
+	
+	Matematicky zaměřených Discord botů není mnoho. V oficiálním adresáři aplikací nebyl během rešerše nalezen žádný. V neoficiálních databázích pak sice bylo nalezeno několik desítek botů, kteří se podle popisu alespoň částečně zabývají matematikou, velká část z nich ale byla offline a neměla k dispozici zdrojový kód. Otestováno bylo tedy nakonec 11 botů, které lze rozdělit do dvou kategorií.
+	
+	\section{Bot vykreslující matematické výrazy}
+
+	Jelikož Discord nemá žádnou podporu pro vykreslování matematických výrazů, což je v textové konverzaci ohledně matematiky velmi užitečné, existuje hned několik botů s touto funkcionalitou. Konkrétně vykreslení umožňuje 5 z 11 testovaných botů 
+
+	% Discord neumí vykreslovat tex
+	% bot render == latex syntax -> obrázek
+	% bot render na příkaz nebo automaticky, případně změna theme
+	% JS – KaTeX nebo MathJax
+	% Py – matplotlib, local latex, api
+	
+	\section{Bot jako kalkulačka}
+	
+	% Hodně příkazů nebo jeden eval
+	% grafy
+	% wolfram etc
+	% jeden bot uměl generovat příklady a úlohy
+	
+	% \section{DAS} ?
+	
 	\chapter{Tvorba Discord bota}
 	
 	\section{Prostředky pro tvorbu}
