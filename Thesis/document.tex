@@ -9,6 +9,10 @@
 \usepackage{xevlna}
 % Zabránění vdov a sirotků
 \usepackage[all]{nowidow}
+% Snížit šanci na rozdělení posledního slova odstavce
+\finalhyphendemerits=200000
+% Umožňuje vytvářet tabulky s vlastními footnotes
+\usepackage{threeparttable}
 
 % Pro seznam použité literatury
 \usepackage[backend=biber, style=iso-numeric]{biblatex}
@@ -60,7 +64,7 @@
 	\listoffigures
 	
 	% Seznam tabulek
-	%\listoftables
+	\listoftables
 	
 	\clearpage
 	
@@ -118,7 +122,7 @@
 	
 	Boti tedy operují především na serverech\footnote{Boty lze ale používat i v přímých zprávách. Bot se sice tváří jako uživatel, do přátel ho ale přidat nelze a pro zahájení přímé konverzace je nutné s ním nejdříve mít nějaký společný server. Bota nelze přidat do soukromé skupiny.} a existuje několik možností, jak je na nějaký server pozvat. Na konci roku 2022 byl do Discordu přidán tzv. adresář aplikací (\textit{App Directory}), který momentálně obsahuje seznam více než 5500 dostupných botů, kde každý z nich má svou stránku s podrobnějším popisem a tlačítkem pro přidání na server. Aby byl bot v tomto adresáři obsažen, musí nejprve projít schvalovacím procesem, a proto se jich zde nachází pouze zlomek ze všech existujících. Každý bot pak má svůj speciální zvací odkaz (\textit{bot invite link}) a existuje několik neoficiálních databází (např. \href{https://top.gg}{top.gg}), které opět obsahují seznam botů s jejich popisem a zvacím odkazem. Poslední možností jsou boti s otevřeným zdrojovým kódem, které si uživatel stáhne a spustí na vlastním stroji. Tento způsob vyžaduje botu založit účet a vygenerovat token.
 	
-	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu YouTube. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty poskytující \mbox{jednoduché} hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem. % mbox je zde použit, protože bylo slovo rozděleno na konci stránky
+	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu \mbox{YouTube}. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty \mbox{poskytující} \mbox{jednoduché} hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem. % mbox je zde použit, protože bylo slovo rozděleno na konci stránky
 	
 	\section{Slack}
 	
@@ -190,24 +194,30 @@
 	
 	Na serveru je také automatický systém přiřazování textových kanálů uživatelům s konkrétním matematickým problémem. Ostatní uživatelé se v daném kanále mohou pokusit zadaný problém vyřešit. Jakmile je zadavatelova otázka zodpovězena, textový kanál se může použít pro problém dalšího uživatele. O logiku přiřazování kanálů se stará místní bot.
 	
-	Matematicky zaměřených Discord botů není mnoho. V oficiálním adresáři aplikací nebyl během rešerše nalezen žádný. V neoficiálních databázích pak sice bylo nalezeno několik desítek botů, kteří se podle popisu alespoň částečně zabývají matematikou, velká část z nich ale byla offline a neměla k dispozici zdrojový kód. Otestováno bylo tedy nakonec 11 botů, které lze rozdělit do dvou kategorií.
+	Matematicky zaměřených Discord botů není mnoho. V oficiálním adresáři aplikací nebyl během rešerše nalezen žádný. V neoficiálních databázích pak sice bylo nalezeno několik desítek botů, kteří se podle popisu alespoň částečně zabývají matematikou, velká část z nich ale byla offline a neměla k dispozici zdrojový kód. Otestováno bylo tedy nakonec 11 botů, které lze zařadit do dvou kategorií.
 	
 	\section{Bot vykreslující matematické výrazy}
 
-	Jelikož Discord nemá žádnou podporu pro vykreslování matematických výrazů, což je v textové konverzaci ohledně matematiky velmi užitečné, existuje hned několik botů s touto funkcionalitou. Konkrétně vykreslení umožňuje 5 z 11 testovaných botů 
-
-	% Discord neumí vykreslovat tex
-	% bot render == latex syntax -> obrázek
-	% bot render na příkaz nebo automaticky, případně změna theme
-	% JS – KaTeX nebo MathJax
-	% Py – matplotlib, local latex, api
+	Jelikož Discord nemá žádnou podporu pro vykreslování matematických výrazů, což je v textové konverzaci ohledně matematiky velmi užitečné, existuje hned několik botů s touto funkcionalitou. Konkrétně vykreslení umožňuje 5 z 11 testovaných botů. K popisu výrazu se ve všech případech používá TeX syntax, ve které je zadán vstupní parametr vykreslovacího příkazu. Bot pak podle parametru vygeneruje obrázek s matematickým výrazem a odešle ho do textového kanálu, kde byl příkaz zadán.
+	
+	Dva zkoumaní boti mají možnost zapnout automatické vykreslování: Jakmile jakákoliv odeslaná zpráva na serveru obsahuje dvakrát symbol dolaru, bot celou tuto zprávu vykreslí do obrázku a text mezi dolary nahradí matematickým zápisem (obrázek \ref{_tag_img_autotex}). Tři boti pak umožňují změnit barevné schéma generovaných obrázků. Je vhodné, aby tyto obrázky neměly průhledné pozadí, jinak by např. uživatelé používající světlý motiv Discordu nemohli přečíst text v obrázcích s bílým fontem (na průhledném pozadí).
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/AutoTeX}
+		\caption{Automatické vykreslení matematického výrazu}
+		\label{_tag_img_autotex}
+	\end{figure}
+	
+	U botů psaných v jazyce JavaScript lze pro implementaci této funkcionality využít knihovny KaTeX nebo MathJax. V jazyce Python to pak umožňuje Matplotlib. Tento balík sám o sobě ale neumí vykreslovat složitější prvky jako např. matice. K tomu je potřeba, aby na stroji, kde je bot spuštěn, byla nainstalována LaTeX distribuce, která se pak použije namísto výchozího Matplotlib vykreslování. Další možností nezávislou na použitém jazyku či knihovně je využít pro vykreslení nějakou externí službu.
 	
 	\section{Bot jako kalkulačka}
 	
-	% Hodně příkazů nebo jeden eval
-	% grafy
-	% wolfram etc
-	% jeden bot uměl generovat příklady a úlohy
+	Celkem devět otestovaných botů má jeden nebo více příkazů pro výpočet jednoduchých příkladů. V lepším případě se jedná o jeden příkaz (typu \textit{vypočti}), kterému se jako vstupní parametr zadá příklad s různými operacemi (včetně závorek, goniometrických funkcí apod.) a výstupem je výsledek celého výrazu. Velmi nepraktickou variantou jsou pak boti se sadou příkazů pro různé operace (typu \textit{sečti}, \textit{vynásob}, \dots), kde vstupem je několik čísel.
+	
+	Kromě výpočtu numerických příkladů se také objevují příkazy např. pro úpravy výrazů, derivace apod. Sedm botů pak dokáže vygenerovat obrázek s jednoduchým grafem dle zadaného předpisu. Dva boti umí zadat uživatelův vstup do služby Wolfram Alpha a do chatu odeslat její výstup.
+	
+	Jeden bot dokáže generovat náhodné příklady, jedná se ale pouze o čtyři základní binární operace. Tedy např. $x+y$, kde $x$ a $y$ jsou v rozmezí 1 až 99. Bot postupně generuje sérii deseti příkladů a uživatel má u každého deset vteřin na zadání výsledku. Po dokončení série příkladů je pak uživateli zobrazeno jeho skóre.
 	
 	% \section{DAS} ?
 	
@@ -215,9 +225,30 @@
 	
 	\section{Prostředky pro tvorbu}
 	
+	\begin{table}[ht]
+		\centering
+		\caption{Nejpopulárnější knihovny pro tvorbu Discord botů}\medskip
+		\begin{threeparttable}
+			\begin{tabular}{ l l r }
+				\textbf{Název} & \textbf{Jazyk} & \textbf{Popularita}\tnote{*} \\\hline
+				discord.js & JavaScript & 24 452 \\
+				discord.py & Python & 14 024 \\
+				DiscordGo & Go & 4 563 \\
+				serenity & Rust & 4 259 \\
+				JDA & Java & 4 038 \\
+				Discord.Net & C\# & 3 165 \\\hline
+			\end{tabular}
+			\begin{tablenotes}
+				\item[*] počet GitHub hvězd ke dni 15. 2. 2024
+			\end{tablenotes}
+		\end{threeparttable}
+	\end{table}
+	
 	\section{Návrh}
 	
 	\section{Implementace}
+	
+	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy(u nich je ale problém ctx vs itx ?)))
 	
 	\section{Zhodnocení}
 	
