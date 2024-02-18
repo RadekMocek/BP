@@ -71,6 +71,9 @@
 	% Zkratky
 	\begin{abbrList}
 		\textbf{API} & Application Programming Interface, rozhraní pro programování aplikací \\
+		\textbf{HTTPS} & \dots \\
+		\textbf{JSON} & \dots \\
+		\textbf{REST} & \dots \\
 		\textbf{SDK} & Software Development Kit, sada nástrojů pro vývoj softwaru \\
 		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
 		\textbf{UI} & User Interface, uživatelské rozhraní \\
@@ -225,6 +228,10 @@
 	
 	\section{Prostředky pro tvorbu}
 	
+	Discord API, se kterým program ovládající bota komunikuje, se dělí na dvě hlavní vrstvy: Pro obecné operace slouží HTTPS REST API a pro odesílání a přihlašování k událostem v reálném čase se používají trvalá zabezpečená připojení pomocí protokolu WebSocket \cite{doc_Discord}. Samotná komunikace pak probíhá ve formátu JSON a pro unikátní identifikátory všech objektů se využívá formát Twitter Snowflake ID.
+	
+	Většina operací v Discord API je případně konzistentní. To znamená, že \dots \cite{book_distributedSystems4}
+	
 	\begin{table}[ht]
 		\centering
 		\caption{Nejpopulárnější knihovny pro tvorbu Discord botů}\medskip
@@ -244,11 +251,15 @@
 		\end{threeparttable}
 	\end{table}
 	
+	\subsection{discord.py}
+	
+	Discord.py je knihovna \dots
+	
 	\section{Návrh}
 	
 	\section{Implementace}
 	
-	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy(u nich je ale problém ctx vs itx ?)))
+	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 	
 	\section{Zhodnocení}
 	
