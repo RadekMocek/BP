@@ -8,8 +8,8 @@ from discord import app_commands
 from discord.ext import commands
 
 import d_modules.permissions as permissions
-from d_modules.bot import EMAIL, LingeBot
-from d_modules.common_modules import MessageView, UrlGitBookButton, UrlGitHubButton
+from d_modules.bot import LingeBot, SECRET1
+from d_modules.common_modules import MessageView, UrlGitBookButton, UrlGitHubButton, UrlGoogleFormsButton
 from d_modules.messages import try_dm_user
 
 
@@ -53,18 +53,16 @@ class Other(commands.Cog):
         ### Zpětná vazba
         Jedním z bodů mé práce je také __**vyhodnotit zpětnou vazbu od uživatelů**__
         
-        Pokud budete bota používat, pošlete mi pak prosím
-        své dojmy (chválu/dotazy/problémy/nedostatky/...) na `{EMAIL}`
+        Pokud budete bota používat, vyplňte pak prosím tento dotazník:
+        {SECRET1}        
         
-        Přání a stížnosti lze také směřovat na [GitHub Issues](https://github.com/RadekMocek/BP/issues)
-        
-        Díky a pevné nervy
+        Děkuji
         """)
         await itx.response.send_message(embed=embed_message)
-        await MessageView.attach_to_message(840,
+        await MessageView.attach_to_message(None,
                                             await itx.original_response(),
                                             itx.user,
-                                            [UrlGitBookButton(), UrlGitHubButton()])
+                                            [UrlGitBookButton(), UrlGitHubButton(), UrlGoogleFormsButton()])
 
     @app_commands.command()
     async def ping(self, itx: discord.Interaction) -> None:

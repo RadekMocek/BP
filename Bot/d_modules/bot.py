@@ -9,9 +9,10 @@ from discord.ext import commands
 from utils.file_io import json_read
 
 __config = json_read("config.json")
-TOKEN = __config["token"]  # Botův ověřovací token pro komunikaci s Discord API
-TEST_GUILD = discord.Object(id=__config["test_guild_id"])  # Id testovacího serveru
-EMAIL = __config["email"]
+__IS_PRODUCTION = __config["isProduction"]
+# Botův ověřovací token pro komunikaci s Discord API
+TOKEN = __config["tokenProduction"] if __IS_PRODUCTION else __config["tokenTesting"]
+SECRET1 = __config["secret1"]
 
 
 class LingeBot(commands.Bot):
@@ -40,13 +41,9 @@ class LingeBot(commands.Bot):
             if filename.endswith(".py"):
                 await self.load_extension(f"cogs.{filename[:-3]}")
                 print(f"{filename} načteno.")
-        # Synchronizovat slash commands na testovacím serveru
-        # ???
-        # self.tree.clear_commands(guild=TEST_GUILD)
-        # await self.tree.sync(guild=TEST_GUILD)
 
     async def on_ready(self) -> None:
         print("Bot je připraven.")
 
     def get_uptime(self) -> str:
-        return str(datetime.now() - self.uptime_start).strip()
+        return str(datetime.now() - self.uptime_start).strip().split(".")[0]

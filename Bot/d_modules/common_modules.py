@@ -7,6 +7,7 @@ import discord
 
 import d_modules.permissions as permissions
 import utils.db_io as database
+from d_modules.bot import SECRET1
 
 
 # region Common Buttons
@@ -52,6 +53,11 @@ class UrlGitHubButton(discord.ui.Button):
         super().__init__(label="GitHub", url="https://github.com/RadekMocek/BP/issues")
 
 
+class UrlGoogleFormsButton(discord.ui.Button):
+    def __init__(self) -> None:
+        super().__init__(label="DOTAZNÍK", url=SECRET1)
+
+
 # endregion
 
 # region Common Modals
@@ -59,7 +65,7 @@ class LingeBotModal(discord.ui.Modal):
     """Obsahuje metody/parametry společné pro všechny modaly v LingeBot."""
 
     async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
-        logging.getLogger("discord").error('Ignoring exception in modal %r:', self, exc_info=error)
+        logging.getLogger("discord").error("Ignoring exception in modal %r:", self, exc_info=error)
         await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)
 
 
@@ -87,7 +93,7 @@ class LingeBotView(discord.ui.View):
             self.stop()
 
     async def on_error(self, itx: discord.Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
-        logging.getLogger("discord").error('Ignoring exception in view %r for item %r', self, item, exc_info=error)
+        logging.getLogger("discord").error("Ignoring exception in view %r for item %r", self, item, exc_info=error)
         content = f"```ansi\n[2;31m{error}```"
         try:
             await itx.response.send_message(content=content)
@@ -108,7 +114,7 @@ class MessageView(LingeBotView):
 
     @classmethod
     async def attach_to_message(cls,
-                                timeout: int,
+                                timeout: Optional[int],
                                 parent_message: discord.Message,
                                 author: Union[discord.Member, discord.User],
                                 items: list[discord.ui.Item],
