@@ -62,3 +62,4 @@ __pycache__
 .mtc
 build/
 Thesis/document.pdf
+Slideshow/*/presentation.pdf

@@ -191,7 +191,9 @@
 	
 	Mattermost nemá žádnou knihovnu pro tvorbu botů, veškerou logiku komunikace s jejich API tedy musí zajistit vývojář bota. Pro Rocket.Chat je možné vyvíjet boty v oficiálním JavaScript SDK, nebo je vytvořit v grafickém rozhraní na platformě Botpress. Zulip má pro vývoj botů k dispozici oficiální Python knihovnu.
 		
-	\chapter{Matematika na platformě Discord} %todo Zde na začátek přidat, proč byl zvolen discord
+	\chapter{Matematika na platformě Discord}
+	
+	Ze zkoumaných sociálních platforem má Discord nejkomplexnější a nejlépe zdokumentovaný ekosystém botů. Kolem tvorby těchto botů vznikla početná komunita a existuje pro ni tedy i nejvíce knihoven. Discord nemá žádné specifické zaměření (např. firemní nebo herní) a díky tomu pokrývá širokou škálu uživatelů. Proto byla pro tvorbu matematického bota vybrána právě tato platforma.
 	
 	Ačkoliv nebyl Discord vytvořen pro účely výuky a nemá žádné speciální matematické nástroje, \textit{vzdělávání} je jednou z pěti hlavních kategorií veřejných Discord serverů a patří do ní i servery specializované na matematiku. \textit{Mathematics} je nejpopulárnější server s tímto zaměřením, na kterém mohou uživatelé diskutovat a řešit matematické problémy různých úrovní vzdělání.
 	
@@ -228,23 +230,31 @@
 	
 	\section{Prostředky pro tvorbu}
 	
-	Discord API, se kterým program ovládající bota komunikuje, se dělí na dvě hlavní vrstvy: Pro obecné operace slouží HTTPS REST API a pro odesílání a přihlašování k událostem v reálném čase se používají trvalá zabezpečená připojení pomocí protokolu WebSocket \cite{doc_Discord}. Samotná komunikace pak probíhá ve formátu JSON a pro unikátní identifikátory všech objektů se využívá formát Twitter Snowflake ID.
+	Discord API, se kterým program ovládající bota komunikuje, se dělí na dvě hlavní vrstvy: Pro obecné operace slouží HTTPS REST API a pro odesílání a přihlašování k událostem v reálném čase se používají trvalá zabezpečená připojení pomocí protokolu WebSocket. Samotná komunikace pak probíhá ve formátu JSON a pro unikátní identifikátory všech objektů se využívá formát Twitter Snowflake ID.	Discord operuje na tak velkém měřítku, že zajistit úplnou konzistenci jeho dat by bylo nemožné, a proto je většina operací v Discord API eventuálně konzistentní. \cite{doc_Discord}
 	
-	Většina operací v Discord API je případně konzistentní. To znamená, že \dots \cite{book_distributedSystems4}
+	Eventuální konzistence znamená, že distribuovaná a replikovaná databáze povoluje relativně velké množství nekonzistentních dat. Pokud ale po nějaký čas neproběhne operace zápisu, tak se data na všech replikách postupně \quotedblbase srovnají\textquotedblleft. \cite{book_distributedSystems4}
+	
+	Tvorba aplikací pracujících nad eventuálně konzistentními daty může být náročná. Události z Discord API navíc nemusí klientovi vždy přijít právě jen jednou, a proto je na ně nutné reagovat idempotentně. Výsledek několikrát provedené idempotentní operace by měl být stejný, jako kdyby byla provedena jen jednou. \cite{book_distributedSystemsUnderstanding}
+	
+	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola některé z nich blíže představuje.
 	
 	\begin{table}[ht]
 		\centering
 		\caption{Nejpopulárnější knihovny pro tvorbu Discord botů}\medskip
 		\begin{threeparttable}
-			\begin{tabular}{ l l r }
-				\textbf{Název} & \textbf{Jazyk} & \textbf{Popularita}\tnote{*} \\\hline
-				discord.js & JavaScript & 24 452 \\
-				discord.py & Python & 14 024 \\
-				DiscordGo & Go & 4 563 \\
-				serenity & Rust & 4 259 \\
-				JDA & Java & 4 038 \\
-				Discord.Net & C\# & 3 165 \\\hline
-			\end{tabular}
+			\begin{tabular}{ l l r r }
+				\textbf{Název} & \textbf{Jazyk} & \textbf{Vznik} & \textbf{Popularita}\tnote{*} \\\hline
+				discord.js	& JavaScript 	& 2015 & 24 452 \\
+				discord.py	& Python		& 2015 & 14 024 \\
+				DiscordGo	& Go			& 2015 & 4 563 \\
+				serenity	& Rust			& 2016 & 4 259 \\
+				JDA			& Java			& 2015 & 4 038 \\
+				Discord.Net & C\#			& 2015 & 3 165 \\
+				pycord		& Python		& 2021 & 2 619 \\
+				Discord4J	& Java			& 2015 & 1 697 \\
+				Eris		& JavaScript	& 2016 & 1 465 \\
+				DSharpPlus	& C\#			& 2016 & 1 179 \\
+			\hline\end{tabular}
 			\begin{tablenotes}
 				\item[*] počet GitHub hvězd ke dni 15. 2. 2024
 			\end{tablenotes}
@@ -253,9 +263,20 @@
 	
 	\subsection{discord.py}
 	
-	Discord.py je knihovna \dots
+	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python.
+
+	% Cogs – modulární
+	% Dekorátory <3
+	% troubled historie – forky
+	% Subpar dokumentace/návody
+	
+	\subsection{discord.js}
+	
+	\subsection{Discord.Net}
 	
 	\section{Návrh}
+	 
+	% todo Separate Literals etc. (db_io + premissions) in code ?
 	
 	\section{Implementace}
 	
