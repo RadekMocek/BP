@@ -13,6 +13,8 @@
 \finalhyphendemerits=200000
 % Umožňuje vytvářet tabulky s vlastními footnotes
 \usepackage{threeparttable}
+% Zdrojové kódy
+\input{code/syntaxhighlight}
 
 % Pro seznam použité literatury
 \usepackage[backend=biber, style=iso-numeric]{biblatex}
@@ -236,7 +238,7 @@
 	
 	Tvorba aplikací pracujících nad eventuálně konzistentními daty může být náročná. Události z Discord API navíc nemusí klientovi vždy přijít právě jen jednou, a proto je na ně nutné reagovat idempotentně. Výsledek několikrát provedené idempotentní operace by měl být stejný, jako kdyby byla provedena jen jednou. \cite{book_distributedSystemsUnderstanding}
 	
-	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola některé z nich blíže představuje.
+	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato sekce blíže představuje některé z těchto knihoven včetně ukázek zdrojového kódu, který popisuje jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko \textit{Example} odkazující na webovou stránku.% (obrázek \ref{_tag_img_pow}).
 	
 	\begin{table}[ht]
 		\centering
@@ -250,7 +252,7 @@
 				serenity	& Rust			& 2016 & 4 259 \\
 				JDA			& Java			& 2015 & 4 038 \\
 				Discord.Net & C\#			& 2015 & 3 165 \\
-				pycord		& Python		& 2021 & 2 619 \\
+				Pycord		& Python		& 2021 & 2 619 \\
 				Discord4J	& Java			& 2015 & 1 697 \\
 				Eris		& JavaScript	& 2016 & 1 465 \\
 				DSharpPlus	& C\#			& 2016 & 1 179 \\
@@ -261,16 +263,31 @@
 		\end{threeparttable}
 	\end{table}
 	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/ExampleCommand}
+		\caption{Ukázkový příkaz}
+		\label{_tag_img_pow}
+	\end{figure}
+	
 	\subsection{discord.py}
 	
-	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python.
-
-	% Cogs – modulární
-	% Dekorátory <3
-	% troubled historie – forky
-	% Subpar dokumentace/návody
+	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python (verze 3.8 a vyšší), která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod k nějaké události se často používají dekorátory (syntax umožňující upravit chování metod bez zásahu do jejich těla). Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. Díky cogs lze tvořit bota modulárně (rozdělit zdrojový kód do více souborů).
+	
+	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyku Python obecně) může být psaný kód čistý a přehledný. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
+	
+	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} právě absence návodu pro začátečníky. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce v kontextu Discordu (z pohledu uživatele).
+	
+	V roce 2021, kdy byly mimo jiné představeny podpůrné příkazy, vyšla nová verze Discord API, která přinesla zásadní změny v jeho používání. To vedlo k frustraci autorů některých knihoven a vývoj discord.py byl pozastaven. Po šesti měsících se repozitář opět otevřel a vývoj mohl pokračovat, mezitím ale vzniklo několik nových knihoven založených na discord.py (konkrétně Pycord, Nextcord a disnake). Zároveň začaly vycházet balíky, které do existující knihovny přidávaly podporu pro novou verzi Discord API. Zdrojové kódy těchto knihoven jsou si velmi podobné, a proto je při hledání informací nutné dávat pozor na to, s jakou knihovnou daný zdroj pracuje.
+	
+	\begin{figure}[ht]
+		\lstinputlisting[language=Python]{code/discord.py}
+		\caption{Ukázkový příkaz: Implementace v discord.py}
+	\end{figure}
 	
 	\subsection{discord.js}
+	
+	Discord.js je knihovna \dots
 	
 	\subsection{Discord.Net}
 	
