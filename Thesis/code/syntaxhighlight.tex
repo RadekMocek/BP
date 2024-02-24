@@ -1,6 +1,8 @@
 % == Zdrojové kódy se syntax highlight ==
 \usepackage{listings}
 \definecolor{color_base0}{rgb}{0.396078431372549, 0.4823529411764706, 0.5137254901960784}
+\definecolor{color_violet}{rgb}{0.4235294117647059, 0.44313725490196076, 0.7686274509803922}
+%\definecolor{color_blue}{rgb}{0.14901960784313725, 0.5450980392156862, 0.8235294117647058}
 \definecolor{color_green}{rgb}{0.5215686274509804, 0.6, 0}
 \definecolor{color_cyan}{rgb}{0.164705882352, 0.6313725490196078, 0.596078431372549}
 \lstset{
@@ -8,11 +10,26 @@
     , breaklines = true
     , frame = tb
     , commentstyle = \color{color_base0}
-    , keywordstyle = \color{color_green}
+    , keywordstyle = \color{color_violet}
+    , ndkeywordstyle = \color{color_green}
     , stringstyle = \color{color_cyan}
+    , showstringspaces = false
 }
 
 %\setmonofont{Courier New}
+
+% Python
+\lstdefinelanguage{Python3}[]{Python}{
+    morekeywords={async, None},
+    morendkeywords={View, add_item, Button, send_message}
+}
+
+% JavaScript
+\lstdefinelanguage{JavaScript}{
+  keywords={new, true, const, async, await},
+  ndkeywords={require, module, setName, setDescription, addIntegerOption, setRequired, getInteger, setLabel, setURL, setStyle, addComponents, reply},
+  morestring=[b]"
+}
 
 % Highlight českých znaků
 \makeatletter

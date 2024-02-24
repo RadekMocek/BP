@@ -75,6 +75,7 @@
 		\textbf{API} & Application Programming Interface, rozhraní pro programování aplikací \\
 		\textbf{HTTPS} & \dots \\
 		\textbf{JSON} & \dots \\
+		\textbf{npm} & \dots \\
 		\textbf{REST} & \dots \\
 		\textbf{SDK} & Software Development Kit, sada nástrojů pro vývoj softwaru \\
 		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
@@ -127,7 +128,7 @@
 	
 	Boti tedy operují především na serverech\footnote{Boty lze ale používat i v přímých zprávách. Bot se sice tváří jako uživatel, do přátel ho ale přidat nelze a pro zahájení přímé konverzace je nutné s ním nejdříve mít nějaký společný server. Bota nelze přidat do soukromé skupiny.} a existuje několik možností, jak je na nějaký server pozvat. Na konci roku 2022 byl do Discordu přidán tzv. adresář aplikací (\textit{App Directory}), který momentálně obsahuje seznam více než 5500 dostupných botů, kde každý z nich má svou stránku s podrobnějším popisem a tlačítkem pro přidání na server. Aby byl bot v tomto adresáři obsažen, musí nejprve projít schvalovacím procesem, a proto se jich zde nachází pouze zlomek ze všech existujících. Každý bot pak má svůj speciální zvací odkaz (\textit{bot invite link}) a existuje několik neoficiálních databází (např. \href{https://top.gg}{top.gg}), které opět obsahují seznam botů s jejich popisem a zvacím odkazem. Poslední možností jsou boti s otevřeným zdrojovým kódem, které si uživatel stáhne a spustí na vlastním stroji. Tento způsob vyžaduje botu založit účet a vygenerovat token.
 	
-	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu \mbox{YouTube}. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty \mbox{poskytující} \mbox{jednoduché} hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem. % mbox je zde použit, protože bylo slovo rozděleno na konci stránky
+	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu \mbox{YouTube}. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty poskytující jednoduché hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem.
 	
 	\section{Slack}
 	
@@ -238,7 +239,7 @@
 	
 	Tvorba aplikací pracujících nad eventuálně konzistentními daty může být náročná. Události z Discord API navíc nemusí klientovi vždy přijít právě jen jednou, a proto je na ně nutné reagovat idempotentně. Výsledek několikrát provedené idempotentní operace by měl být stejný, jako kdyby byla provedena jen jednou. \cite{book_distributedSystemsUnderstanding}
 	
-	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato sekce blíže představuje některé z těchto knihoven včetně ukázek zdrojového kódu, který popisuje jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko \textit{Example} odkazující na webovou stránku.% (obrázek \ref{_tag_img_pow}).
+	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato sekce blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko \textit{Example} odkazující na webovou stránku (obrázek \ref{_tag_img_pow}).
 	
 	\begin{table}[ht]
 		\centering
@@ -263,33 +264,29 @@
 		\end{threeparttable}
 	\end{table}
 	
-	\begin{figure}[ht]
-		\centering
-		\includegraphics[width=\textwidth]{img/ExampleCommand}
-		\caption{Ukázkový příkaz}
-		\label{_tag_img_pow}
-	\end{figure}
-	
 	\subsection{discord.py}
 	
 	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python (verze 3.8 a vyšší), která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod k nějaké události se často používají dekorátory (syntax umožňující upravit chování metod bez zásahu do jejich těla). Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. Díky cogs lze tvořit bota modulárně (rozdělit zdrojový kód do více souborů).
 	
-	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyku Python obecně) může být psaný kód čistý a přehledný. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
+	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyku Python obecně) může být psaný kód čistý a přehledný. Pro definici příkazů lze navíc využít anotací a komentářů u příslušných metod. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
 	
 	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} právě absence návodu pro začátečníky. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce v kontextu Discordu (z pohledu uživatele).
 	
 	V roce 2021, kdy byly mimo jiné představeny podpůrné příkazy, vyšla nová verze Discord API, která přinesla zásadní změny v jeho používání. To vedlo k frustraci autorů některých knihoven a vývoj discord.py byl pozastaven. Po šesti měsících se repozitář opět otevřel a vývoj mohl pokračovat, mezitím ale vzniklo několik nových knihoven založených na discord.py (konkrétně Pycord, Nextcord a disnake). Zároveň začaly vycházet balíky, které do existující knihovny přidávaly podporu pro novou verzi Discord API. Zdrojové kódy těchto knihoven jsou si velmi podobné, a proto je při hledání informací nutné dávat pozor na to, s jakou knihovnou daný zdroj pracuje.
 	
-	\begin{figure}[ht]
-		\lstinputlisting[language=Python]{code/discord.py}
-		\caption{Ukázkový příkaz: Implementace v discord.py}
-	\end{figure}
-	
 	\subsection{discord.js}
 	
-	Discord.js je knihovna \dots
+	Discord.js je knihovna pro běhové prostředí Node.js umožňující tvorbu Discord botů v jazycích JavaScript nebo TypeScript. Funkcionalita je založena na objektech \verb*|Promise| a při psaní kódu se využívá tzv. \textit{arrow funkcí}. Režie pro zprovoznění podpůrných příkazů a modularity (zde ve stylu \textit{co soubor, to příkaz}) je o něco složitější než u discord.py.
+	
+	Velkou výhodou této knihovny je existence návodu pro začátečníky, který provede programátora krok za krokem od úvodní instalace npm balíčku až po tvorbu pokročilých příkazů. Krom popisu postupů a zdrojových kódu se díky tomuto návodu programátor rychle dozví, co všechno do svého bota vlastně může implementovat. Nechybí ani referenční příručka a početná komunita jako u discord.py.
+	
+	Knihovna nevyužívá dekorátorů ani komentářů pro definování příkazů. Výsledný kód obsahuje mnoho vnořených nebo zřetězených funkcí, kvůli kterým může být delší a hůře čitelný. Knihovna sice podporuje TypeScript, oficiálních ani komunitních návodů pro jeho korektní použití ale není mnoho.
 	
 	\subsection{Discord.Net}
+	
+	Discord.Net je knihovna \dots
+	
+	% Je možné použít i F# atd.
 	
 	\section{Návrh}
 	 
@@ -303,11 +300,34 @@
 	
 	\chapter{Závěr}
 	
-	Závěr.
+	Závěr. //TODO slova rozdělená na dvě stránky%todo
 	
 	% Zdroje
 	\chapter*{Seznam použité literatury}
 	\addcontentsline{toc}{chapter}{Seznam použité literatury}
 	\printbibliography[heading=none]
+	
+	% Přílohy
+	\appendix
+	\chapter{Přílohy}
+	
+	\section{Zdrojové kódy implementace ukázkového příkazu}
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/ExampleCommand}
+		\caption{Ukázkový příkaz}
+		\label{_tag_img_pow}
+	\end{figure}
+	
+	\begin{figure}[ht]
+		\lstinputlisting[language=Python3]{code/discord.py}
+		\caption{Ukázkový příkaz: Implementace v discord.py}
+	\end{figure}
+	
+	\begin{figure}[ht]
+		\lstinputlisting[language=JavaScript]{code/discord.js}
+		\caption{Ukázkový příkaz: Implementace v discord.js}
+	\end{figure}
 	
 \end{document}
