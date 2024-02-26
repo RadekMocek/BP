@@ -1,11 +1,16 @@
 % !TEX TS-program = xelatex
 \documentclass[FM]{tulpresentation}
+\usepackage{pifont}
+\usepackage{amssymb}
 \title{Tvorba a využití botu pro výuku matematiky na platformě Discord}
 \author{Radek Mocek}
 \institute{}
 \newcommand{\authorMail}{Ing. Igor Kopetschke}
 \newcommand{\authorPhone}{}
 \date{27.\,2.\,2024}
+\setbeamertemplate{enumerate items}[default]
+\newcommand{\otem}{\item[$\square$]}
+\newcommand{\xtem}{\item[\rlap{\raisebox{0.3ex}{\hspace{0.4ex}\ding{52}}}$\square$]}
 \begin{document}
 	\TULtitleframe
 	\section{Zadání práce}
@@ -22,8 +27,19 @@
 	\section{Aktuální stav práce}
 	\begin{frame}[fragile]
 		\frametitle{Aktuální stav práce}
+		\bigskip
+		\textbf{Praktická část}
 		\begin{itemize}
-			\item Jak jsme na tom
+			\xtem Implementovat bota v discord.py
+			\xtem Nasadit bota do testovacího provozu
+			\otem Posbírat a vyhodnotit zpětnou vazbu
+		\end{itemize}
+		\bigskip
+		\textbf{Textová část}
+		\begin{itemize}
+			\xtem Rešerše
+			\otem Návrh, implementace, zhodnocení
+			\otem Úvod, závěr, abstrakt
 		\end{itemize}
 	\end{frame}
 \end{document}

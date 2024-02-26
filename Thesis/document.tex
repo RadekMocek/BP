@@ -74,6 +74,7 @@
 	\begin{abbrList}
 		\textbf{API} & Application Programming Interface, rozhraní pro programování aplikací \\
 		\textbf{HTTPS} & \dots \\
+		\textbf{JDA} & \dots \\
 		\textbf{JSON} & \dots \\
 		\textbf{npm} & \dots \\
 		\textbf{REST} & \dots \\
@@ -270,7 +271,7 @@
 	
 	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyku Python obecně) může být psaný kód čistý a přehledný. Pro definici příkazů lze navíc využít anotací a komentářů u příslušných metod. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
 	
-	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} právě absence návodu pro začátečníky. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce v kontextu Discordu (z pohledu uživatele).
+	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} právě absence uživatelské příručky. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce v kontextu Discordu (z pohledu uživatele).
 	
 	V roce 2021, kdy byly mimo jiné představeny podpůrné příkazy, vyšla nová verze Discord API, která přinesla zásadní změny v jeho používání. To vedlo k frustraci autorů některých knihoven a vývoj discord.py byl pozastaven. Po šesti měsících se repozitář opět otevřel a vývoj mohl pokračovat, mezitím ale vzniklo několik nových knihoven založených na discord.py (konkrétně Pycord, Nextcord a disnake). Zároveň začaly vycházet balíky, které do existující knihovny přidávaly podporu pro novou verzi Discord API. Zdrojové kódy těchto knihoven jsou si velmi podobné, a proto je při hledání informací nutné dávat pozor na to, s jakou knihovnou daný zdroj pracuje.
 	
@@ -278,15 +279,19 @@
 	
 	Discord.js je knihovna pro běhové prostředí Node.js umožňující tvorbu Discord botů v jazycích JavaScript nebo TypeScript. Funkcionalita je založena na objektech \verb*|Promise| a při psaní kódu se využívá tzv. \textit{arrow funkcí}. Režie pro zprovoznění podpůrných příkazů a modularity (zde ve stylu \textit{co soubor, to příkaz}) je o něco složitější než u discord.py.
 	
-	Velkou výhodou této knihovny je existence návodu pro začátečníky, který provede programátora krok za krokem od úvodní instalace npm balíčku až po tvorbu pokročilých příkazů. Krom popisu postupů a zdrojových kódu se díky tomuto návodu programátor rychle dozví, co všechno do svého bota vlastně může implementovat. Nechybí ani referenční příručka a početná komunita jako u discord.py.
+	Velkou výhodou této knihovny je existence uživatelské příručky, která programátora provede krok za krokem od úvodní instalace npm balíčku až po tvorbu pokročilých příkazů. Krom popisu postupů a zdrojových kódu se díky tomuto návodu programátor rychle dozví, co všechno do svého bota vlastně může implementovat. Nechybí ani referenční příručka a početná komunita jako u discord.py.
 	
 	Knihovna nevyužívá dekorátorů ani komentářů pro definování příkazů. Výsledný kód obsahuje mnoho vnořených nebo zřetězených funkcí, kvůli kterým může být delší a hůře čitelný. Knihovna sice podporuje TypeScript, oficiálních ani komunitních návodů pro jeho korektní použití ale není mnoho.
 	
 	\subsection{Discord.Net}
 	
-	Discord.Net je knihovna \dots
+	Discord.Net je knihovna pro tvorbu Discord botů na platformě .NET distribuovaná přes systém NuGet. Dokumentace je psaná pro jazyk C\# (ve kterém je tato knihovna implementována), je ale možné použít i jiné jazyky z této platformy (např. F\# nebo Visual Basic). Vzhledem k charakteru implementačního jazyka je i návrh bota v této knihovně objektově zaměřen. Pro tvorbu složitějších botů se doporučuje použít vkládání závislostí\footnote{Vkládání závislostí (\textit{dependency injection}) je návrhový vzor, kde se třetí strana stará o vztahy mezi komponentami a jejich závislostmi (aby byla za běhu programu do vybraných atributů dosazena správná instance) \cite{lit_distributedSystems}. Zde se konkrétně jedná o balík \textit{Microsoft.Extensions.DependencyInjection}.}.
 	
-	% Je možné použít i F# atd.
+	Knihovna má k dispozici referenční i uživatelskou příručku, její nevýhodou je menší komunita. Oproti předchozím knihovnám Discord.Net u podpůrných příkazů odděluje logiku jejich synchronizace a obsluhy. Kód zde tedy není strukturován na metody odpovídající jednotlivým příkazům, ale všechny příkazy jsou obsluhovány jedinou metodou, ve které je kód dále rozvětven.
+	
+	\subsection{JDA}
+	
+	JDA je knihovna pro tvorbu botů v jazyce Java nebo Kotlin. Do projektu je přidána pomocí nástroje Maven nebo Gradle. Stejně jako u Discord.Net je bot v JDA tvořen objektově. % separace slashCommand sync/handle
 	
 	\section{Návrh}
 	 
@@ -328,6 +333,16 @@
 	\begin{figure}[ht]
 		\lstinputlisting[language=JavaScript]{code/discord.js}
 		\caption{Ukázkový příkaz: Implementace v discord.js}
+	\end{figure}
+	
+	\begin{figure}[ht]
+		\lstinputlisting[language={CSharp}]{code/discord.cs}
+		\caption{Ukázkový příkaz: Implementace v Discord.Net}
+	\end{figure}
+	
+	\begin{figure}[ht]
+		\lstinputlisting[language={Java18}]{code/discord.java}
+		\caption{Ukázkový příkaz: Implementace v JDA}
 	\end{figure}
 	
 \end{document}

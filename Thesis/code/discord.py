@@ -1,6 +1,6 @@
-from discord import app_commands
+import discord
 # ...
-@app_commands.command()
+@discord.app_commands.command()
 async def pow(self,
               itx: discord.Interaction,
               num: int,
