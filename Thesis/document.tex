@@ -73,11 +73,10 @@
 	% Zkratky
 	\begin{abbrList}
 		\textbf{API} & Application Programming Interface, rozhraní pro programování aplikací \\
-		\textbf{HTTPS} & \dots \\
-		\textbf{JDA} & \dots \\
-		\textbf{JSON} & \dots \\
-		\textbf{npm} & \dots \\
-		\textbf{REST} & \dots \\
+		\textbf{HTTPS} & Hypertext Transfer Protocol Secure, protokol pro zabezpečenou komunikaci po počítačové síti \\
+		\textbf{JDA} & Java Discord API, knihovna pro tvorbu Discord botů v jazyce Java \\
+		\textbf{JSON} & JavaScript Object Notation, formát pro výměnu dat \\
+		\textbf{REST} & REpresentational State Transfer, architektura pro výměnu dat \\
 		\textbf{SDK} & Software Development Kit, sada nástrojů pro vývoj softwaru \\
 		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
 		\textbf{UI} & User Interface, uživatelské rozhraní \\
@@ -295,15 +294,27 @@
 	
 	\chapter{Tvorba matematického Discord bota}
 	
+	% proč byl zvolen discord.py
+	% lingebra, co, jak
+	% render je potřeba – matrix
+	% výklad teorie, self host ready
+	% generace příkladů (kalkulačka netřeba)
+	% specifické discord možnosti (administrace, interactions)
+	
 	\section{Návrh}
 	 
-	% todo Separate Literals etc. (db_io + premissions) in code ?
+	% todo Separate Literals etc. (db_io + premissions) in code ? ;; defer do problem/__edit_message ?
 	
 	\section{Implementace}
 	
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 	
 	\section{Zhodnocení}
+	
+	% Jak vylepšit?
+	% Využívat threads nebo nějak lépe spravovat konverzaci, nyní používání bota na větším serveru chaos
+	% generovat sekvence příkladů, "simulace zkoušky"
+	% right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
 	
 	\chapter{Závěr}
 	
