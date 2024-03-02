@@ -19,6 +19,8 @@
 % Pro seznam použité literatury
 \usepackage[backend=biber, style=iso-numeric]{biblatex}
 \addbibresource{zdroje.bib}
+% Poslední dva autory knihy neoddělovat středníkem ale písmenem 'a'
+\DeclareDelimFormat{finalnamedelim}{\addspace a\space}
 
 % Titulní strana
 \TULtitle{Tvorba a využití botu pro výuku matematiky na platformě Discord}{Creating and using a bot for teaching mathematics on the Discord platform}
@@ -73,10 +75,11 @@
 	% Zkratky
 	\begin{abbrList}
 		\textbf{API} & Application Programming Interface, rozhraní pro programování aplikací \\
+		\textbf{HTML} & Hypertext Markup Language, značkovací jazyk \\
 		\textbf{HTTPS} & Hypertext Transfer Protocol Secure, protokol pro zabezpečenou komunikaci po počítačové síti \\
 		\textbf{JDA} & Java Discord API, knihovna pro tvorbu Discord botů v jazyce Java \\
 		\textbf{JSON} & JavaScript Object Notation, formát pro výměnu dat \\
-		\textbf{REST} & REpresentational State Transfer, architektura pro výměnu dat \\
+		\textbf{REST} & Representational State Transfer, architektura pro výměnu dat \\
 		\textbf{SDK} & Software Development Kit, sada nástrojů pro vývoj softwaru \\
 		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
 		\textbf{UI} & User Interface, uživatelské rozhraní \\
@@ -205,6 +208,7 @@
 	Matematicky zaměřených Discord botů není mnoho. V oficiálním adresáři aplikací nebyl během rešerše nalezen žádný. V neoficiálních databázích pak sice bylo nalezeno několik desítek botů, kteří se podle popisu alespoň částečně zabývají matematikou, velká část z nich ale byla offline a neměla k dispozici zdrojový kód. Otestováno bylo tedy nakonec 11 botů, které lze zařadit do dvou kategorií.
 	
 	\section{Bot vykreslující matematické výrazy}
+	\label{_tag_section_texbot}
 
 	Jelikož Discord nemá žádnou podporu pro vykreslování matematických výrazů, což je v textové konverzaci ohledně matematiky velmi užitečné, existuje hned několik botů s touto funkcionalitou. Konkrétně vykreslení umožňuje 5 z 11 testovaných botů. K popisu výrazu se ve všech případech používá TeX syntax, ve které je zadán vstupní parametr vykreslovacího příkazu. Bot pak podle parametru vygeneruje obrázek s matematickým výrazem a odešle ho do textového kanálu, kde byl příkaz zadán.
 	
@@ -237,7 +241,7 @@
 	
 	Tvorba aplikací pracujících nad eventuálně konzistentními daty může být náročná. Události z Discord API navíc nemusí klientovi vždy přijít právě jen jednou, a proto je na ně nutné reagovat idempotentně. Výsledek několikrát provedené idempotentní operace by měl být stejný, jako kdyby byla provedena jen jednou. \cite{book_distributedSystemsUnderstanding}
 	
-	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato sekce blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko \textit{Example} odkazující na webovou stránku (obrázek \ref{_tag_img_pow}).
+	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko \textit{Example} odkazující na webovou stránku (obrázek \ref{_tag_img_pow}).
 	
 	\begin{table}[ht]
 		\centering
@@ -294,15 +298,34 @@
 	
 	\chapter{Tvorba matematického Discord bota}
 	
-	% proč byl zvolen discord.py
-	% lingebra, co, jak
-	% render je potřeba – matrix
+	Tato kapitola popisuje tvorbu matematického Discord bota, který se konkrétně zaměřuje na výklad teorie a generování příkladů z lineární algebry. K výkladu této látky lze přistupovat s různou mírou obecnosti: Některé zdroje prezentují lineární algebru jako sadu postupů pro řešení určitých matematických úloh, jiné ji vykládají jako teorii vektorových prostorů a lineárních zobrazení \cite{lit_lingebra}. Bot byl vytvořen spíše pro prezentování informací z druhé zmíněné strany spektra, avšak jeho návrh obecně podporuje jakýkoliv typ matematických materiálů. Generované příklady se pak soustředí na základní výpočty s maticemi.
+	
+	Pro tvorbu bota byla zvolena knihovna discord.py zejména kvůli její početné komunitě a čitelnosti výsledného zdrojového kódu. Při volbě také hrála roli existence matematických knihoven pro jazyk Python (konkrétně Matplotlib, NumPy, SciPy a SymPy), které jsou zavedené a dobře zdokumentované.
+		
+	\section{Návrh}
+	
+	\subsection{Vykreslení matematických výrazů}
+	
+	Jak již bylo zmíněno v sekci \ref{_tag_section_texbot}, pro textovou komunikaci ohledně matematiky je vhodné používat správné matematické symboly. Příkladem je situace, kdy chce jeden uživatel odeslat a popsat druhému uživateli vzorec obsahující mocniny (např. $x^2$). Pokud si uživatel nepamatuje specifický alt kód, pak symbol \quotedblbase$^2$\textquotedblleft\ není možné na klávesnici napsat. Ne příliš praktickým řešením je najít a zkopírovat daný symbol buď z internetu, nebo programu jako je \textit{mapa znaků}. Další možností je zavést alternativní značení, tedy např. místo $x^2$ psát $x$\textsuperscript{$\wedge$}2 nebo $x$**2. Tato značení ale nejsou nijak normalizovaná a v textové konverzaci zejména více uživatelů mohou vést k nedorozuměním. Obě možnosti navíc selhávají ve chvíli, kdy je potřeba zapsat buď velké množství různých symbolů, nebo složitější výrazy obsahující zlomky, matice atd. Některá textová prostředí podporují vykreslování HTML: Pro horní a dolní index lze využít značek \verb*|sup| a \verb*|sub|, řecká písmena lze pak psát např. jako \verb*|&alpha;|. Pro jakýkoliv složitější matematický výraz je ale jediným zavedeným způsobem program TeX a jeho syntax.
+	
+	Protože Discord vykreslování TeX výrazů nepodporuje, jedná se o jednu z funkcionalit navrhovaného bota. Konkrétně jde o příkaz \verb*|/render| (\textit{vykresli}), jehož parametrem je právě matematický výraz zapsaný v TeX (resp. Matplotlib Mathtext) syntaxi, který má být vykreslen. Po spuštění příkazu je do chatu odeslán obrázek obsahující vykreslení požadovaného výrazu. Pod tímto obrázkem se nachází trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Tlačítko pro smazání kompletně odstraní botem odeslanou zprávu. Tlačítkem pro úpravu se vyvolá vyskakovací okno s textovým polem, ve kterém je předvyplněn uživatelův původní vstup. Po opravě nebo rozšíření výrazu je daný obrázek překreslen. Pokud se ve vstupu od uživatele nachází chyba, pak zpráva místo obrázku obsahuje výpis z chybového hlášení, díky kterému může uživatel chybu snadněji detekovat. Tlačítko potvrzení pouze nechá trojici tlačítek zmizet a tedy znemožní výraz dále upravovat nebo ho smazat. Tato akce se po určitém časovém intervalu provede automaticky, aby tlačítka zbytečně neznepřehledňovala textovou konverzaci.
+	
+	Vykreslování matematických výrazů je stěžejní funkcionalitou navrhovaného bota. Kromě příkazu \verb*|/render| totiž může být použito i během výkladu teorie nebo při zobrazování vygenerovaných příkladů.
+	
+	\subsection{Výklad teorie}
+	
+	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb*|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, aby nebyly výpisky součástí zdrojového kódu a bylo snazší je upravovat. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
+	
+	Jazyk Markdown nemá žádnou syntax pro označení matematických výrazů. \dots
+	
+	Každé teoretické téma (a tedy soubor) se může dělit na několik podtémat \dots
+	
+	% Tlačítka ...	
+	% Zmínit původně zamýšlený upload vlastních témat, nakonec self-host řešení	
 	% výklad teorie, self host ready
+			
 	% generace příkladů (kalkulačka netřeba)
 	% specifické discord možnosti (administrace, interactions)
-	
-	\section{Návrh}
-	 
 	% todo Separate Literals etc. (db_io + premissions) in code ? ;; defer do problem/__edit_message ?
 	
 	\section{Implementace}
@@ -315,6 +338,7 @@
 	% Využívat threads nebo nějak lépe spravovat konverzaci, nyní používání bota na větším serveru chaos
 	% generovat sekvence příkladů, "simulace zkoušky"
 	% right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
+	% Co se týče zápisků z teorie: přidat souvislost s IT
 	
 	\chapter{Závěr}
 	
