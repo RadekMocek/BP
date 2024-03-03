@@ -75,6 +75,7 @@
 	% Zkratky
 	\begin{abbrList}
 		\textbf{API} & Application Programming Interface, rozhraní pro programování aplikací \\
+		\textbf{DMs} & Direct Messages, přímé zprávy \\
 		\textbf{HTML} & Hypertext Markup Language, značkovací jazyk \\
 		\textbf{HTTPS} & Hypertext Transfer Protocol Secure, protokol pro zabezpečenou komunikaci po počítačové síti \\
 		\textbf{JDA} & Java Discord API, knihovna pro tvorbu Discord botů v jazyce Java \\
@@ -316,19 +317,49 @@
 	
 	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb*|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, aby nebyly výpisky součástí zdrojového kódu a bylo snazší je upravovat. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
 	
-	Jazyk Markdown nemá žádnou syntax pro označení matematických výrazů. \dots
+	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (\quotedblbase\$\$\textquotedblleft, dále jen \quotedblbase dvoudolar\textquotedblleft). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2 000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
 	
-	Každé teoretické téma (a tedy soubor) se může dělit na několik podtémat \dots
+	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam (z něj lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek). Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny).
 	
-	% Tlačítka ...	
-	% Zmínit původně zamýšlený upload vlastních témat, nakonec self-host řešení	
-	% výklad teorie, self host ready
-			
-	% generace příkladů (kalkulačka netřeba)
-	% specifické discord možnosti (administrace, interactions)
-	% todo Separate Literals etc. (db_io + premissions) in code ? ;; defer do problem/__edit_message ?
+	Během návrhu se původně uvažovalo o možnosti nahrávání nových témat uživateli. Discord umožňuje jako parametr příkazu předat soubor a uživatel by takto mohl do bota nahrát vlastní Markdown zápisky. Tento návrh ale otevírá několik otázek: Kdo všechno bude moct tyto zápisky vidět (všichni nebo např. jen členové stejného serveru)? Má být nastaven limit maximálního počtu nahraných souborů (na konkrétního uživatele nebo na server)? Jak se stavět k nevhodnému obsahu? Navíc by bylo potřeba rozhraní, kde by uživatel mohl své nahrané soubory spravovat. To by v prostředí textového chatu nebylo příliš praktické, vhodnější by bylo k botu ještě vytvořit webové rozhraní.
+	
+	Nakonec byl zvolen přístup, kde si každý uživatel může provozovat vlastní instanci navrhovaného bota. Soubory s tématy jsou pak nakopírovány do vyhrazeného adresáře, odkud mohou být snadno spravovány.
+	
+	\subsection{Generace příkladů} % kalkulačka zavržena
+	
+	Příklady lze generovat použitím příkazu \verb*|/generate|, po jehož zadání je do textového kanálu opět odeslán výběrový seznam, který tentokrát obsahuje dostupné kategorie příkladů. Po volbě některé z kategorií se objeví trojice tlačítek \textit{Generovat příklad}, \textit{Jak počítat?} a \textit{Změnit kategorii / Ukončit}. Po vygenerování příkladu jej bot bez výsledku odešle do chatu. Uživatel si může zkusit příklad vypočítat, a poté si nově objeveným tlačítkem nechat zobrazit výsledek. Tento proces lze opakovat, dokud není rozhraní ukončeno.
+	
+	Navrhovaný bot neobsahuje funkcionalitu pro kontrolu uživatelem zadaných výsledků. Pokud by takovým výsledkem byla např. matice většího rozměru, její zadávání by bylo zdlouhavé (a také náchylné na překlepy) a muselo by mít nastavená jasná pravidla zápisu (nebo by musel uživatelský vstup projít komplexnější syntaktickou analýzou). Pokud se uživatel dozví, že jeho výsledek je nesprávný, dalším krokem by mělo v každém případě být nalezení chyby (a poučení se z ní). Znalost výsledku sice může hledání chyby trivializovat, avšak frustrace z nesprávných výsledků u uživatelů pravděpodobně stejně vede k okamžitému zobrazení těch správných.
+	
+	Po stisknutí tlačítka \textit{Jak počítat?} jsou do textového kanálu odeslány zprávy s návodem pro výpočet příkladů z dané kategorie. Logika odesílání těchto zpráv je stejná jako u výkladu teorie. Nechybí tedy tlačítko pro přeposlání návodu do přímých zpráv a obsah je čerpán z Markdown souborů (které lze snadno upravovat). Každá kategorie příkladů nemusí nutně obsahovat návod, pak je tlačítko pro jeho zobrazení zašedlé a nelze s ním interagovat. Opačný stav, kdy existuje pouze návod a nelze generovat příklady, je také možný.
+		
+	\subsection{Možnosti moderace}
+	
+	Aby byly demonstrovány specifické vlastnosti platformy Discord, byla do bota přidána funkcionalita pro moderaci (administraci) pomocí sady příkazů \verb*|/setup|. Administrátoři serveru mohou u každého příkazu nastavit, kdo má oprávnění jej používat. Lze vybrat ze tří kategorií: pouze administrátoři, administrátoři a moderátoři bota, nebo kdokoliv (výchozí stav).
+	
+	\textit{Administrátor} je typ oprávnění, které je součástí Discordu a uživatelům ho lze přidělit v rámci role. Pokud není taková role nikomu přidělena, pak je majitel serveru jediným uživatelem s těmito právy (a zároveň jediným, kdo může tuto roli někomu dalšímu přidělit).
+	
+	Za \quotedblbase moderátora bota\textquotedblleft\ je považován uživatel, kterému byla (administrátorem) přidělena speciální role. Tato role je vytvořena navrhovaným botem po jeho připojení na daný server. Díky této roli lze uživatele bez administrátorských práv rozdělit na dvě skupiny a pouze jedné z nich povolit používání určitých příkazů.
+	
+	Nastavení může vypadat např. následovně: Kdokoliv může vykreslovat matematické výrazy pomocí \verb*|/render|, pouze moderátoři bota (a tedy i administrátoři, kteří jim jsou nadřazeni) mohou generovat příklady pomocí \verb*|/generate| a pouze administrátoři mohou používat výklad teorie příkazem \verb*|/explain|.
+	
+	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena (zadavatel daného příkazu). Interakci s \quotedblbase cizími\textquotedblleft\ ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota.
+	
+	\subsection{Další funkcionalita} % render_theme; /clear; /ping; /help; $> old_commands
+	
+	\verb*|/help| \dots
+	
+	\verb*|/ping| \dots
+	
+	\verb*|/clear| \dots
+	
+	Render theme \dots
 	
 	\section{Implementace}
+	
+	% todo Separate Literals etc. (db_io + premissions) in code ? ;; defer do problem/__edit_message ?
+	
+	\subsection{Struktura projektu}
 	
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 	
@@ -339,6 +370,7 @@
 	% generovat sekvence příkladů, "simulace zkoušky"
 	% right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
 	% Co se týče zápisků z teorie: přidat souvislost s IT
+	% Kód: Použít SQLAlchemy
 	
 	\chapter{Závěr}
 	
