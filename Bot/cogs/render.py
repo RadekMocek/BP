@@ -26,13 +26,13 @@ class Render(commands.Cog):
         :param text: Např. "2 \\cdot [1, 2; 3, \\sqrt{4}] = [2, 4; 6, 4]"
         """
         # Zkontrolovat, zdali má uživatel na daném serveru oprávnění tento příkaz použít
-        permissions.command(itx, "render")
+        permissions.check_command(itx, "render")
         # Po zavolání defer Discord napíše, že "Bot přemýšlí", followup s odpovědí může pak být odeslán později
         await itx.response.defer()
         # Byte buffer, do kterého bude vložen obrázek s vykresleným matematickým výrazem
         image_buffer = io.BytesIO()
         # Pokusit se výraz vykreslit, případně odpovědět chybovým hlášením
-        render_theme_name = render_get_theme(itx)
+        render_theme_name = render_get_theme(itx)  # Získat si barevné schéma odpovídající aktuálnímu serveru/uživateli
         try:
             render_matrix_equation_align_to_buffer(image_buffer, text, render_theme_name)
             await itx.followup.send(file=discord.File(image_buffer, "lingebot_math_render.png"))

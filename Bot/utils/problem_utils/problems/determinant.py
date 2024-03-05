@@ -1,3 +1,5 @@
+"""Příklady: Výpočet determinantu"""
+
 import sympy as sp
 
 from utils.problem_utils.problem_utils import GeneralProblem

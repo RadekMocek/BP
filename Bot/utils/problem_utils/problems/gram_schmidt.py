@@ -1,3 +1,5 @@
+"""Příklady: Ortogonalizace (k dispozici je pouze návod "Jak počítat?")"""
+
 from utils.problem_utils.problem_utils import GeneralProblem
 
 

@@ -12,11 +12,12 @@ __DELAY_DURATION = 0.15
 async def send_messages(itx: discord.Interaction,
                         message_contents: list[Union[str, io.BytesIO]],
                         dm: bool = False) -> list[discord.Message]:
-    """Odeslat zprávy do určitého kanálu nebo určitému uživateli."""
+    """Odeslat zprávy do určitého kanálu nebo určitému uživateli.
+    :return: List odeslaných zpráv"""
     channel = itx.user if dm else itx.channel
     sent_messages = []
     # Při větším množství zpráv snížit rychlost jejich odesílání kvůli Discord omezením
-    delay = len(message_contents) > 5
+    is_delay = len(message_contents) > 5
 
     for message_content in message_contents:
         if isinstance(message_content, str):  # Text
@@ -27,12 +28,12 @@ async def send_messages(itx: discord.Interaction,
             message = await channel.send(file=discord.File(message_content, "lingebot_math_render.png"))
             sent_messages.append(message)
             message_content.close()
-        if delay:
+        if is_delay:
             await asyncio.sleep(__DELAY_DURATION)
     return sent_messages
 
 
-async def delete_messages(itx: discord.Interaction, messages: list[discord.Message]):
+async def delete_messages(itx: discord.Interaction, messages: list[discord.Message]) -> None:
     """Smazat zprávy."""
     if not itx.response.is_done():
         await itx.response.defer()
@@ -69,4 +70,4 @@ async def try_dm_user(itx: discord.Interaction, message: str, defer: bool = True
         else:
             await itx.response.send_message(content=content, ephemeral=True)
         return False
-    return True  # Jinak vrátit True
+    return True  # Jinak vrátit True => uživatele se podařilo kontaktovat přes DMs

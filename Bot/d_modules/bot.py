@@ -46,4 +46,5 @@ class LingeBot(commands.Bot):
         print("Bot je připraven.")
 
     def get_uptime(self) -> str:
-        return str(datetime.now() - self.uptime_start).strip().split(".")[0]
+        """:return: Fomátovaný výpis doby uběhlé od spuštění bota."""
+        return str(datetime.now() - self.uptime_start).strip().split(".")[0]  # (Použito v /ping)

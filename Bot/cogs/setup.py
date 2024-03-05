@@ -13,9 +13,10 @@ class Setup(commands.Cog):
     def __init__(self, bot) -> None:
         self.bot = bot
 
+    # Skupina příkazů /setup ...
     setup = app_commands.Group(name="setup", description="Změnit nastavení bota na tomto serveru.")
 
-    @setup.command()
+    @setup.command()  # /setup render_theme <theme>
     async def render_theme(self,
                            itx: discord.Interaction,
                            theme: database.ThemeLiteral) -> None:
@@ -25,11 +26,11 @@ class Setup(commands.Cog):
         :param itx
         :param theme: Barevné schéma
         """
-        permissions.admin_or_dm_only(itx)
+        permissions.check_admin_or_dm_only(itx)
         render_set_theme(itx, theme)
         await itx.response.send_message(content=f"Téma matematických výrazů bylo změneno na `{theme}`.", ephemeral=True)
 
-    @setup.command()
+    @setup.command()  # /setup lingemod <member>
     @app_commands.checks.has_permissions(manage_roles=True)
     async def lingemod(self, itx: discord.Interaction, member: discord.Member) -> None:
         """
@@ -54,17 +55,18 @@ class Setup(commands.Cog):
         await itx.response.send_message(content=f"Role `{role}` byla {action_str} uživateli `{member}`.",
                                         ephemeral=True)
 
+    # Skupina příkazů /setup permissions ...
     setup_permissions = app_commands.Group(name="permissions",
                                            description="Změnit nastavení oprávnění na tomto serveru.",
                                            parent=setup)
 
-    @setup_permissions.command()
+    @setup_permissions.command()  # /setup permissions get
     @app_commands.checks.has_permissions(administrator=True)
     async def get(self, itx: discord.Interaction) -> None:
         """(Admin only) Vypsat aktuální nastavení oprávnění na tomto serveru."""
         await itx.response.send_message(content=f"{permissions.get_permissions_info(itx.guild.id)}", ephemeral=True)
 
-    @setup_permissions.command()
+    @setup_permissions.command()  # /setup permissions set_command <action> <permission>
     @app_commands.checks.has_permissions(administrator=True)
     async def set_command(self,
                           itx: discord.Interaction,
@@ -81,7 +83,7 @@ class Setup(commands.Cog):
         await itx.response.send_message(content=f"Oprávnění příkazu `{action}` bylo úspěšně změněno na `{permission}`.",
                                         ephemeral=True)
 
-    @setup_permissions.command()
+    @setup_permissions.command()  # /setup permissions set_buttons <action> <permission>
     @app_commands.checks.has_permissions(administrator=True)
     async def set_buttons(self,
                           itx: discord.Interaction,
@@ -100,7 +102,7 @@ class Setup(commands.Cog):
             ephemeral=True
         )
 
-    @commands.command()
+    @commands.command()  # (Starý typ příkazu, aby nerušil v našeptávači) "$> lingemod_reset"
     @commands.has_permissions(administrator=True)
     async def lingemod_reset(self, ctx: commands.Context) -> None:
         """Resetovat LingeMod roli pro daný server."""

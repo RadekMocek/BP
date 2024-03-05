@@ -1,4 +1,4 @@
-# TODO: Příklady typu lin.komb., případně mx1*mx?=mx2
+"""Příklady: Výpočet soustavy rovnic pomocí matice (G(J)EM)"""
 
 import math
 import random
@@ -14,6 +14,7 @@ class Problem(GeneralProblem):
         return "Soustavy rovnic"
 
     def mx_row_gcd(self, row):
+        """Vydělit řádek matice jejím největším společným dělitelem"""
         row_gcd = math.gcd(*row)
         return [0 if row_gcd == 0 else element // row_gcd for element in row]
 

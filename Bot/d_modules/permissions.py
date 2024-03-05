@@ -1,3 +1,5 @@
+"""Kontrola oprávnění."""
+
 from typing import Literal, Union, get_args
 
 import discord
@@ -30,27 +32,32 @@ __INT_2_VIEWINTERACTION: dict[int, PermissionViewInteractionLiteral] = {
 
 
 def __is_admin_or_dm(itx: discord.Interaction) -> bool:
+    """:return: Zdali je uživatel admin nebo se jedná o konverzaci v přímých zprávách"""
     return not itx.guild or itx.user.guild_permissions.administrator
 
 
 def __get_permission(itx: discord.Interaction, action: database.ActionLiteral) -> int:
+    """:return: Číslo oprávnení pro danou akci an daném serveru"""
     if database.is_id_in_table(itx.guild.id, "permissions"):
         return database.permissions_get_one(itx.guild.id, action)
     else:
         return database.DEFAULT_PERMISSIONS[action]  # Pokud oprávnění nenajdeme v databázi, použijeme ta defaultní
 
 
-def admin_or_dm_only(itx: discord.Interaction) -> None:
+def check_admin_or_dm_only(itx: discord.Interaction) -> None:
+    """Je uživatel admin nebo se jedná o DMs? Pokud ne, vyvolat výjimku."""
     if not __is_admin_or_dm(itx):
         raise discord.app_commands.MissingPermissions(["Nedostatečná práva."])
 
 
-def command(itx: discord.Interaction, action: database.ActionLiteral) -> None:
+def check_command(itx: discord.Interaction, action: database.ActionLiteral) -> None:
+    """Má uživatel dostatečná oprávnění pro příkaz `action`? Pokud ne, vyvolat výjimku."""
     if not __check_command(itx, action):
         raise discord.app_commands.MissingPermissions(["Nedostatečná práva."])
 
 
 def __check_command(itx: discord.Interaction, action: database.ActionLiteral) -> bool:
+    """:return: Zdali má uživatel dostatečná oprávnění pro příkaz `action`"""
     # Pokud je uživatel admin, nebo se nacházíme v DMs, spuštění příkazu je vždy povoleno
     if __is_admin_or_dm(itx):
         return True
@@ -67,9 +74,10 @@ def __check_command(itx: discord.Interaction, action: database.ActionLiteral) ->
     return role_id != -1 and role and role in itx.user.roles
 
 
-def view_interaction(itx: discord.Interaction,
-                     view_author: Union[discord.Member, discord.User],
-                     action: database.ActionLiteral) -> bool:
+def check_view_interaction(itx: discord.Interaction,
+                           view_author: Union[discord.Member, discord.User],
+                           action: database.ActionLiteral) -> bool:
+    """:return: Zdali může daný uživatel interagovat s daným interaktivním prvkem"""
     # Původní uživatel podpůrného příkazu, který view vyvolal, s ním může vždy interagovat
     if itx.user == view_author:
         return True
@@ -91,12 +99,14 @@ def view_interaction(itx: discord.Interaction,
 def set_command_permission(gid: int,
                            action: database.ActionCommandLiteral,
                            permission: PermissionCommandLiteral) -> None:
+    """Uložit do dabáze oprávnění pro použití daného příkazu"""
     database.permissions_set(gid, action, __COMMAND_2_INT[permission])
 
 
 def set_view_interaction_permission(gid: int,
                                     action: database.ActionViewInteractionLiteral,
                                     permission: PermissionViewInteractionLiteral) -> None:
+    """Uložit do dabáze oprávnění pro použití dané interakce"""
     database.permissions_set(gid, action, __VIEWINTERACTION_2_INT[permission])
 
 

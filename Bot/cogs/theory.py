@@ -16,7 +16,7 @@ class Theory(commands.Cog):
     @app_commands.command()
     async def explain(self, itx: discord.Interaction) -> None:
         """Otevřít rozhraní pro výklad teorie."""
-        permissions.command(itx, "explain")
+        permissions.check_command(itx, "explain")
         await itx.response.send_message("Zvolte si téma:")
         await MessageView.attach_to_message(840,
                                             await itx.original_response(),

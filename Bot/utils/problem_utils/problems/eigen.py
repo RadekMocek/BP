@@ -1,3 +1,5 @@
+"""Příklady: Výpočet vlastních čísel a vektorů"""
+
 import random
 
 import sympy as sp
@@ -22,26 +24,26 @@ class Problem(GeneralProblem):
         self.task = f"Určete vlastní čísla a jim odpovídající vlastní vektory matice:\n```{sp.pretty(mx)}```"
         # Výpočet charakteristického polynomu (pouze pro ukázání v postupu řešení)
         lambda_symbol = sp.symbols("lambda")
-        character_mx = mx.copy()
-        character_mx[0] -= lambda_symbol
-        character_mx[3] -= lambda_symbol
-        character_pol_str = sp.pretty(character_mx.det()) + " = 0"
+        characteristic_mx = mx.copy()
+        characteristic_mx[0] -= lambda_symbol
+        characteristic_mx[3] -= lambda_symbol
+        characteristic_polynom_str = sp.pretty(characteristic_mx.det()) + " = 0"
         # Vlastní čísla dosazená do matice za lambdu (pouze pro ukázání v postupu řešení)
         eigenvalues = ""
-        for num in reversed(mx.eigenvals().keys()):
-            eigenvalues += f"\nVlastní číslo {num}:\n"
-            num_mx = mx.copy()
-            num_mx[0] -= num
-            num_mx[3] -= num
-            num_mx = num_mx.col_insert(2, sp.Matrix([0, 0]))
-            eigenvalues += f"{sympy_matrix_pretty(num_mx,-1)}\n"
+        for eigenvalue in reversed(mx.eigenvals().keys()):
+            eigenvalues += f"\nVlastní číslo {eigenvalue}:\n"
+            eigenvalue_mx = mx.copy()
+            eigenvalue_mx[0] -= eigenvalue
+            eigenvalue_mx[3] -= eigenvalue
+            eigenvalue_mx = eigenvalue_mx.col_insert(2, sp.Matrix([0, 0]))
+            eigenvalues += f"{sympy_matrix_pretty(eigenvalue_mx, -1)}\n"
         # Řetězec vlastních čísel a jim odpovídajícím vlastním vektorům
         eigenvectors = ""
         for tup in mx.eigenvects():
             eigenvectors += f"  Vlastní číslo: {tup[0]}\nVlastní vektory: {[list(x) for x in tup[2]]}\n\n"
         # Řešení
         self.answer = (f"{self.task[:-3]}"
-                       f"\n\n{sp.pretty(character_mx)}\n\n{character_pol_str}"
+                       f"\n\n{sp.pretty(characteristic_mx)}\n\n{characteristic_polynom_str}"
                        f"\n\n{eigenvalues}"
                        f"\n\n{eigenvectors}"
                        f"```")

@@ -1,3 +1,5 @@
+"""Příklady: Výpočet inverzní matice"""
+
 import sympy as sp
 
 from utils.problem_utils.problem_utils import GeneralProblem, random_det1_33_matrix, sympy_matrices_2_string

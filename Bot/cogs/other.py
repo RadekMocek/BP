@@ -1,4 +1,4 @@
-"""Cog obstarávající ostatní nezařezené příkazy."""
+"""Cog obstarávající ostatní nezařezené příkazy (/clear, /dm, /help, /ping)."""
 
 import platform
 from importlib.metadata import version
@@ -8,19 +8,20 @@ from discord import app_commands
 from discord.ext import commands
 
 import d_modules.permissions as permissions
-from d_modules.bot import LingeBot, SECRET1
+from d_modules.bot import SECRET1
 from d_modules.common_modules import MessageView, UrlGitBookButton, UrlGitHubButton, UrlGoogleFormsButton
 from d_modules.messages import try_dm_user
+from utils.file_io import txt_read
 
 
 class Other(commands.Cog):
-    def __init__(self, bot: LingeBot) -> None:
-        self.bot: LingeBot = bot
+    def __init__(self, bot) -> None:
+        self.bot = bot
 
     @app_commands.command()
     async def clear(self, itx: discord.Interaction) -> None:
         """Poslat dlouhou prázdnou zprávu (admin/DM only)."""
-        permissions.command(itx, "clear")
+        permissions.check_command(itx, "clear")
         await itx.response.send_message("⠀\n" * 45)
 
     @app_commands.command()
@@ -48,7 +49,8 @@ class Other(commands.Cog):
         `/setup` – Nastavení pro administrátory (viz podrobná nápověda)
         
         ### Podrobná nápověda
-        Kompletní nápověda se nachází na [GitBook](https://lingebot.gitbook.io/lingebot-napoveda/)
+        Kompletní nápověda se nachází na [GitBook](https://lingebot.gitbook.io/lingebot-napoveda/)*
+        \* Na nové (lepší) verzi manuálu se pracuje
         
         ### Zpětná vazba
         Jedním z bodů mé práce je také __**vyhodnotit zpětnou vazbu od uživatelů**__
@@ -67,20 +69,21 @@ class Other(commands.Cog):
     @app_commands.command()
     async def ping(self, itx: discord.Interaction) -> None:
         """Ověřit dostupnost bota."""
-        ljust_amount = 7
-        rjust_amount = 17
-        embed_message = discord.Embed(title="Pong!", description=(
+        # Základní informace
+        description = (
             f"```Prodleva         {round(self.bot.latency * 1000)} ms```"
             f"```Uptime           {self.bot.get_uptime()}```"
             f"```Pčt. serverů     {len(self.bot.guilds)}```"
             f"```Hosting OS       {platform.system()} {platform.release()}```"
             f"```Python verze     {platform.python_version()}```"
-            f"` discord.py{version('discord.py').ljust(ljust_amount).rjust(rjust_amount)}`\n"
-            f"` matplotlib{version('matplotlib').ljust(ljust_amount).rjust(rjust_amount)}`\n"
-            f"` numpy     {version('numpy').ljust(ljust_amount).rjust(rjust_amount)}`\n"
-            f"` sympy     {version('sympy').ljust(ljust_amount).rjust(rjust_amount)}`\n"
-            f"` unicodeit {version('unicodeit').ljust(ljust_amount).rjust(rjust_amount)}`"
-        ))
+        )
+        # Informace o balíčcích
+        packages = txt_read("requirements.txt")
+        for line in packages.split("\n"):
+            package_name = line.split("==")[0]
+            description += f"` {package_name.ljust(20)}{version(package_name).ljust(7)}`\n"
+        # Předa informace prostřednictvím embed zprávy
+        embed_message = discord.Embed(title="Pong!", description=description)
         await itx.response.send_message(embed=embed_message, ephemeral=False)
 
 

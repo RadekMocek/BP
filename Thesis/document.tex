@@ -22,18 +22,13 @@
 % Poslední dva autory knihy neoddělovat středníkem ale písmenem 'a'
 \DeclareDelimFormat{finalnamedelim}{\addspace a\space}
 
-% Titulní strana
+% Název práce
 \TULtitle{Tvorba a využití botu pro výuku matematiky na platformě Discord}{Creating and using a bot for teaching mathematics on the Discord platform}
-\TULprogramme{B0613A140005}{Informační technologie}{Information technology}
-%\TULbranch{B0613A140005AI}{Aplikovaná informatika}{Applied Informatics}
-\TULauthor{Radek Mocek}
-\TULsupervisor{Ing. Igor Kopetschke}
-\TULyear{2024}
 
 % Začátek dokumentu
 \begin{document}
-	% Prohlášení
-	\ThesisStart{male}
+	% Úvodní stránky
+	\ThesisStart{zadani.pdf}
 	
 	% Poděkování
 	\begin{acknowledgement}
@@ -319,7 +314,7 @@
 	
 	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (\quotedblbase\$\$\textquotedblleft, dále jen \quotedblbase dvoudolar\textquotedblleft). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2 000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
 	
-	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam (z něj lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek). Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny).
+	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam (z něj lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek). Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.
 	
 	Během návrhu se původně uvažovalo o možnosti nahrávání nových témat uživateli. Discord umožňuje jako parametr příkazu předat soubor a uživatel by takto mohl do bota nahrát vlastní Markdown zápisky. Tento návrh ale otevírá několik otázek: Kdo všechno bude moct tyto zápisky vidět (všichni nebo např. jen členové stejného serveru)? Má být nastaven limit maximálního počtu nahraných souborů (na konkrétního uživatele nebo na server)? Jak se stavět k nevhodnému obsahu? Navíc by bylo potřeba rozhraní, kde by uživatel mohl své nahrané soubory spravovat. To by v prostředí textového chatu nebylo příliš praktické, vhodnější by bylo k botu ještě vytvořit webové rozhraní.
 	
@@ -335,7 +330,7 @@
 		
 	\subsection{Možnosti moderace}
 	
-	Aby byly demonstrovány specifické vlastnosti platformy Discord, byla do bota přidána funkcionalita pro moderaci (administraci) pomocí sady příkazů \verb*|/setup|. Administrátoři serveru mohou u každého příkazu nastavit, kdo má oprávnění jej používat. Lze vybrat ze tří kategorií: pouze administrátoři, administrátoři a moderátoři bota, nebo kdokoliv (výchozí stav).
+	Aby byly demonstrovány specifické vlastnosti platformy Discord, byla do bota přidána funkcionalita pro moderaci (administraci) pomocí sady příkazů \verb*|/setup|. Administrátoři serveru mohou u každého příkazu nastavit, kdo má oprávnění jej používat. Lze vybrat ze tří kategorií: pouze administrátoři, administrátoři a moderátoři bota, nebo kdokoliv (výchozí stav). Tato nastavení dávají smysl pouze při používání bota na serverech a v přímé konverzaci nemají význam.
 	
 	\textit{Administrátor} je typ oprávnění, které je součástí Discordu a uživatelům ho lze přidělit v rámci role. Pokud není taková role nikomu přidělena, pak je majitel serveru jediným uživatelem s těmito právy (a zároveň jediným, kdo může tuto roli někomu dalšímu přidělit).
 	
@@ -343,24 +338,24 @@
 	
 	Nastavení může vypadat např. následovně: Kdokoliv může vykreslovat matematické výrazy pomocí \verb*|/render|, pouze moderátoři bota (a tedy i administrátoři, kteří jim jsou nadřazeni) mohou generovat příklady pomocí \verb*|/generate| a pouze administrátoři mohou používat výklad teorie příkazem \verb*|/explain|.
 	
-	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena (zadavatel daného příkazu). Interakci s \quotedblbase cizími\textquotedblleft\ ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota.
+	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena (zadavatel daného příkazu). Interakci s \quotedblbase cizími\textquotedblleft\ ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota. Tlačítko pro přeposlání daného podtématu do přímých zpráv je vždy dostupné všem.
 	
-	\subsection{Další funkcionalita} % render_theme; /clear; /ping; /help; $> old_commands
+	\subsection{Další funkcionalita} % $> old_commands
 	
-	\verb*|/help| \dots
+	Navrhovaný bot obsahuje příkaz \verb*|/help| pro zobrazení stručné nápovědy. Zvykem při tvorbě Discord botů je také přidání příkazu \verb*|/ping|, pomocí kterého lze otestovat, zdali je bot online. Příkaz ping je inspirován stejnojmenným programem a odpověď na něj obvykle vypisuje dobu odezvy (latenci) daného bota. V tomto případě byly do výpisu přidány i další informace jako doba provozu (uptime) nebo počet serverů, na kterých se navrhovaný bot nachází.
 	
-	\verb*|/ping| \dots
+	Dalším přidaným příkazem, který byl inspirován prostředím terminálu, je \verb*|/clear|. Po jeho zadání bot do chatu odešle  prázdnou zprávu, která je tak dlouhá, aby se všechny předchozí zprávy již nevešly na obrazovku. To může být užitečné pro zpřehlednění konverzace v daném textovém kanále.
 	
-	\verb*|/clear| \dots
-	
-	Render theme \dots
+	U bota je možné změnit barevné schéma vykreslovaných matematických výrazů. Konkrétně jsou k dispozici čtyři kombinace barvy písma a pozadí u odeslaných obrázků. Barevné schéma je vázané na server a může být přenastaveno jeho administrátorem. Všechny botem odeslané obrázky na určitý server budou respektovat jeho nastavené schéma (nezávisle na uživateli příkazu). Uživatel si totiž může také vybrat barevné schéma v přímých zprávách s navrhovaným botem. Toto schéma je použito u zpráv reagujících na příkazy spuštěné v přímé konverzaci a zároveň u zpráv přeposlaných z jakéhokoliv serveru pomocí tlačítka \textit{Odeslat do DMs}.
 	
 	\section{Implementace}
 	
-	% todo Separate Literals etc. (db_io + premissions) in code ? ;; defer do problem/__edit_message ?
-	
 	\subsection{Struktura projektu}
-	
+
+	% todo:	Nešlo by sympy_matrix_pretty napsat jednodušeji (bez reverse etc.)
+	% barevný text
+	% Příkaz /dm
+	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 	
 	\section{Zhodnocení}

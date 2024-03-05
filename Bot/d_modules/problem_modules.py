@@ -132,7 +132,7 @@ class ProblemView(LingeBotView):
         await parent_message.edit(view=self)
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
-        if permissions.view_interaction(itx, self.author, "generate_btns"):
+        if permissions.check_view_interaction(itx, self.author, "generate_btns"):
             return True
         # Při nedostatečných právech informovat uživatele ephemeral zprávou
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."
@@ -193,6 +193,8 @@ class ProblemView(LingeBotView):
     async def __edit_message(self, itx: discord.Interaction, text: str):
         """Upravit zprávu."""
         if "$$$" in text:
+            # Vykreslení matematického výrazu může chvíli trvat, proto defer
+            await itx.response.defer()
             # Content - očekváváme nejdřív normální text, poté tři dolary následované math výrazem
             text_parts = text.split("$$$")
             content = text_parts[0]
@@ -202,11 +204,11 @@ class ProblemView(LingeBotView):
                 render_matrix_equation_align_to_buffer(image_buffer, text_parts[1], self.render_theme_name)
             except ValueError as error:
                 content += f"\n```{error}```"
-            # Upravit parent_message
-            await itx.response.edit_message(content=content,
-                                            embed=self.__generate_embed(False),
-                                            attachments=[discord.File(image_buffer, "lingebot_math_render.png")],
-                                            view=self)
+            # Upravit parent_message (po defer nelze použít itx.response.edit_message)
+            await self.parent_message.edit(content=content,
+                                           embed=self.__generate_embed(False),
+                                           attachments=[discord.File(image_buffer, "lingebot_math_render.png")],
+                                           view=self)
             image_buffer.close()
         else:
             await itx.response.edit_message(content=text,

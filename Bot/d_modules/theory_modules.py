@@ -49,7 +49,7 @@ class TheorySubthemeSaveButton(discord.ui.Button):
 
 # region Theory Selects
 class TheoryThemeSelect(discord.ui.Select):
-    """Nabízí dostupná teoretická témata a po výběru vytvoří zprávu s ThemeView."""
+    """Nabízí dostupná teoretická témata a po výběru vytvoří zprávu s `ThemeView`."""
 
     def __init__(self) -> None:
         options = []
@@ -137,7 +137,7 @@ class TheoryThemeView(LingeBotView):
         if itx.data["custom_id"] == "SubthemeSaveButton":
             return True
         # Ostatní View itemy určeny oprávněním daného serveru
-        if permissions.view_interaction(itx, self.author, "explain_btns"):
+        if permissions.check_view_interaction(itx, self.author, "explain_btns"):
             return True
         # Při nedostatečných právech informovat uživatele ephemeral zprávou
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."

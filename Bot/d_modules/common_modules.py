@@ -64,7 +64,7 @@ class UrlGoogleFormsButton(discord.ui.Button):
 class LingeBotModal(discord.ui.Modal):
     """Obsahuje metody/parametry společné pro všechny modaly v LingeBot."""
 
-    async def on_error(self, itx: discord.Interaction, error: Exception) -> None:
+    async def on_error(self, itx: discord.Interaction, error: Exception) -> None:  # Log a výpis chyby do chatu
         logging.getLogger("discord").error("Ignoring exception in modal %r:", self, exc_info=error)
         await itx.followup.send(f"```ansi\n[2;31m{error}```", ephemeral=True)
 
@@ -95,7 +95,7 @@ class LingeBotView(discord.ui.View):
     async def on_error(self, itx: discord.Interaction, error: Exception, item: discord.ui.Item[Any]) -> None:
         logging.getLogger("discord").error("Ignoring exception in view %r for item %r", self, item, exc_info=error)
         content = f"```ansi\n[2;31m{error}```"
-        try:
+        try:  # Odeslat chybové hlášení do chatu
             await itx.response.send_message(content=content)
         except discord.InteractionResponded:
             await itx.followup.send(content=content)
@@ -126,8 +126,8 @@ class MessageView(LingeBotView):
         await self.parent_message.edit(view=self)
 
     async def interaction_check(self, itx: discord.Interaction) -> bool:
-        if not self.action or permissions.view_interaction(itx, self.author, self.action):
-            return True
+        if not self.action or permissions.check_view_interaction(itx, self.author, self.action):
+            return True  # Nejedná se o akci vyžadující oprávnění, nebo je má užvatel dostatečná
         # Při nedostatečných právech informovat uživatele tzv. ephemeral zprávou (zprávu vidí pouze daný uživatel)
         message_content = "Nemáte dostatečná práva pro interakci s touto zprávou."
         await itx.response.send_message(content=message_content, ephemeral=True)

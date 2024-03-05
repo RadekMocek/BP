@@ -21,6 +21,7 @@ def get_problem_tutorial(problem_name: str) -> Optional[str]:
 
 
 def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
+    """:return: Řetězec s NumPy maticí převedenou do formátu pro LingeBot vykreslení"""
     result = np.array2string(array, separator=",")
     # → [[1, 2],\n [3, 4]]
     result = "".join(result.split())
@@ -32,12 +33,18 @@ def numpy_array_2_lingebot_matrix(array: np.ndarray) -> str:
 
 
 def random_det1_22_matrix(values: list[int]) -> sp.Matrix:
+    """:param values: Z tohoto listu se vybírají hodnoty pro generaci:
+    Velikost čísel ovlivní velikost čísel ve výsledné matici
+    :return: Náhodná 2x2 matice mx, kde det(mx)==1"""
     mx1 = sp.Matrix([[1, random.choice(values)], [0, 1]])
     mx2 = sp.Matrix([[1, 0], [random.choice(values), 1]])
     return mx1 * mx2
 
 
 def random_det1_33_matrix(values: list[int]) -> sp.Matrix:
+    """:param values: Z tohoto listu se vybírají hodnoty pro generaci:
+    Velikost čísel ovlivní velikost čísel ve výsledné matici
+    :return: Náhodná 3x3 matice mx, kde det(mx)==1"""
     # https://math.stackexchange.com/a/19529
     # https://math.stackexchange.com/a/1028487
     letters = [random.choice(values) for _ in range(6)]
@@ -55,24 +62,31 @@ def random_det1_33_matrix(values: list[int]) -> sp.Matrix:
 
 
 def sympy_matrix_pretty(mx: sp.Matrix, vertical_line_index: int = 0) -> str:
+    """:param mx: SymPy matice
+    :param vertical_line_index: Pozice vertikální čáry, indexuje se odzadu (záporné číslo; 0==bez čáry)
+    :return: Pretty printed SymPy matice s volitelnou vertikální čárou"""
     pretty = sp.pretty(mx)
     if vertical_line_index >= 0:
         return pretty
+    # Prvky ve sloupcích SymPy matice jsou zarovnány na střed, je tedy potřeba projet všechny řádky
+    # a najít nejpravější index, na který lze umístit vertikální čáru, aniž by protínala nějaký prvek
     pretty_lines = pretty.split("\n")
-    pattern = re.compile(r"\S(\s)")
-    min_index = len(pretty)
+    pattern = re.compile(r"\S(\s)")  # Hledat mezery mezi prvky v řádku matice
+    vertical_line_index = len(pretty)
     for line in pretty_lines:
-        rev = line[::-1][1:]
-        matches = [x.start(1) for x in pattern.finditer(rev)]
+        reversed_line = line[::-1][1:]
+        matches = [x.start(1) for x in pattern.finditer(reversed_line)]
         if not matches:
             continue
-        index = len(rev) - matches[-vertical_line_index - 1] - 1
-        if index < min_index:
-            min_index = index
-    return "\n".join([x[:min_index] + "⎥" + x[min_index:] for x in pretty_lines])
+        index = len(reversed_line) - matches[-vertical_line_index - 1] - 1
+        if index < vertical_line_index:
+            vertical_line_index = index
+    return "\n".join([x[:vertical_line_index] + "⎥" + x[vertical_line_index:] for x in pretty_lines])
 
 
 def sympy_matrices_2_string(matrices: list[sp.Matrix], vertical_line_index: int = 0) -> str:
+    """:return: Řetězec s pretty printed SymPy maticemi napsanými vedle sebe a oddělenými operátorem " ~ ... ~ ";
+    volitelná vertikální čára"""
     n_matrices = len(matrices)
     lines = []
     first_iter = True
@@ -94,6 +108,8 @@ def sympy_matrices_2_string(matrices: list[sp.Matrix], vertical_line_index: int 
 
 
 class GeneralProblem(ABC):
+    """Z této abstraktní třídy dědí všechny ostatní třídy pro generaci příkladů."""
+
     def __init__(self):
         self.task, self.answer = ("",) * 2
 

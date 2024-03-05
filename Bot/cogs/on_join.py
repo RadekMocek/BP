@@ -1,4 +1,4 @@
-"""Cog obstarává: Pokud se bot připojí na nový server, vytvoří na něm roli pro LingeBot moderátory."""
+"""Cog obstarává: Pokud se LingeBot připojí na nový server, vytvoří na něm roli LingeMod."""
 
 import discord
 from discord.ext import commands
