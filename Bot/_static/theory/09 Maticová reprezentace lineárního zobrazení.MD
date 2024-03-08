@@ -7,7 +7,7 @@
 ## Maticová reprezentace lineárního zobrazení
 
 * Cíl: Najít souřadnice vektoru _f(u)_ v bazi _F_, pokud známe souřadnice _u_ v bazi _E_
-  * Zjistit, zdali obraz _f(u)_ vůbec existuje, může být problémové; problému se lze vyhnout, pokud se budeme zabývat pouze zobrazením _f<sub>|D(f)</sub>_ : _Ũ_(_D(f)_, ⊕<sub>u</sub>, ⊗<sub>u</sub>) → _V_ (zúžení na definiční obor)
+  * Zjistit, zdali obraz _f(u)_ vůbec existuje, může být problémové; problému se lze vyhnout, pokud se budeme zabývat pouze zobrazením _f<sub>|D(f)</sub>_ : *Ũ*(_D(f)_, ⊕<sub>u</sub>, ⊗<sub>u</sub>) → _V_ (zúžení na definiční obor)
 * Matice _F<sub>E→F</sub>_ se nazývá maticová reprezentace lineárního zobrazení _f_ v bazích _E_ a _F_
   * Její rozměry jsou dim(_V_)×dim(_U_) (dimenze prostoru obrazů × dimenze prostoru vzorů)
 * Pokud:

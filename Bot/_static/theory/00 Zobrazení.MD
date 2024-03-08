@@ -65,7 +65,7 @@
   * _i<sub>M</sub> : M → M_
   * _i<sub>M</sub>(m) = m_
 * Při skládání zobrazení hraje identické zobrazení roli neutrálního prvku
-  * Pro _f_ : _M_ → _N_ je _f_ to samé jako _i<sub>N</sub>_(_f_(_i<sub>M</sub>_))
+  * Pro _f_ : _M_ → _N_ je _f_ to samé jako *i<sub>N</sub>*(*f*(_i<sub>M</sub>_))
 * Je-li _f_ : _M_ → _N_ prosté, pak
   * _f_ <sup>-1</sup>(_f_) = _i<sub>D(f)</sub>_
-  * _f_(_f_ <sup>-1</sup>) = _i<sub>W(f)</sub>_
+  * *f*(_f_ <sup>-1</sup>) = _i<sub>W(f)</sub>_

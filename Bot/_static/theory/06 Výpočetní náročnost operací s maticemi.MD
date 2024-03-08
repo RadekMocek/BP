@@ -43,8 +43,8 @@
 
 ## Násobení součinu matic vektorem
 
-* (_AB_)_u_ má naročnost _mnp_ + _mp_ = _mp_(_n_ + 1)
-* _A_(_Bu_) má náročnost _np_ + _mn_ = _n_(_m_ + _p_)
+* (_AB_)_u_ má naročnost _mnp_ + _mp_ = *mp*(_n_ + 1)
+* *A*(_Bu_) má náročnost _np_ + _mn_ = *n*(_m_ + _p_)
 * ⟹ Předběžné násobení matic je nevýhodné
 
 ## Výpočet determinantu pomocí Gaussovy eliminace
@@ -52,7 +52,7 @@
 * Jsou-li už v matici nulami nahrazeny poddiagonální prvky v prvních (_n_ - _k_) sloupcích, pro vynulování prvků v prvním sloupci submatice <i>k</i>×<i>k</i> potřebujeme:
   * Najít koeficienty, kterými budeme násobit prvky prvního řádku submatice → jedno dělení
   * Zbývajících (_k_ - 1) prvků koeficientem vynásobit → (_k_ - 1) násobení
-* Celkem tedy _k_ operací na jeden řádek submatice a _k_(_k_ - 1) operací na všechny řádky (první řádek, kde hledáme koeficienty, nenulujeme)
+* Celkem tedy _k_ operací na jeden řádek submatice a *k*(_k_ - 1) operací na všechny řádky (první řádek, kde hledáme koeficienty, nenulujeme)
 * Toto se musí provést pro všechny sloupce matice <i>n</i>×<i>n</i>
 * Ještě musíme přičíst (_n_ - 1) → počet násobení diagonálních prvků (pro výpočet determinantu)
 
@@ -70,7 +70,7 @@ $$
 * Najít koeficient, kterým budeme násobit prvky řádku → jedno dělení
 * Vypočítat násobky všech zbývajících nenulových prvků _k_-tého řádku → (_n_ - _k_)+(_k_ - 1) = _n_ - 1 (pracujeme v levé i pravé matici)
 * Vypočítané násobky odečíst (zdarma)
-* Pro jeden řádek potřebujeme _n_ operací, pro všech zbývajících _n_ - _k_ řádků tedy _n_(_n_ - _k_) operací
+* Pro jeden řádek potřebujeme _n_ operací, pro všech zbývajících _n_ - _k_ řádků tedy *n*(_n_ - _k_) operací
 
 $$$render
 n(n-k)\rightarrow n(n-1)+n(n-2)+\dots+n(n-n)=n(1+2+\dots+n-1)=n\sum_{k=1}^{n-1}\binom{k}{1}=n\binom{n}{2}=\frac{n^2(n-1)}{2}
@@ -80,7 +80,7 @@ $$
 
 * Nejvýhodnější je nejprve nahradit diagonální prvek jedničkou, k tomu potřebujeme _n_ operací dělení hodnotou, kterou "jedničkujeme", v pravé části schématu
 * Násobek _k_-tého řádku, který budeme odečítat, už známe (na diagonále máme jedničku), příslušná řádková operace vyžaduje _n_ násobení
-* Pro _k_ - 1 řádků tedy potřebujeme _n_(_k_ - 1) = _nk - n_ operací, včetně jedničky na diagonále pak _nk_ operací
+* Pro _k_ - 1 řádků tedy potřebujeme *n*(_k_ - 1) = _nk - n_ operací, včetně jedničky na diagonále pak _nk_ operací
 
 $$$render
 nk\rightarrow n\cdot n+n(n-1)+\dots+n\cdot1=n(1+2+\dots+n)=n\sum_{k=1}^n\binom{k}{1}=n\binom{n+1}{2}=\frac{n^2(n+1)}{2}

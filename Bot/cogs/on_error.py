@@ -18,8 +18,7 @@ class OnError(commands.Cog):
     async def on_app_command_error(self, itx: discord.Interaction, error: app_commands.AppCommandError) -> None:
         """Reaguje na výjimky vyvolané v rámci slash commands"""
         is_unknown = False  # True pokud pro tuto výjimku není připraveno specifické ošetření (pak by se měla zalogovat)
-        print(error)
-        print(type(error))
+
         # Reagovat podle typu chyby:
         if isinstance(error, app_commands.MissingPermissions):
             # Pokud uživatel nemá dostatečná práva, informovat ho emphemeral zprávou

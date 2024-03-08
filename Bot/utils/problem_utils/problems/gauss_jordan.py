@@ -50,5 +50,5 @@ class Problem(GeneralProblem):
         mx_gaussed = sp.Matrix([self.mx_row_gcd(row) for row in mx_gaussed.tolist()])
         # Text výpočtu
         self.answer = (f"{self.task[:-3]}\n"
-                       f"{sympy_matrices_2_string([mx_initial, mx_gaussed, mx_final], -1)}\n"
+                       f"{sympy_matrices_2_string([mx_initial, mx_gaussed, mx_final], ' ~ ... ~ ', -1)}\n"
                        f"x = {x}\ny = {y}\nz = {z}```")

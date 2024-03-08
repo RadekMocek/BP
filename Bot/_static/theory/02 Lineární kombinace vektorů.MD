@@ -15,7 +15,7 @@ _b_ = _α<sub>1</sub>_ ⊗ _a<sub>1</sub>_ ⊕ _α<sub>2</sub>_ ⊗ _a<sub>2</su
 
 ## Lineární obal množiny vektorů
 
-* Je-li _A_ = {_a<sub>1</sub>_, _a<sub>2</sub>_, ..., _a<sub>n</sub>_(, ...)} množina vektorů z _M_ a _V_=(_M_, ⊕, ⊗) vektorový prostor nad tělesem _T_, nazveme množinu všech lineárních kombinací vektorů _a<sub>i</sub>_ **lineárním obalem** množiny _A_. Lineární obal množiny _A_ značíme span(_A_)
+* Je-li _A_ = {_a<sub>1</sub>_, _a<sub>2</sub>_, ..., *a<sub>n</sub>*(, ...)} množina vektorů z _M_ a _V_=(_M_, ⊕, ⊗) vektorový prostor nad tělesem _T_, nazveme množinu všech lineárních kombinací vektorů _a<sub>i</sub>_ **lineárním obalem** množiny _A_. Lineární obal množiny _A_ značíme span(_A_)
 
 1. Pokud vynásobíme vektor z množiny _A_ nenulovým číslem, span(_A_) se nezmění (lineární obal množiny _A_ zůstane stejný)
 2. Obal se také nezmění, pokud k jednomu vektoru přičteme libovolný násobek **jiného** vektoru

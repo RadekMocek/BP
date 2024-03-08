@@ -8,13 +8,13 @@
 
 * Jsou-li _U_=(_M_, ⊕<sub>u</sub>, ⊗<sub>u</sub>), _V_=(_N_, ⊕<sub>v</sub>, ⊗<sub>v</sub>) vektorové prostory nad tělesem _T_ a _f_ zobrazení _M_ → _N_, řekneme, že zobrazení _f_ je lineární, pokud platí:
 
-1. ` Aditivní zobrazení:` **_f_(_u_ ⊕<sub>u</sub> _v_) = _f_(_u_) ⊕<sub>v</sub> _f_(_v_)**
-2. `Homogenní zobrazení:` **_f_(_α_ ⊗<sub>u</sub> _v_) = _α_ ⊗<sub>v</sub> _f_(_u_)**
+1. ` Aditivní zobrazení:` ***f*(_u_ ⊕<sub>u</sub> _v_) = *f*(_u_) ⊕<sub>v</sub> *f*(_v_)**
+2. `Homogenní zobrazení:` ***f*(_α_ ⊗<sub>u</sub> _v_) = _α_ ⊗<sub>v</sub> *f*(_u_)**
 
 * (Pro všechna _u_, _v_ ∈ _M_, _α_ ∈ _T_)
 * Pokud je zobrazení současně aditivní i homogenní ⟺ je lineární
 * Lze také zapsat do jedné podmínky jako:
-  * _f_((_α_ ⊗<sub>u</sub> _u_) ⊕<sub>u</sub> (_β_ ⊗<sub>u</sub> _v_)) = (_α_ ⊗<sub>v</sub> _f_(_u_)) ⊕<sub>v</sub> (_β_ ⊗<sub>v</sub> _f_(_v_))
+  * *f*((_α_ ⊗<sub>u</sub> _u_) ⊕<sub>u</sub> (_β_ ⊗<sub>u</sub> _v_)) = (_α_ ⊗<sub>v</sub> *f*(_u_)) ⊕<sub>v</sub> (_β_ ⊗<sub>v</sub> *f*(_v_))
 
 ### Známá lineární zobrazení
 
@@ -35,7 +35,7 @@
 * Hodností lineárního zobrazení _f_ : _U_ → _V_ nazýváme dimenzi jeho oboru hodnot
   * rank(_f_) = dim(_W(f)_)
 * Pokud je zobrazení lineární ⟹ obrazem nulového vektoru je vždy nulový vektor
-  * _f(o<sub>u</sub>)_ = _f_(0 ⊗<sub>u</sub> _u_) = 0 ⊗<sub>v</sub> _f(u)_ = _o<sub>v</sub>_
+  * _f(o<sub>u</sub>)_ = *f*(0 ⊗<sub>u</sub> _u_) = 0 ⊗<sub>v</sub> _f(u)_ = _o<sub>v</sub>_
 
 ## Jádro lineárního zobrazení
 

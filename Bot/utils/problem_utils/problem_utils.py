@@ -61,43 +61,43 @@ def random_det1_33_matrix(values: list[int]) -> sp.Matrix:
     return mx1 * mx2
 
 
-def sympy_matrix_pretty(mx: sp.Matrix, vertical_line_index: int = 0) -> str:
+def sympy_matrix_pretty(mx: sp.Matrix, vertical_line_col_index: int = 0) -> str:
     """:param mx: SymPy matice
-    :param vertical_line_index: Pozice vertikální čáry, indexuje se odzadu (záporné číslo; 0==bez čáry)
+    :param vertical_line_col_index: Pozice vertikální čáry, indexuje se odzadu (záporné číslo; 0==bez čáry)
     :return: Pretty printed SymPy matice s volitelnou vertikální čárou"""
     pretty = sp.pretty(mx)
-    if vertical_line_index >= 0:
+    if vertical_line_col_index >= 0 or -vertical_line_col_index >= mx.shape[1]:
         return pretty
     # Prvky ve sloupcích SymPy matice jsou zarovnány na střed, je tedy potřeba projet všechny řádky
-    # a najít nejpravější index, na který lze umístit vertikální čáru, aniž by protínala nějaký prvek
+    # a najít správný index, na který lze umístit vertikální čáru, aniž by protínala nějaký prvek
     pretty_lines = pretty.split("\n")
-    pattern = re.compile(r"\S(\s)")  # Hledat mezery mezi prvky v řádku matice
-    vertical_line_index = len(pretty)
+    pattern = re.compile(r"\s(?=\S)")  # Hledat mezeru následovanou znakem
+    vertical_line_position = len(pretty)
     for line in pretty_lines:
-        reversed_line = line[::-1][1:]
-        matches = [x.start(1) for x in pattern.finditer(reversed_line)]
+        matches = [x.start() for x in pattern.finditer(line[1:-1])]
         if not matches:
             continue
-        index = len(reversed_line) - matches[-vertical_line_index - 1] - 1
-        if index < vertical_line_index:
-            vertical_line_index = index
-    return "\n".join([x[:vertical_line_index] + "⎥" + x[vertical_line_index:] for x in pretty_lines])
+        index = matches[vertical_line_col_index] + 1
+        if index < vertical_line_position:
+            vertical_line_position = index
+    return "\n".join([x[:vertical_line_position] + "⎥" + x[vertical_line_position:] for x in pretty_lines])
 
 
-def sympy_matrices_2_string(matrices: list[sp.Matrix], vertical_line_index: int = 0) -> str:
-    """:return: Řetězec s pretty printed SymPy maticemi napsanými vedle sebe a oddělenými operátorem " ~ ... ~ ";
-    volitelná vertikální čára"""
+def sympy_matrices_2_string(matrices: list[sp.Matrix], separator: str, vertical_line_col_index: int = 0) -> str:
+    """:return: Řetězec s pretty printed SymPy maticemi napsanými vedle sebe
+    a oddělenými `separator`; volitelná vertikální čára"""
+    empty_space = " " * len(separator)
     n_matrices = len(matrices)
     lines = []
     first_iter = True
     for matrix_index, matrix in enumerate(matrices):
-        pretty = sympy_matrix_pretty(matrix, vertical_line_index)
+        pretty = sympy_matrix_pretty(matrix, vertical_line_col_index)
         mx_lines = pretty.split("\n")
         for mx_line_index, mx_line in enumerate(mx_lines):
             if mx_line_index == int(len(mx_lines) / 2) and matrix_index < n_matrices - 1:
-                space = " ~ ... ~ "
+                space = separator
             else:
-                space = "         "
+                space = empty_space
             if first_iter:
                 lines.append(mx_line + space)
             else:

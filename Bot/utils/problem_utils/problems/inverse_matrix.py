@@ -19,6 +19,8 @@ class Problem(GeneralProblem):
         mx_process_final = mx_inverse.col_insert(0, sp.eye(3))
         # Zadání a řešení
         self.task = f"Vypočítejte inverzní matici k matici:\n```A =\n{sp.pretty(mx_initial)}```"
-        self.answer = (f"{self.task[:-3]}\n\n"
-                       f"{sympy_matrices_2_string([mx_process_initial, mx_process_gaussed, mx_process_final], -3)}\n"
-                       f"A⁻¹ =\n{sp.pretty(mx_inverse)}```")
+        self.answer = (
+            f"{self.task[:-3]}\n\n"
+            f"{sympy_matrices_2_string([mx_process_initial, mx_process_gaussed, mx_process_final], ' ~ ... ~ ', -3)}\n"
+            f"A⁻¹ =\n{sp.pretty(mx_inverse)}```"
+        )

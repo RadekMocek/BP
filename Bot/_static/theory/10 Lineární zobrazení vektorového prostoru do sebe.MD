@@ -32,7 +32,7 @@ $$
 
 ## Hlavní vektory
 
-* Je-li _f_ lineární endomorfismus na _U_=(_M_, ⊕, ⊗) nad tělesem _T_ s vlastním číslem _λ_ a vlastním vektorem _u<sup>(0)</sup>_, nazveme hlavním vektorem zobrazení _f_ řádu _k_ vektor _u<sup>(k)</sup>_ takový, že **_f_(_u<sup>(k)</sup>_) = _λ_ ⊗ _u<sup>(k)</sup>_ ⊕ _u<sup>(k-1)</sup>_**
+* Je-li _f_ lineární endomorfismus na _U_=(_M_, ⊕, ⊗) nad tělesem _T_ s vlastním číslem _λ_ a vlastním vektorem _u<sup>(0)</sup>_, nazveme hlavním vektorem zobrazení _f_ řádu _k_ vektor _u<sup>(k)</sup>_ takový, že ***f*(_u<sup>(k)</sup>_) = _λ_ ⊗ _u<sup>(k)</sup>_ ⊕ _u<sup>(k-1)</sup>_**
   * (Hlavní vektor 1. řádu _u<sup>(1)</sup>_ se zobrazí na součet svého násobku s vlastním vektorem _u<sup>(0)</sup>_)
 
 ## Vlastní podprostor

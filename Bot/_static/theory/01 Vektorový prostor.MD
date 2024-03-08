@@ -12,7 +12,7 @@
   * ⊕ je zobrazení _M_ × _M_ → _M_
   * ⊗ je zobrazení _T_ × _M_ → _M_
 * Vektorový prostor (resp. dvě uvedená zobrazení) musí splňovat těchto 10 axiomů:
-  * `[A1]` **_D_(⊕) = _M_ × _M_**
+  * `[A1]` ***D*(⊕) = _M_ × _M_**
     * Ke každé dvojici vektorů existuje jejich součet, který je také vektorem
   * `[A2]` **_a_ ⊕ _b_ = _b_ ⊕ _a_**
     * Komutativita
@@ -26,7 +26,7 @@
   * `[A5]` **_a_ ⊕ (-_a_) = _o_**
     * Existence opačného vektoru; výsledkem je nulový vektor, nikoliv skalár nula
     * ∃ (-_a_) ∈ _M_ pro ∀ _a_ ∈ _M_
-  * `[N1]` **_D_(⊗) = _T_ × _M_**
+  * `[N1]` ***D*(⊗) = _T_ × _M_**
     * Ke každému číslu a vektoru existuje příslušný násobek vektoru, který je také vektorem
   * `[N2]` **1 ⊗ _a_ = _a_**
     * pro ∀ _a_ ∈ _M_
