@@ -263,8 +263,11 @@
 	\end{table}
 	
 	\section{discord.py}
+	\label{_tag_section_discordpy}
 	
-	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python (verze 3.8 a vyšší), která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod ke konkrétní události se často používají dekorátory (syntax umožňující upravit chování metod bez zásahu do jejich těla). Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. Díky cogs lze tvořit bota modulárně (rozdělit zdrojový kód do více souborů).
+	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python (verze 3.8 a vyšší), která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod ke konkrétní události se často používají dekorátory (syntax umožňující upravit chování metod bez zásahu do jejich těla). Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. 
+	
+	Cogs umožňují rozdělit logiku bota do více tříd (které dědí z třídy \textit{Cog} definované knihovnou). Každá taková třída je v discord.py terminologii zvaná cog a slouží jako kolekce souvisejících metod, které buď obsluhují příkazy, nebo reagují na události. Zvykem je, aby se každý cog nacházel ve zvláštním souboru a aby se každý z těchto souborů nacházel v adresáři pojmenovaném \textit{cogs}. Instance cog tříd jsou pak do bota nahrány nikoliv přes importování, ale pomocí mechanismu rozšíření (\textit{extensions}), který knihovna přidává. Za běhu programu je možné rozšíření přidávat a odebírat bez nutnosti restartování (\textit{hot reload}).
 	
 	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyku Python obecně) může být psaný kód čistý a přehledný. Pro definici příkazů lze navíc využít anotací a komentářů u příslušných metod. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
 	
@@ -352,7 +355,25 @@
 	
 	\subsection{Struktura projektu}
 
-	% todo:	Nešlo by sympy_matrix_pretty napsat jednodušeji (bez reverse etc.)
+	Před implementací jednotlivých funkčních částí výsledného bota bylo nutné rozhodnout, jak bude projekt strukturován. U knihovny discord.py je toto rozhodnutí ponecháno především na vývojáři: Dokumentace knihovny neobsahuje doporučený způsob, jak kód bota rozdělovat do více souborů, ani ukázku většího projektu, kterým by se dalo inspirovat.
+	
+	Zvyk ohledně cog souborů (viz \ref{_tag_section_discordpy}) byl během implementace bota dodržen. Logika vykonání příkazů ale byla ve většině případů oddělena do jiných souborů, které se v pomyslné hierarchii projektu nachází na jiné úrovni. Cogs je pak importují a pouze volají jejich metody. Podle toho, zdali jsou tyto \quotedblbase jiné\textquotedblleft\ soubory závislé na knihovně discord.py, je lze rozdělit do dvou skupin.
+	
+	Soubory, jež Discord knihovnu importují (ale nejedná se o cogs), se nachází v adresáři \textit{d\_modules} (zkráceně pro \textit{Discord modules}). Je v nich implementována logika, která je společná pro více příkazů, jako je kontrola oprávnění pro spuštění příkazu nebo odesílání a mazání textových zpráv. Zároveň se zde nachází veškerá logika pro obsluhu interaktivních prvků (např. tlačítek nebo vyskakovacího okna), ale i modul obsahující definici samotného bota.
+	
+	Druhá skupina souborů, která je nezávislá na discord.py, se nachází v adresáři \textit{utils} (zkráceně pro \textit{utilities}).
+	% šly by teoreticky použít v jiné aplikaci, jsou importovány v d_modules, používají numpy/sympy/... (oproti d_modules), problems dostaly vlastní adresář a balík(?),
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/ProjectStructure}
+		\caption{Struktura projektu}
+	\end{figure}
+
+	\subsection{Implementace vykreslování matematických výrazů}
+
+	\dots
+
+	% --------------------------------------------------------------------------------------------------------------------------
 	% barevný text
 	% Příkaz /dm
 	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
@@ -362,11 +383,11 @@
 	\section{Zhodnocení}
 	
 	% Jak vylepšit?
-	% Využívat threads nebo nějak lépe spravovat konverzaci, nyní používání bota na větším serveru chaos
-	% generovat sekvence příkladů, "simulace zkoušky"
-	% right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
-	% Co se týče zápisků z teorie: přidat souvislost s IT
-	% Kód: Použít SQLAlchemy
+	% * Využívat threads nebo nějak lépe spravovat konverzaci, nyní používání bota na větším serveru chaos
+	% * generovat sekvence příkladů, "simulace zkoušky"
+	% * right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
+	% * Co se týče zápisků z teorie: přidat souvislost s IT
+	% * Kód: Použít SQLAlchemy
 	
 	\chapter{Závěr}
 	
