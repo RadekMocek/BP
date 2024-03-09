@@ -269,7 +269,7 @@
 	
 	Cogs umožňují rozdělit logiku bota do více tříd (které dědí z třídy \textit{Cog} definované knihovnou). Každá taková třída je v discord.py terminologii zvaná cog a slouží jako kolekce souvisejících metod, které buď obsluhují příkazy, nebo reagují na události. Zvykem je, aby se každý cog nacházel ve zvláštním souboru a aby se každý z těchto souborů nacházel v adresáři pojmenovaném \textit{cogs}. Instance cog tříd jsou pak do bota nahrány nikoliv přes importování, ale pomocí mechanismu rozšíření (\textit{extensions}), který knihovna přidává. Za běhu programu je možné rozšíření přidávat a odebírat bez nutnosti restartování (\textit{hot reload}).
 	
-	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyku Python obecně) může být psaný kód čistý a přehledný. Pro definici příkazů lze navíc využít anotací a komentářů u příslušných metod. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
+	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyka Python obecně) může být psaný kód čitelný a zároveň mít vysokou hustotu. Pro definici příkazů lze navíc využít anotací a komentářů u příslušných metod. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
 	
 	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} právě absence uživatelské příručky. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce v kontextu Discordu (z pohledu uživatele).
 	
@@ -361,8 +361,10 @@
 	
 	Soubory, jež Discord knihovnu importují (ale nejedná se o cogs), se nachází v adresáři \textit{d\_modules} (zkráceně pro \textit{Discord modules}). Je v nich implementována logika, která je společná pro více příkazů, jako je kontrola oprávnění pro spuštění příkazu nebo odesílání a mazání textových zpráv. Zároveň se zde nachází veškerá logika pro obsluhu interaktivních prvků (např. tlačítek nebo vyskakovacího okna), ale i modul obsahující definici samotného bota.
 	
-	Druhá skupina souborů, která je nezávislá na discord.py, se nachází v adresáři \textit{utils} (zkráceně pro \textit{utilities}).
-	% šly by teoreticky použít v jiné aplikaci, jsou importovány v d_modules, používají numpy/sympy/... (oproti d_modules), problems dostaly vlastní adresář a balík(?),
+	Druhá skupina souborů, které neimportují discord.py, se nachází v adresáři \textit{utils} (zkráceně pro \textit{utilities}). Metody těchto modulů jsou importovány a používány především v \textit{d\_modules} pro společnou funkcionalitu, která je nezávislá na Discordu. Tyto moduly naopak importují knihovny jako sqlite, Matplotlib nebo SymPy a starají se tedy o práci s databází, vykreslování matematických výrazů nebo generování příkladů. % šly by teoreticky použít v jiné aplikaci, problems dostaly vlastní adresář a balík(?)
+	
+	Vedle těchto adresářů se ještě nachází soubory \textit{config.json} (pro uložení tokenu bota), \textit{db\_init.py} (vytvoření databáze), \textit{run.py} (spuštění bota) a adresáře \textit{\_database}, \textit{\_logs} a \textit{\_static}. Adresář \textit{\_static} obsahuje Markdown soubory s výpisky z teorie a návody pro počítání příkladů. % nic moc odstavec
+	
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/ProjectStructure}
@@ -371,11 +373,41 @@
 
 	\subsection{Implementace vykreslování matematických výrazů}
 
-	\dots
+	První verze implementace příkazu \verb*|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek (\textit{figure}), jehož základní barva je stejná jako barva pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno bytovým proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
+
+	Výklad lineární algebry se neobejde bez vykreslování matic, ty ale Matplotlib Mathtext nepodporuje. Balík sice umožňuje nastavit, aby vykreslování používalo místní TeX distribuci, během implementace ale nebylo jasné, kde bude výsledný bot nasazen a jestli zde bude možné TeX nainstalovat. Vykreslování tímto způsobem je navíc pomalejší. Proto byla pro účely bota napsána vlastní logika vykreslování matic.
+	
+	U textu vkládaného do Matplotlib obrázku lze nastavit i jeho souřadnice $x$ a $y$. Matice na vstupu je tedy rozdělena na její jednotlivé prvky, které jsou vykresleny zvlášť na odpovídajících souřadnicích. Pomocí úseček jsou pak vytvořeny hranaté závorky matice. Problém může nastat při určování souřadnic jednotlivých prvků v matici.
+	
+	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnice $y$ bude pravděpodobně záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvku v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
+	
+	Šířku prvku lze určit jeho dočasným vykreslením do samostatného obrázku, u kterého jsou následně zjištěny jeho rozměry. Tento obrázek je opět uložen do proudu BytesIO, který je po zjištění šířky zahozen. Takovýto způsob není nejefektivnější (zejména u vykreslování větších matic), a proto byla implementována rychlejší metoda, která šířku prvků pouze aproximuje.
+
+	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet nejkratších znaků. Písmo vykreslených matematických výrazů je totiž proporcionální a některé znaky tedy mohou být širší než jiné. Za nejkratší znaky se v tomto případě považují číslice a většina malých písmen. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala (podcenění by opět vedlo k překrývání sousedních prvků matice).
+	
+	Metoda postupně upravuje vstupní řetězec a nakonec vrací jeho délku (aproximovaná délka vstupního řetězce odpovídá jeho počtu znaků po provedení určitých úprav). Prvním krokem je nahrazení částí textu, které začínají zpětným lomítkem a končí libovolným nepísmenným znakem, za řetězec \verb*|00| (dvě nuly). To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Stejným řetězcem jsou nahrazeny také symboly, u kterých bylo zjištěno, že jsou delší než běžná číslice (např. velká písmena nebo symbol $+$ (plus)). Nakonec jsou zahozeny znaky jako mezery nebo závorky.
+	
+	Řetězec \verb*|1+\sqrt{2}| (vykreslen jako $1+\sqrt{2}$) je tedy po úpravách změněn na \verb*|100002| (podřetězce \verb*|+| a \verb*|\sqrt| jsou nahrazeny dvěma nulami, závorky jsou zahozeny, výsledná délka je 6 znaků). Délka řetězce \verb*|1+\sqrt[N]{2}| ($1+\sqrt[N]{2}$), který je po vykreslení stejně dlouhý, je takto vyhodnocena na 8 znaků, protože velké písmeno přidává další dvě nuly. To je příklad přecenění délky výrazu, jehož důsledkem jsou pak širší mezery mezi prvky v matici.
+	
+	Při určování délky jsou problémové také zlomky psané jako \verb*|\frac{x}{y}|, jejichž šířka může být v nejhorším případě vyhodnocena jako dvojnásobek té skutečné (pokud je délka čitatele i jmenovatele stejně dlouhá). Proto se před provedením prvního kroku metoda nejprve rekurzivně volá na všechny zlomky ve vstupním řetězci, které tímto jsou nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele (podle toho, který je delší).
+
+	Stejný problém jako zlomky také způsobují např. kombinační čísla (psaná jako \verb*|\binom{x}{y}|), ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté.
+
+	Protože je použita vlastní implementace vykreslování matic \dots
+		
+	% matlab syntax
+	% matrix quation PROBLÉM sqrt[1]{2} + [1,2;3,4]
+	% align
+	% trio tlačítek
+	
+	% -- Error handling, logging, barevný text
+	
+	% -- Theory, Markdown
 
 	% --------------------------------------------------------------------------------------------------------------------------
 	% barevný text
 	% Příkaz /dm
+	% $> slash_sync
 	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 	% Problém: Discord přestal vykreslovat kuzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
