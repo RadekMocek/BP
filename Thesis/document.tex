@@ -373,13 +373,13 @@
 
 	\subsection{Implementace vykreslování matematických výrazů}
 
-	První verze implementace příkazu \verb*|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek (\textit{figure}), jehož základní barva je stejná jako barva pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno bytovým proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
+	První verze implementace příkazu \verb*|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek (\textit{figure}), jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno bytovým proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
 
 	Výklad lineární algebry se neobejde bez vykreslování matic, ty ale Matplotlib Mathtext nepodporuje. Balík sice umožňuje nastavit, aby vykreslování používalo místní TeX distribuci, během implementace ale nebylo jasné, kde bude výsledný bot nasazen a jestli zde bude možné TeX nainstalovat. Vykreslování tímto způsobem je navíc pomalejší. Proto byla pro účely bota napsána vlastní logika vykreslování matic.
 	
 	U textu vkládaného do Matplotlib obrázku lze nastavit i jeho souřadnice $x$ a $y$. Matice na vstupu je tedy rozdělena na její jednotlivé prvky, které jsou vykresleny zvlášť na odpovídajících souřadnicích. Pomocí úseček jsou pak vytvořeny hranaté závorky matice. Problém může nastat při určování souřadnic jednotlivých prvků v matici.
 	
-	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnice $y$ bude pravděpodobně záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvku v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
+	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku v matici. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnice $y$ by měla být záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to ale vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvku v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
 	
 	Šířku prvku lze určit jeho dočasným vykreslením do samostatného obrázku, u kterého jsou následně zjištěny jeho rozměry. Tento obrázek je opět uložen do proudu BytesIO, který je po zjištění šířky zahozen. Takovýto způsob není nejefektivnější (zejména u vykreslování větších matic), a proto byla implementována rychlejší metoda, která šířku prvků pouze aproximuje.
 
@@ -389,20 +389,31 @@
 	
 	Řetězec \verb*|1+\sqrt{2}| (vykreslen jako $1+\sqrt{2}$) je tedy po úpravách změněn na \verb*|100002| (podřetězce \verb*|+| a \verb*|\sqrt| jsou nahrazeny dvěma nulami, závorky jsou zahozeny, výsledná délka je 6 znaků). Délka řetězce \verb*|1+\sqrt[N]{2}| ($1+\sqrt[N]{2}$), který je po vykreslení stejně dlouhý, je takto vyhodnocena na 8 znaků, protože velké písmeno přidává další dvě nuly. To je příklad přecenění délky výrazu, jehož důsledkem jsou pak širší mezery mezi prvky v matici.
 	
-	Při určování délky jsou problémové také zlomky psané jako \verb*|\frac{x}{y}|, jejichž šířka může být v nejhorším případě vyhodnocena jako dvojnásobek té skutečné (pokud je délka čitatele i jmenovatele stejně dlouhá). Proto se před provedením prvního kroku metoda nejprve rekurzivně volá na všechny zlomky ve vstupním řetězci, které tímto jsou nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele (podle toho, který je delší).
+	Při určování délky jsou problémové také zlomky psané jako \verb*|\frac{x}{y}|, jejichž šířka může být v nejhorším případě vyhodnocena jako dvojnásobek té skutečné (pokud je délka čitatele i jmenovatele stejně dlouhá). Proto se před provedením prvního kroku metoda nejprve rekurzivně volá na všechny zlomky ve vstupním řetězci, které jsou po jejím provedení nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele (podle toho, který je delší).
 
 	Stejný problém jako zlomky také způsobují např. kombinační čísla (psaná jako \verb*|\binom{x}{y}|), ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté.
 
-	Protože je použita vlastní implementace vykreslování matic \dots
-		
-	% matlab syntax
-	% matrix quation PROBLÉM sqrt[1]{2} + [1,2;3,4]
-	% align
-	% trio tlačítek
+	Jelikož je pro vykreslování matic použita vlastní implementace, bylo možné zvolit styl jejich zápisu. Pro svou přehlednost, snadné strojové zpracování a rychlost zápisu byla zvolena syntax podobná maticím v prostředí MATLAB: Do hranatých závorek jsou postupně vypsány prvky matice oddělené čárkou a pro oddělení jednotlivých řádků se místo čárky píše středník.
+
+	Po implementaci metod pro vykreslení základních matematických výrazů a matic bylo potřeba tyto metody zkombinovat, aby bylo možné vykreslovat rovnice obsahující více matic. Uživatelský vstup je nejprve nutné rozdělit na maticové a nematicové části (podvýrazy), pro jejichž vykreslení je pak zvolena příslušná metoda. První podvýraz je vykreslen na nulové souřadnici $x$, která se postupně zvětšuje o aproximovanou délku podvýrazu. Při rozdělování na podvýrazy je nutné ignorovat hranaté závorky u odmocnin (maticový podvýraz je totiž detekován podle hranatých závorek). Aby byl celý výraz správně vertikálně zarovnán, je potřeba předem zjistit počet řádků té nejvyšší matice a podle ní zarovnat zbytek.
 	
+	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku (obvykle podle rovnítka). Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno zarovnání doprava (Matplotlib toto u textu umožňuje nastavit parametrem \textit{horizontalalignment}). Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání. Pokud se tedy v levé části řádku nachází matice, je nutné řádek zarovnat opět s pomocí metody pro aproximaci délky výrazu.
+	
+	K odeslané zprávě je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořen tzv. view (pohled). View slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidán přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). % Pro složitější logiku je možné z view dědit, uchovat vnitřní stav, tlačítka mají odkaz na svůj view a mohou v něm volat metody atd.
+	
+	% WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
+	
+	\subsection{Zpracování chyb}
 	% -- Error handling, logging, barevný text
 	
+	\subsection{Implementace výkladu teorie}
 	% -- Theory, Markdown
+
+	\subsection{Implementace generace příkladů}
+	% -- Math_problems
+	
+	\subsection{Implementace moderace}
+	% -- Setup, database
 
 	% --------------------------------------------------------------------------------------------------------------------------
 	% barevný text
@@ -412,7 +423,7 @@
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 	% Problém: Discord přestal vykreslovat kuzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
 	
-	\section{Zhodnocení}
+	\section{Nasazení a zpětná vazba}
 	
 	% Jak vylepšit?
 	% * Využívat threads nebo nějak lépe spravovat konverzaci, nyní používání bota na větším serveru chaos
@@ -420,6 +431,8 @@
 	% * right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
 	% * Co se týče zápisků z teorie: přidat souvislost s IT
 	% * Kód: Použít SQLAlchemy
+	% Vhodnost platformy Discord
+	% * Rozdíly mezi PC/web/phone/...
 	
 	\chapter{Závěr}
 	
@@ -446,6 +459,7 @@
 	\begin{figure}[ht]
 		\lstinputlisting[language=Python3]{code/discord.py}
 		\caption{Ukázkový příkaz: Implementace v discord.py}
+		\label{_tag_img_discordpy}
 	\end{figure}
 	
 	\begin{figure}[ht]
