@@ -321,7 +321,7 @@
 	
 	Během návrhu se původně uvažovalo o možnosti nahrávání nových témat uživateli. Discord umožňuje jako parametr příkazu předat soubor a uživatel by takto mohl do bota nahrát vlastní Markdown zápisky. Tento návrh ale otevírá několik otázek: Kdo všechno bude moct tyto zápisky vidět (všichni nebo např. jen členové stejného serveru)? Má být nastaven limit maximálního počtu nahraných souborů (na konkrétního uživatele nebo na server)? Jak se stavět k nevhodnému obsahu? Navíc by bylo potřeba rozhraní, kde by uživatel mohl své nahrané soubory spravovat. To by v prostředí textového chatu nebylo příliš praktické, vhodnější by bylo k botu ještě vytvořit webové rozhraní.
 	
-	Nakonec byl zvolen přístup, kde si každý uživatel může provozovat vlastní instanci navrhovaného bota. Soubory s tématy jsou pak nakopírovány do vyhrazeného adresáře, odkud mohou být snadno spravovány.
+	Nakonec byl zvolen přístup, kde si každý uživatel může provozovat vlastní instanci navrhovaného bota. Soubory s tématy jsou pak nakopírovány do vyhrazeného adresáře, odkud mohou být snadno spravovány. %TODO
 	
 	\subsection{Generace příkladů} % kalkulačka zavržena
 	
@@ -329,7 +329,7 @@
 	
 	Navrhovaný bot neobsahuje funkcionalitu pro kontrolu uživatelem zadaných výsledků. Pokud by takovým výsledkem byla např. matice většího rozměru, její zadávání by bylo zdlouhavé (a také náchylné na překlepy) a muselo by mít nastavená jasná pravidla zápisu (nebo by musel uživatelský vstup projít komplexnější syntaktickou analýzou). Pokud se uživatel dozví, že jeho výsledek je nesprávný, dalším krokem by mělo v každém případě být nalezení chyby (a poučení se z ní). Znalost výsledku sice může hledání chyby trivializovat, avšak frustrace z nesprávných výsledků u uživatelů pravděpodobně stejně vede k okamžitému zobrazení těch správných.
 	
-	Po stisknutí tlačítka \textit{Jak počítat?} jsou do textového kanálu odeslány zprávy s návodem pro výpočet příkladů z dané kategorie. Logika odesílání těchto zpráv je stejná jako u výkladu teorie. Nechybí tedy tlačítko pro přeposlání návodu do přímých zpráv a obsah je čerpán z Markdown souborů (které lze snadno upravovat). Každá kategorie příkladů nemusí nutně obsahovat návod, pak je tlačítko pro jeho zobrazení zašedlé a nelze s ním interagovat. Opačný stav, kdy existuje pouze návod a nelze generovat příklady, je také možný.
+	Po stisknutí tlačítka \textit{Jak počítat?} jsou do textového kanálu odeslány zprávy s návodem pro výpočet příkladů z dané kategorie. Logika odesílání těchto zpráv je stejná jako u výkladu teorie. Nechybí tedy tlačítko pro přeposlání návodu do přímých zpráv a obsah je čerpán z Markdown souborů (které lze snadno upravovat). Každá kategorie příkladů nemusí nutně obsahovat návod, pak je tlačítko pro jeho zobrazení zašedlé a nelze s ním interagovat. Opačný stav, kdy existuje pouze návod a nelze generovat příklady, je také možný. % TODO (???)
 		
 	\subsection{Možnosti moderace}
 	
@@ -399,12 +399,28 @@
 	
 	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku (obvykle podle rovnítka). Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno zarovnání doprava (Matplotlib toto u textu umožňuje nastavit parametrem \textit{horizontalalignment}). Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání. Pokud se tedy v levé části řádku nachází matice, je nutné řádek zarovnat opět s pomocí metody pro aproximaci délky výrazu.
 	
-	K odeslané zprávě je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořen tzv. view (pohled). View slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidán přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). % Pro složitější logiku je možné z view dědit, uchovat vnitřní stav, tlačítka mají odkaz na svůj view a mohou v něm volat metody atd.
+	K odeslané zprávě je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořen tzv. view (pohled). View slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidán přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). Pro definici složitější view logiky je možné vytvořit třídu, která dědí z obecného view. Do této třídy se pak přidají atributy pro uchování určitého stavu a metody pro jeho změnu. Každý interaktivní prvek má referenci na své view, díky tomu v něm lze např. po stisknutí tlačítka volat určitou metodu.
 	
-	% WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
+	V tomto případě byla vytvořena třída, která dědí z view a navíc uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění a odkaz na původní zprávu je potřeba pro funkci tlačítka \textit{Smazat}. Jednotlivá tlačítka také dědí z obecné třídy, u které primárně přepisují metodu \textit{callback} volanou jejich po stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn do vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci pro vykreslení jako příkaz \verb*|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat.
+	
+	% TODO Tato sekce vyžaduje revizi ------------------
+	% Lepší obrázek u struktury projektu
+	% U popisů funkce lepší použít obr/diagram/pseudokod
+	% Více popsat render align/matrix/... algoritmus ?
+	% Poslední odstavce jsou dojezd; zkontrolovat :)
+	% TODO ---------------------------------------------
+	
+	% zmínit/zjistit WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
 	
 	\subsection{Zpracování chyb}
-	% -- Error handling, logging, barevný text
+	
+	Pokud je za běhu bota v nějaké části kódu vyvolána výjimka, neznamená to ukončení programu. Boti napsaní v knihovně discord.py výjimky v podstatě ignorují. Průběh dané funkce sice není dokončen a Discord uživateli zahlásí chybové hlášení, bota by však tímto způsobem nemělo být možné vyřadit z provozu. Ve výchozím nastavení knihovny je výjimka vypsána pouze do standardního chybového výstupu.
+	
+	Do implementovaného bota byla přidána funkcionalita logování chyb do souboru. Zároveň byl vytvořen cog \textit{on\_error}, který hlásí chyby uživateli. Výjimka, která byla vyvolána z důvodu nedostatečného oprávnění uživatele pro vykonání určité akce, může při používání bota na serveru běžně nastat. Proto není součástí logování a má svou připravenou odpověď pro uživatele (ve stylu \textit{Nemáte dostatečná oprávnění\dots}). Tuto výjimku vyvolává dekorátor přidaný knihovnou, který kontroluje, zdali je uživatel administrátor. Stejné chování bylo implementováno i do vlastní funkce pro kontrolu oprávnění.
+	
+	U ostatních výjimek je do příslušného textového kanálu odeslán polední řádek jejich výpisu. Tento přístup není vždy žádoucí, protože může případným útočníkům pomoci lépe pochopit vnitřní implementaci programu. Zdrojové kódy tohoto bota jsou ale dohledatelné, jelikož je tvořen s možností provozu vlastní instance a případného rozšiřování funkcionality. Díky výpisu chyb do chatu mohou uživatelé tyto chyby snadněji nahlašovat.
+	
+	%Pro zdůraznění má text výpisu chyb červenou barvu. Barevný text na Discordu je ale značně omezen. Využívá možnosti odesílat zdrojové kódy se zvýrazněním syntaxe.
 	
 	\subsection{Implementace výkladu teorie}
 	% -- Theory, Markdown
@@ -412,11 +428,14 @@
 	\subsection{Implementace generace příkladů}
 	% -- Math_problems
 	
+	% -- Databáze a render theme
+	
 	\subsection{Implementace moderace}
 	% -- Setup, database
 
+	% -- DM Příkaz
+
 	% --------------------------------------------------------------------------------------------------------------------------
-	% barevný text
 	% Příkaz /dm
 	% $> slash_sync
 	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
