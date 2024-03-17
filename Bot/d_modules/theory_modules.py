@@ -104,7 +104,7 @@ class TheoryThemeView(LingeBotView):
         self.theme_name, self.subtheme_names, self.subtheme_texts = get_theme(theme)
         # Index právě zobrazovaného podtématu; začíná se na "úvodní obrazovce", proto -1 (mimo rozsah)
         self.subtheme_index = -1
-        # Všechny zprávy použité pro vypsání  aktuálního podtématu uloženy v listu, aby mohli smazány, až bude třeba
+        # Všechny zprávy použité pro vypsání aktuálního podtématu budou uloženy v listu, aby mohly být případně smazány
         self.subtheme_messages: list[discord.Message] = [parent_message]
         # Na tato tlačítka si držet referenci, aby mohly být měněny jejich parametry (disabled) dle potřeby
         self.subtheme_select = TheorySubthemeSelect(self.subtheme_names)
@@ -196,8 +196,8 @@ class TheoryThemeView(LingeBotView):
             # Všechny odeslané zprávy si uložit, aby mohli být při další změně podtématu smazány
             new_messages = [await itx.original_response()]
             # Další zprávy už jsou normální zprávy do kanálu
-            message_contents = self.__get_subtheme_messages(self.render_theme_name)
-            new_messages.extend(await send_messages(itx, message_contents))
+            message_contents = self.__get_subtheme_messages(self.render_theme_name)  # Získat list obsahu zpráv ...
+            new_messages.extend(await send_messages(itx, message_contents))  # odeslat a rovnout přidat do new_messages
             # Enable/disable/... tlačítek
             self.previous_button.disabled = index == 0
             self.save_button.disabled = False  # True pouze při "úvodní obrazovce", na kterou se nelze vrátit

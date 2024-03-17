@@ -315,13 +315,13 @@
 	
 	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb*|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, aby nebyly výpisky součástí zdrojového kódu a bylo snazší je upravovat. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
 	
-	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (\quotedblbase\$\$\textquotedblleft, dále jen \quotedblbase dvoudolar\textquotedblleft). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2 000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
+	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (\quotedblbase\$\$\textquotedblleft, dále jen \quotedblbase dvoudolar\textquotedblleft). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2 000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. %Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
 	
-	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam (z něj lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek). Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.
+	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam, z nějž lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek. Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.
 	
-	Během návrhu se původně uvažovalo o možnosti nahrávání nových témat uživateli. Discord umožňuje jako parametr příkazu předat soubor a uživatel by takto mohl do bota nahrát vlastní Markdown zápisky. Tento návrh ale otevírá několik otázek: Kdo všechno bude moct tyto zápisky vidět (všichni nebo např. jen členové stejného serveru)? Má být nastaven limit maximálního počtu nahraných souborů (na konkrétního uživatele nebo na server)? Jak se stavět k nevhodnému obsahu? Navíc by bylo potřeba rozhraní, kde by uživatel mohl své nahrané soubory spravovat. To by v prostředí textového chatu nebylo příliš praktické, vhodnější by bylo k botu ještě vytvořit webové rozhraní.
+	Během návrhu se původně uvažovalo o možnosti nahrávání nových témat uživateli. Discord umožňuje jako parametr příkazu předat soubor a uživatel by takto mohl do bota nahrát vlastní Markdown zápisky. Tento návrh ale otevírá několik otázek: Budou si moct nahrané zápisky zobrazit všichni uživatelé, nebo jen členové stejného serveru? Má být nastaven limit maximálního počtu nahraných souborů na konkrétního uživatele, nebo na server? Jak se stavět k nevhodnému obsahu? Navíc by bylo potřeba rozhraní, kde by uživatel mohl své nahrané soubory spravovat. To by v prostředí textového chatu nebylo příliš praktické, vhodnější by bylo k botu ještě vytvořit webové rozhraní.
 	
-	Nakonec byl zvolen přístup, kde si každý uživatel může provozovat vlastní instanci navrhovaného bota. Soubory s tématy jsou pak nakopírovány do vyhrazeného adresáře, odkud mohou být snadno spravovány. %TODO
+	Nakonec byl zvolen přístup, kde si každý uživatel může provozovat vlastní instanci navrhovaného bota. Soubory s tématy jsou pak nakopírovány do vyhrazeného adresáře, odkud mohou být snadno spravovány. %TODO jak?
 	
 	\subsection{Generace příkladů} % kalkulačka zavržena
 	
@@ -385,7 +385,7 @@
 
 	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet nejkratších znaků. Písmo vykreslených matematických výrazů je totiž proporcionální a některé znaky tedy mohou být širší než jiné. Za nejkratší znaky se v tomto případě považují číslice a většina malých písmen. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala (podcenění by opět vedlo k překrývání sousedních prvků matice).
 	
-	Metoda postupně upravuje vstupní řetězec a nakonec vrací jeho délku (aproximovaná délka vstupního řetězce odpovídá jeho počtu znaků po provedení určitých úprav). Prvním krokem je nahrazení částí textu, které začínají zpětným lomítkem a končí libovolným nepísmenným znakem, za řetězec \verb*|00| (dvě nuly). To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Stejným řetězcem jsou nahrazeny také symboly, u kterých bylo zjištěno, že jsou delší než běžná číslice (např. velká písmena nebo symbol $+$ (plus)). Nakonec jsou zahozeny znaky jako mezery nebo závorky.
+	Metoda postupně upravuje vstupní řetězec a nakonec vrací jeho délku (aproximovaná délka vstupního řetězce odpovídá jeho počtu znaků po provedení určitých úprav). Prvním krokem je nahrazení částí textu, které začínají zpětným lomítkem a končí libovolným nepísmenným znakem, za řetězec \verb*|00| (dvě nuly). To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Stejným řetězcem jsou nahrazeny také symboly, u kterých bylo zjištěno, že jsou delší než běžná číslice (např. velká písmena nebo symbol $+$ (plus)). Nakonec jsou zahozeny znaky jako mezery nebo závorky. %todo první věta je žalostná
 	
 	Řetězec \verb*|1+\sqrt{2}| (vykreslen jako $1+\sqrt{2}$) je tedy po úpravách změněn na \verb*|100002| (podřetězce \verb*|+| a \verb*|\sqrt| jsou nahrazeny dvěma nulami, závorky jsou zahozeny, výsledná délka je 6 znaků). Délka řetězce \verb*|1+\sqrt[N]{2}| ($1+\sqrt[N]{2}$), který je po vykreslení stejně dlouhý, je takto vyhodnocena na 8 znaků, protože velké písmeno přidává další dvě nuly. To je příklad přecenění délky výrazu, jehož důsledkem jsou pak širší mezery mezi prvky v matici.
 	
@@ -397,43 +397,74 @@
 
 	Po implementaci metod pro vykreslení základních matematických výrazů a matic bylo potřeba tyto metody zkombinovat, aby bylo možné vykreslovat rovnice obsahující více matic. Uživatelský vstup je nejprve nutné rozdělit na maticové a nematicové části (podvýrazy), pro jejichž vykreslení je pak zvolena příslušná metoda. První podvýraz je vykreslen na nulové souřadnici $x$, která se postupně zvětšuje o aproximovanou délku podvýrazu. Při rozdělování na podvýrazy je nutné ignorovat hranaté závorky u odmocnin (maticový podvýraz je totiž detekován podle hranatých závorek). Aby byl celý výraz správně vertikálně zarovnán, je potřeba předem zjistit počet řádků té nejvyšší matice a podle ní zarovnat zbytek.
 	
-	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku (obvykle podle rovnítka). Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno zarovnání doprava (Matplotlib toto u textu umožňuje nastavit parametrem \textit{horizontalalignment}). Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání. Pokud se tedy v levé části řádku nachází matice, je nutné řádek zarovnat opět s pomocí metody pro aproximaci délky výrazu.
+	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku (obvykle podle rovnítka). Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno zarovnání doprava (Matplotlib toto u textu umožňuje nastavit parametrem \textit{horizontalalignment}). Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání. Pokud se tedy v levé části řádku nachází matice, je nutné řádek zarovnat opět s pomocí metody pro aproximaci délky výrazu. %todo ne v levé části řádku ale v celém řádku, díky této kontrole lze vynechat krok s maticemi a rovnou sázet mathTEXt
 	
-	K odeslané zprávě je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořen tzv. view (pohled). View slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidán přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). Pro definici složitější view logiky je možné vytvořit třídu, která dědí z obecného view. Do této třídy se pak přidají atributy pro uchování určitého stavu a metody pro jeho změnu. Každý interaktivní prvek má referenci na své view, díky tomu v něm lze např. po stisknutí tlačítka volat určitou metodu.
+	\subsection{View a interaktivní prvky}
 	
-	V tomto případě byla vytvořena třída, která dědí z view a navíc uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění a odkaz na původní zprávu je potřeba pro funkci tlačítka \textit{Smazat}. Jednotlivá tlačítka také dědí z obecné třídy, u které primárně přepisují metodu \textit{callback} volanou jejich po stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn do vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci pro vykreslení jako příkaz \verb*|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat.
+	K odeslané zprávě s vykresleným matematickým výrazem je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořen tzv. view (pohled). View slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidán přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). Pro definici složitější view logiky je možné vytvořit třídu, která dědí z obecného view. Do této třídy se pak přidají atributy pro uchování určitého stavu a metody pro změnu tohoto stavu. Každý interaktivní prvek má referenci na své view, díky tomu v něm lze např. po stisknutí tlačítka volat určitou metodu.
 	
-	% TODO Tato sekce vyžaduje revizi ------------------
+	V tomto případě byla vytvořena třída, která dědí z view a navíc uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění a odkaz na původní zprávu je potřeba pro funkci tlačítka \textit{Smazat}.
+	
+	Jednotlivá tlačítka také dědí z podobné obecné třídy, u které primárně přepisují metodu \textit{callback} volanou po jejich stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn v textovém vstupu vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci jako příkaz \verb*|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat.
+	
+	Vlastní třídy rozšiřující základní view se používají i pro uživatelské rozhraní výkladu teorie a generace příkladů. Protože byl ve všech případech nakonec potřeba odkaz na rodičovskou zprávu a na zadavatele příkazu, byla pro tyto účely vytvořena třída, která tuto funkcionalitu implementuje a ze které ostatní dědí. Tyto třídy se již používají v samotné obsluze příkazů a dále v textu budou nazývány jako view, jelikož obecné view se už jinde nepoužívá.
+	
+	% TODO  5.2.1, 5.2.2, 5.2.3 vyžadují revizi --------
+	% Důkladně zkontrolovat text
 	% Lepší obrázek u struktury projektu
 	% U popisů funkce lepší použít obr/diagram/pseudokod
 	% Více popsat render align/matrix/... algoritmus ?
-	% Poslední odstavce jsou dojezd; zkontrolovat :)
 	% TODO ---------------------------------------------
-	
-	% zmínit/zjistit WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
+		
+	% - zmínit/zjistit WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
 	
 	\subsection{Zpracování chyb}
 	
-	Pokud je za běhu bota v nějaké části kódu vyvolána výjimka, neznamená to ukončení programu. Boti napsaní v knihovně discord.py výjimky v podstatě ignorují. Průběh dané funkce sice není dokončen a Discord uživateli zahlásí chybové hlášení, bota by však tímto způsobem nemělo být možné vyřadit z provozu. Ve výchozím nastavení knihovny je výjimka vypsána pouze do standardního chybového výstupu.
+	Pokud je za běhu bota v nějaké části kódu vyvolána výjimka, neznamená to ukončení programu. Boti napsaní v knihovně discord.py výjimky v podstatě ignorují. Průběh funkce, ve které výjimka vznikla, sice není dokončen a Discord uživateli zahlásí chybové hlášení, bota by však tímto způsobem nemělo být možné vyřadit z provozu. Ve výchozím nastavení knihovny je výjimka vypsána pouze do standardního chybového výstupu.
 	
-	Do implementovaného bota byla přidána funkcionalita logování chyb do souboru. Zároveň byl vytvořen cog \textit{on\_error}, který hlásí chyby uživateli. Výjimka, která byla vyvolána z důvodu nedostatečného oprávnění uživatele pro vykonání určité akce, může při používání bota na serveru běžně nastat. Proto není součástí logování a má svou připravenou odpověď pro uživatele (ve stylu \textit{Nemáte dostatečná oprávnění\dots}). Tuto výjimku vyvolává dekorátor přidaný knihovnou, který kontroluje, zdali je uživatel administrátor. Stejné chování bylo implementováno i do vlastní funkce pro kontrolu oprávnění.
+	Do implementovaného bota byla přidána funkcionalita logování chyb do souboru. Zároveň byl vytvořen cog \textit{on\_error}, který hlásí chyby uživateli. Výjimka, která byla vyvolána z důvodu nedostatečného oprávnění uživatele pro vykonání určité akce, může při používání bota na serveru nastávat běžně. Proto není součástí logování a má svou připravenou odpověď pro uživatele (ve stylu \textit{Nemáte dostatečná oprávnění\dots}). Tuto výjimku vyvolává dekorátor přidaný knihovnou, který kontroluje, zdali je uživatel administrátor. Stejné chování bylo implementováno i do vlastní funkce pro kontrolu oprávnění.
 	
 	U ostatních výjimek je do příslušného textového kanálu odeslán polední řádek jejich výpisu. Tento přístup není vždy žádoucí, protože může případným útočníkům pomoci lépe pochopit vnitřní implementaci programu. Zdrojové kódy tohoto bota jsou ale dohledatelné, jelikož je tvořen s možností provozu vlastní instance a případného rozšiřování funkcionality. Díky výpisu chyb do chatu mohou uživatelé tyto chyby snadněji nahlašovat.
 	
 	%Pro zdůraznění má text výpisu chyb červenou barvu. Barevný text na Discordu je ale značně omezen. Využívá možnosti odesílat zdrojové kódy se zvýrazněním syntaxe.
 	
 	\subsection{Implementace výkladu teorie}
-	% -- Theory, Markdown
+
+	% - Zmínit vytvoření samotných Markdown souborů (?)
+
+	Pro výběr teoretického tématu se využívá výběrový seznam. Názvy jednotlivých položek v seznamu odpovídají názvům Markdown souborů, ze kterých se čerpají výpisky pro výklad teorie. Podobně jako u tlačítka lze u výběrového seznamu využít metody \textit{callback}, která se volá po zvolení některé z položek. Název zvolené položky je uložen do atributu, který je již předán do view obstarávajícího zobrazení výpisků.% (\textit{TheoryThemeView}).
+	
+	Po výběru určitého tématu se tedy odešle zpráva obsahující view pro teorii, které si z Markdown souboru načte výpisky ke zvolenému tématu do interní proměnné. Z toho důvodu se změna obsahu v souborech s výpisky projeví až při dalším použití příkazu \verb*|/render|. Text výpisků je podle nadpisů druhé úrovně rozdělen na jednotlivá podtémata, jejichž výpis je jediným obsahem úvodní zprávy. Tlačítka \textit{Další}, \textit{Předchozí} a nový výběrový seznam slouží pro přepínání podtémat pomocí metod ve view.
+	
+	Metoda pro změnu podtémat nejprve zpracuje text patřící k aktuálně vybranému podtématu a rozdělí ho na jednotlivé zprávy, které jsou následně odeslány do textového kanálu. Na odeslané zprávy si view drží referenci. Jakmile je podtéma opět změněno a odešlou se zprávy nové, ty staré se smažou (a reference nyní ukazuje na ty nové). Před smazáním starých zpráv se jako nová rodičovská zpráva daného view nastaví ta poslední odeslaná. Díky tomu zůstanou ovládací prvky vždy dole.
+	
+	Odesílání a mazání více zpráv není okamžité. Discord API obsahuje endpoint pro instantní smazání většího množství zpráv, který je implementován v knihovně discord.py. Tato funkce ale během testování nefungovala spolehlivě a vybrané zprávy nebyly ve zdánlivě náhodných případech smazány. Zprávy navíc nebylo možné po použití funkce smazat běžným způsobem (po jednom). Ekvivalentní endpoint pro odeslání více zpráv neexistuje, proto jsou zprávy odesílány i mazány po jednom. Pokud je zpráv více jak pět, byla mezi jednotlivé akce přidána krátká prodleva, aby se předešlo omezením proti spamu ze strany Discordu (\textit{rate limiting}).
+		
+	% - fwd to dms
+	
+	\subsection{Zpracování Markdown souborů}
+	
+	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb*|sup| a \verb*|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah při rozdělování textu do jednotlivých podtémat nahrazen \dots
+	
+	% MARKDOWN, odesílání zpráv
+	% - sub a sup do unicode (neexistující sub)
+	% - $$$render
+	% - Rozdělování zpráv
+	% - Možné vylpšení zpáva+obrázek ;; Obrázky
 
 	\subsection{Implementace generace příkladů}
-	% -- Math_problems
+	% Math_problems
+	% - General problem
+	% - Problem view
+	% - Jednotlivé příklady
 	
-	% -- Databáze a render theme
+	\subsection{Databáze}
+	% Databáze a render theme
 	
 	\subsection{Implementace moderace}
-	% -- Setup, database
+	% Setup
 
-	% -- DM Příkaz
+	% DM Příkaz
 
 	% --------------------------------------------------------------------------------------------------------------------------
 	% Příkaz /dm
