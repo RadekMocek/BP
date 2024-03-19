@@ -444,10 +444,10 @@
 	
 	\subsection{Zpracování Markdown souborů}
 	
-	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb*|sup| a \verb*|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah při rozdělování textu do jednotlivých podtémat nahrazen \dots
+	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb*|sup| a \verb*|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat. Pro převod se používá Python balík \textit{UnicodeIt}.
 	
 	% MARKDOWN, odesílání zpráv
-	% - sub a sup do unicode (neexistující sub)
+	% - sub a sup do unicode (neexistující sub), důvod použití značek
 	% - $$$render
 	% - Rozdělování zpráv
 	% - Možné vylpšení zpáva+obrázek ;; Obrázky
