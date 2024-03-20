@@ -76,7 +76,7 @@ class TutorialSaveButton(discord.ui.Button):
 
 # region Problem Selects
 class ProblemSelect(discord.ui.Select):
-    """Výběr příkladu."""
+    """Výběr kategorie příkladů."""
 
     def __init__(self, problem_manager: ProblemManager) -> None:
         options = []
@@ -154,9 +154,9 @@ class ProblemView(LingeBotView):
         await itx.response.edit_message(content="Zvolte si kategorii:", embed=None, attachments=[], view=self)
 
     async def select_problem(self, itx: discord.Interaction, problem_name: str) -> None:
-        """Zvolit kategorii příkladů."""
+        """Zvolit kategorii příkladů s názvem `problem_name`."""
         self.problem_name = problem_name
-        # Je pro toto téma generování příkladů k dispozici? -> enable/disable tlačítka
+        # Je pro toto téma generování příkladů k dispozici? → enable/disable tlačítka
         self.generate_button.disabled = not self.problem_manager.can_generate_problem(self.problem_name)
         # Získat si obsah pro "Jak počítat?", pokud nějaký existuje; případný enable tlačítka
         tutorial_text = get_problem_tutorial(self.problem_name)
@@ -219,7 +219,7 @@ class ProblemView(LingeBotView):
     async def tutorial(self, itx: discord.Interaction) -> None:
         """Odeslat zpávy popisující jak počítat příklady z vybrané kategorie."""
         await itx.response.defer()
-        async with itx.channel.typing():
+        async with itx.channel.typing():  # Discord by měl zobrazit "LingeBot píše...", nefunguje úplně nejlépe
             # Odeslat tutorial zprávy a po nich zprávu s tímto view (novou parent_message, stará zůstala nahoře)
             new_tutorial_messages = await send_messages(itx,
                                                         raw_text_2_message_text(self.tutorial_text,

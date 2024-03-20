@@ -190,7 +190,7 @@ class TheoryThemeView(LingeBotView):
         """Zobrazí podtéma odpovídající aktuální hodnotě self.subtheme_index a smaže zprávy předchozího podtématu."""
         index = self.subtheme_index
         header = self.subtheme_names[index]
-        async with itx.channel.typing():
+        async with itx.channel.typing():  # Discord by měl zobrazit "LingeBot píše...", nefunguje úplně nejlépe
             # První odeslaná zpráva je reakce na interakci
             await itx.response.send_message(content=f"# {self.theme_name}", embed=self.__generate_embed(header))
             # Všechny odeslané zprávy si uložit, aby mohli být při další změně podtématu smazány

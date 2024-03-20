@@ -327,9 +327,9 @@
 	
 	Příklady lze generovat použitím příkazu \verb*|/generate|, po jehož zadání je do textového kanálu opět odeslán výběrový seznam, který tentokrát obsahuje dostupné kategorie příkladů. Po volbě některé z kategorií se objeví trojice tlačítek \textit{Generovat příklad}, \textit{Jak počítat?} a \textit{Změnit kategorii / Ukončit}. Po vygenerování příkladu jej bot bez výsledku odešle do chatu. Uživatel si může zkusit příklad vypočítat, a poté si nově objeveným tlačítkem nechat zobrazit výsledek. Tento proces lze opakovat, dokud není rozhraní ukončeno.
 	
-	Navrhovaný bot neobsahuje funkcionalitu pro kontrolu uživatelem zadaných výsledků. Pokud by takovým výsledkem byla např. matice většího rozměru, její zadávání by bylo zdlouhavé (a také náchylné na překlepy) a muselo by mít nastavená jasná pravidla zápisu (nebo by musel uživatelský vstup projít komplexnější syntaktickou analýzou). Pokud se uživatel dozví, že jeho výsledek je nesprávný, dalším krokem by mělo v každém případě být nalezení chyby (a poučení se z ní). Znalost výsledku sice může hledání chyby trivializovat, avšak frustrace z nesprávných výsledků u uživatelů pravděpodobně stejně vede k okamžitému zobrazení těch správných.
+	Navrhovaný bot neobsahuje funkcionalitu pro kontrolu uživatelem zadaných výsledků. Pokud by takovým výsledkem byla např. matice většího rozměru, její zadávání by bylo zdlouhavé a náchylné na překlepy. Muselo by také mít nastavená jasná pravidla zápisu, nebo by uživatelský vstup musel projít komplexnější syntaktickou analýzou. Pokud se uživatel dozví, že jeho výsledek je nesprávný, dalším krokem by mělo v každém případě být nalezení chyby a poučení se z ní. Znalost výsledku sice může hledání chyby trivializovat, avšak frustrace z nesprávných výsledků u uživatelů pravděpodobně stejně vede k okamžitému zobrazení těch správných.
 	
-	Po stisknutí tlačítka \textit{Jak počítat?} jsou do textového kanálu odeslány zprávy s návodem pro výpočet příkladů z dané kategorie. Logika odesílání těchto zpráv je stejná jako u výkladu teorie. Nechybí tedy tlačítko pro přeposlání návodu do přímých zpráv a obsah je čerpán z Markdown souborů (které lze snadno upravovat). Každá kategorie příkladů nemusí nutně obsahovat návod, pak je tlačítko pro jeho zobrazení zašedlé a nelze s ním interagovat. Opačný stav, kdy existuje pouze návod a nelze generovat příklady, je také možný. % TODO (???)
+	Po stisknutí tlačítka \textit{Jak počítat?} jsou do textového kanálu odeslány zprávy s návodem pro výpočet příkladů z dané kategorie. Logika odesílání těchto zpráv je stejná jako u výkladu teorie. Obsah je tedy čerpán z Markdown souborů, které lze snadno upravovat, a nechybí tlačítko pro přeposlání návodu do přímých zpráv. Každá kategorie příkladů nemusí nutně obsahovat návod, pak je tlačítko pro jeho zobrazení zašedlé a nelze s ním interagovat. Opačný stav, kdy existuje pouze návod a nelze generovat příklady, je také možný. % TODO (???)
 		
 	\subsection{Možnosti moderace}
 	
@@ -444,15 +444,27 @@
 	
 	\subsection{Zpracování Markdown souborů}
 	
-	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb*|sup| a \verb*|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat. Pro převod se používá Python balík \textit{UnicodeIt}.
+	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb*|sup| a \verb*|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat. Pro převod se používá Python balík \textit{UnicodeIt}. Vytvořené zápisky pro lineární algebru často používají dolní indexy. Počet znaků, které existují v Unicode ve variantě dolního indexu, je ale omezený. Pokud kvůli neexistujícímu znaku nedokáže balík \textit{UnicodeIt} obsah značky \verb*|sub| převést, je místo toho daný text vložen mezi zpětné uvozovky. Discord pak tuto část textu reprezentující dolní index zformátuje jako jednořádkový zdrojový kód: Písmo je neproporcionální, má menší velikost a tmavší pozadí. Text se díky tomu více odlišuje od zbytku a tváří se jako pomocný symbol.
 	
-	% MARKDOWN, odesílání zpráv
-	% - sub a sup do unicode (neexistující sub), důvod použití značek
-	% - $$$render
-	% - Rozdělování zpráv
-	% - Možné vylpšení zpáva+obrázek ;; Obrázky
-
+	Pro nahrazení textu umístěného mezi dvoudolary za obrázek s vykresleným matematickým výrazem je nejprve celý text podle dvoudolarů rozdělen na části. Aby nebylo nutné detekovat, které části jsou určené pro vykreslení a které jsou obyčejný text, bylo přidáno pravidlo, že zprávy pro vykreslení musí začínat řetězcem \verb*|$render|. Tento řetězec je případně zahozen a zbytek textu je vstupem vykreslovací funkce. Pravidla pro zápis jsou tedy stejná jako u příkazu \verb*|/render|.
+	
+	Discord sice umožňuje, aby jediná zpráva najednou obsahovala text i obrázky, problémem ale je, že jsou všechny obrázky umístěny na konci zprávy pod veškerým textem. Proto je rozdělování na více zpráv jedinou možností, jak zajistit přesné umístění obrázků v odeslaném textu. Pokud zpráva obsahuje internetový odkaz, který míří na určitý obrázek, pak ho Discord automaticky zobrazí. Umístěním takového odkazu mezi dvoudolary se opět zajistí správné umístění obrázku z internetu.
+	
+	Bot automaticky rozděluje zprávy, které jsou delší než 2 000 znaků, kvůli omezením ze strany Discordu. Využívá se Python modulu \textit{textwrap}, díky kterému se rozdělení zprávy může nacházet pouze na místě mezery nebo nového řádku. Pokud by automatické rozdělení nebylo vhodně zvoleno, je možné opět použít dvoudolar, který případně značí, kde bude zpráva rozdělena.
+	
 	\subsection{Implementace generace příkladů}
+	
+	Podobně jako u výkladu teorie, implementace uživatelského rozhraní u generátoru příkladů využívá komplexnějšího view. Logika odesílání zpráv s návodem po stisknutí tlačítka \textit{Jak počítat?} používá stejné funkce jako výklad teorie. Logika zobrazování příkladů a jejich výsledků se už liší.
+	
+	Dokud se nevyužije možnosti zobrazení návodu, který může být tvořen více odeslanými zprávami, tak je rodičovská zpráva daného view stále stejná a její obsah je modifikován na základě stisknutých tlačítek. Tato zpráva může obsahovat text a jeden obrázek.
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/ProblemsDiagram}
+		\caption{UML}
+	\end{figure}
+	
+	
 	% Math_problems
 	% - General problem
 	% - Problem view
