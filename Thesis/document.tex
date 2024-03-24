@@ -73,12 +73,14 @@
 		\textbf{DMs} & Direct Messages, přímé zprávy \\
 		\textbf{HTML} & Hypertext Markup Language, značkovací jazyk \\
 		\textbf{HTTPS} & Hypertext Transfer Protocol Secure, protokol pro zabezpečenou komunikaci po počítačové síti \\
+		\textbf{ID} & identifikace, identifikátor \\
 		\textbf{JDA} & Java Discord API, knihovna pro tvorbu Discord botů v jazyce Java \\
 		\textbf{JSON} & JavaScript Object Notation, formát pro výměnu dat \\
 		\textbf{REST} & Representational State Transfer, architektura pro výměnu dat \\
 		\textbf{SDK} & Software Development Kit, sada nástrojů pro vývoj softwaru \\
-		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
+		\textbf{SQL} & Structured Query Language, dotazovací jazyk pro relační databáze \\
 		\textbf{UI} & User Interface, uživatelské rozhraní \\
+		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
 	\end{abbrList}
 	
 	% Začátek hlavního textu
@@ -297,7 +299,7 @@
 	
 	\chapter{Tvorba matematického Discord bota}
 	
-	Tato kapitola popisuje tvorbu matematického Discord bota, který se zaměřuje na výklad teorie a generování příkladů z lineární algebry. K výkladu této látky lze přistupovat s různou mírou obecnosti: Některé zdroje prezentují lineární algebru jako sadu postupů pro řešení určitých matematických úloh, jiné ji vykládají jako teorii vektorových prostorů a lineárních zobrazení \cite{lit_lingebra}. Bot byl vytvořen spíše pro prezentování informací z druhé zmíněné strany spektra, avšak jeho návrh obecně podporuje jakýkoliv typ matematických materiálů. Generované příklady se pak soustředí na základní výpočty s maticemi.
+	Tato kapitola popisuje tvorbu matematického Discord bota, který byl pojmenován \textit{LingeBot}. Zaměřuje se na výklad teorie a generování příkladů z lineární algebry. K výkladu této látky lze přistupovat s různou mírou obecnosti: Některé zdroje prezentují lineární algebru jako sadu postupů pro řešení určitých matematických úloh, jiné ji vykládají jako teorii vektorových prostorů a lineárních zobrazení \cite{lit_lingebra}. Bot byl vytvořen spíše pro prezentování informací z druhé zmíněné strany spektra, avšak jeho návrh obecně podporuje jakýkoliv typ matematických materiálů. Generované příklady se pak soustředí na základní výpočty s maticemi.
 	
 	Pro tvorbu bota byla zvolena knihovna discord.py zejména kvůli její početné komunitě a čitelnosti výsledného zdrojového kódu. Při volbě také hrála roli existence matematických knihoven pro jazyk Python (konkrétně Matplotlib, NumPy, SciPy a SymPy), které jsou zavedené a dobře zdokumentované.
 		
@@ -337,7 +339,7 @@
 	
 	\textit{Administrátor} je typ oprávnění, které je součástí Discordu a uživatelům ho lze přidělit v rámci role. Pokud není taková role nikomu přidělena, pak je majitel serveru jediným uživatelem s těmito právy (a zároveň jediným, kdo může tuto roli někomu dalšímu přidělit).
 	
-	Za ,,moderátora bota`` je považován uživatel, kterému byla (administrátorem) přidělena speciální role. Tato role je vytvořena navrhovaným botem po jeho připojení na daný server. Díky této roli lze uživatele bez administrátorských práv rozdělit na dvě skupiny a pouze jedné z nich povolit používání určitých příkazů.
+	Za ,,moderátora bota`` je považován uživatel, kterému byla administrátorem přidělena speciální role s názvem \textit{LingeMod}. Tato role je vytvořena navrhovaným botem po jeho připojení na nový server. Díky moderátorské roli lze uživatele bez administrátorských práv rozdělit na dvě skupiny a pouze jedné z nich povolit používání určitých příkazů.
 	
 	Nastavení může vypadat např. následovně: Kdokoliv může vykreslovat matematické výrazy pomocí \verb*|/render|, pouze moderátoři bota (a tedy i administrátoři, kteří jim jsou nadřazeni) mohou generovat příklady pomocí \verb*|/generate| a pouze administrátoři mohou používat výklad teorie příkazem \verb*|/explain|.
 	
@@ -349,7 +351,7 @@
 	
 	Dalším přidaným příkazem, který byl inspirován prostředím terminálu, je \verb*|/clear|. Po jeho zadání bot do chatu odešle  prázdnou zprávu, která je tak dlouhá, aby se všechny předchozí zprávy již nevešly na obrazovku. To může být užitečné pro zpřehlednění konverzace v daném textovém kanále.
 	
-	U bota je možné změnit barevné schéma vykreslovaných matematických výrazů. Konkrétně jsou k dispozici čtyři kombinace barvy písma a pozadí u odeslaných obrázků. Barevné schéma je vázané na server a může být přenastaveno jeho administrátorem. Všechny botem odeslané obrázky na určitý server budou respektovat jeho nastavené schéma (nezávisle na uživateli příkazu). Uživatel si totiž může také vybrat barevné schéma v přímých zprávách s navrhovaným botem. Toto schéma je použito u zpráv reagujících na příkazy spuštěné v přímé konverzaci a zároveň u zpráv přeposlaných z jakéhokoliv serveru pomocí tlačítka \textit{Odeslat do DMs}.
+	U bota je možné změnit barevné schéma vykreslovaných matematických výrazů. Konkrétně jsou k dispozici čtyři kombinace barvy písma a pozadí u odeslaných obrázků. Barevné schéma je vázané na server a může být přenastaveno jeho administrátorem. Všechny botem odeslané obrázky na určitý server budou respektovat jeho nastavené schéma nezávisle na uživateli příkazu. Uživatel si totiž může nastavit barevné schéma pro konverzaci s botem v přímých zprávách. To je použito u zpráv reagujících na příkazy spuštěné v přímé konverzaci a zároveň u zpráv přeposlaných z jakéhokoliv serveru pomocí tlačítka \textit{Odeslat do DMs}.
 	
 	\section{Implementace}
 	
@@ -482,10 +484,20 @@
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/Database}
-		\caption{DB}
+		\caption{Databáze}
 	\end{figure}
 	
-	% Databáze a render theme
+	Požadavky bota na databázi nejsou vysoké. Je potřeba ukládat nastavení barevného schématu pro vykreslování matematických výrazů, pokud jej uživatel nebo administrátor změní. Dále je pro každý server, na kterém se bot nachází, ukládán identifikátor moderátorské role LingeMod. Pokud by bot detekoval roli pomocí jejího názvu a role by byla přejmenována, přestala by pak fungovat moderace. Poslední tabulka uchovává nastavení oprávnění pro jednotlivé servery.
+	
+	Pro takovýto účel byla zvolena databáze SQLite. Mnoho neoficiálních tutoriálů pro tvorbu Discord botů používá jako databázi přímý zápis a čtení ze souborů JSON. Tento způsob je nevhodný, protože není zaručena žádná bezpečnost transakcí a veškerá režie je zanechána na programátorovi. Pokus o implementaci vlastní režie by vedl k naprogramování vlastního databázového systému, proto je vhodnější obrátit se na již hotová a ověřená řešení. SQLite je embedded databáze, která je pro potřeby tohoto bota dostačující a kterou jazyk Python nativně podporuje.
+	
+	Identifikátory serverů, rolí a uživatelů jsou spravovány na straně Discordu. Každá funkce v knihovně discord.py, která reaguje na událost jako např. zadání příkazu uživatelem, má jako první vstupní parametr objekt typu interakce (\textit{discord.Interaction}), ze kterého lze zjistit ID daného uživatele a serveru, kde byl příkaz zadán. 
+	
+	Pokud např. uživatel zadá příkaz pro změnu barevného schématu, tak je ID daného serveru získáno z objektu interakce a v tabulce je k němu přiřazen název zvoleného schématu. Pokud je příkaz zadán v přímých zprávách, pak je místo ID serveru, které v tomto kontextu neexistuje, použito ID uživatele. Všechny Discord identifikátory by měly být unikátní, a proto nejsou potřeba dvě tabulky pro schémata serveru a schémata uživatelů. Při použití příkazu \verb*|/render| je pak z interakce opět zjištěno ID, pomocí něhož se v databázi dohledá nastavené barevné schéma, které se použije pro vykreslení.
+	
+	Identifikátory jsou tedy podle potřeby získávány z Discord API. V případě tohoto bota proto může být databáze jednoduchá a tabulky mezi sebou nemusí mít žádné vazby. Definice databáze ze strany SQL obsahuje pouze názvy tabulek a jejich sloupců. Veškerá logika se odehrává na straně programu v jazyce Python.
+	
+	% LITERAL
 	
 	\subsection{Implementace moderace}
 	% Setup

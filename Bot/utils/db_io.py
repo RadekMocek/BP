@@ -27,12 +27,14 @@ cursor = connection.cursor()
 
 
 def is_id_in_table(iid: int, table_name: str) -> bool:
+    """:return: Existuje záznam s ID `iid` v tabulce `table_name`?"""
     cursor.execute(f"SELECT EXISTS(SELECT 1 FROM {table_name} WHERE id=?)", (iid,))
     exists = cursor.fetchone()
     return exists[0] == 1
 
 
 def render_set_theme(iid: int, theme: ThemeLiteral) -> None:
+    """Nastavit barevné schéma `theme` pro ID `iid`."""
     exists = is_id_in_table(iid, "render")
     if exists:
         cursor.execute("UPDATE render SET theme=? WHERE id=?", (theme, iid))
@@ -42,6 +44,7 @@ def render_set_theme(iid: int, theme: ThemeLiteral) -> None:
 
 
 def render_get_theme(iid: int) -> ThemeLiteral:
+    """:return: Barevné schéma pro ID `iid`."""
     exists = is_id_in_table(iid, "render")
     if exists:
         cursor.execute("SELECT theme FROM render WHERE id=?", (iid,))
@@ -50,6 +53,7 @@ def render_get_theme(iid: int) -> ThemeLiteral:
 
 
 def lingemod_reset(gid: int, role_id: int) -> None:
+    """Nastavit roli s ID `role_id` jako novou LingeMod roli pro server s ID `gid`."""
     if is_id_in_table(gid, "lingemod"):
         cursor.execute("DELETE FROM lingemod WHERE id=?", (gid,))
     cursor.execute("INSERT INTO lingemod VALUES (?, ?)", (gid, role_id))
@@ -76,11 +80,13 @@ def permissions_get_all(gid: int) -> Any:
 
 
 def permissions_get_one(gid: int, action: ActionLiteral) -> int:
+    """:return: Číslo konkrétního oprávnění pro akci `action` na serveru s ID `gid`."""
     cursor.execute(f"SELECT {action} FROM permissions WHERE id=?", (gid,))
     return cursor.fetchone()[0]
 
 
 def permissions_set(gid: int, action: ActionLiteral, permission: int) -> None:
+    """Nastavit oprávnění pro akci `action` na hodnotu `permission` pro server s ID `gid`."""
     if not is_id_in_table(gid, "permissions"):
         cursor.execute("INSERT INTO permissions VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                        (gid,) + tuple(DEFAULT_PERMISSIONS.values()))
@@ -89,5 +95,6 @@ def permissions_set(gid: int, action: ActionLiteral, permission: int) -> None:
 
 
 def purge_table(table_name: str) -> None:
+    """Smazat všechny hodnoty z tabulky `table_name`."""
     cursor.execute(f"DELETE FROM {table_name}")
     connection.commit()
