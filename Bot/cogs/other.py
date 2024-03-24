@@ -27,8 +27,15 @@ class Other(commands.Cog):
     @app_commands.command()
     async def dm(self, itx: discord.Interaction) -> None:
         """Zahájit konverzaci v přímých zprávách."""
-        if await try_dm_user(itx, "Zdravíčko!", False):
-            await itx.response.send_message(content="Konverzace v DMs úspěšně zahájena.", ephemeral=True)
+        is_ephemeral_but_may_fail = True
+        if is_ephemeral_but_may_fail:
+            if await try_dm_user(itx, "Zdravíčko!", False):
+                await itx.response.send_message(content="Konverzace v DMs úspěšně zahájena.", ephemeral=True)
+        else:
+            if await try_dm_user(itx, "Zdravíčko!", True):
+                await itx.followup.send(content="Konverzace v DMs úspěšně zahájena.")  # , ephemeral=True)
+                # Ephemeral u followup zpráv v tomto případě nefunguje; omezení ze strany Discordu
+                # https://github.com/discordjs/discord.js/issues/5702
 
     @app_commands.command()
     async def help(self, itx: discord.Interaction) -> None:

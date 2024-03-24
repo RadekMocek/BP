@@ -13,6 +13,7 @@ class Problem(GeneralProblem):
 
     def generate_problem(self) -> None:
         # Vygenerovat matici, jejíž vlastní čísla jsou celá (https://math.stackexchange.com/a/1377275)
+        # (Alternativní řešení: https://math.stackexchange.com/a/2389199)
         values = [-2, -1, 1, 2]
         mx_v = random_det1_22_matrix(values)
         mx_a = sp.Matrix([
@@ -47,16 +48,3 @@ class Problem(GeneralProblem):
                        f"\n\n{eigenvalues}"
                        f"\n\n{eigenvectors}"
                        f"```")
-
-    """
-    def eigen_33(self) -> None:
-        values = [-2, -1, 1, 2]
-        mx_v = random_det1_33_matrix(values)
-        eigenvalues = [random.randint(-10, 10) for _ in range(3)]
-        mx_a = sp.Matrix([
-            [eigenvalues[0], 0, 0],
-            [0, eigenvalues[1], 0],
-            [0, 0, eigenvalues[2]],
-        ])
-        mx = mx_v * mx_a * mx_v.inv()
-    """

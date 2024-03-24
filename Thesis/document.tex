@@ -133,7 +133,7 @@
 	
 	Z populárních platforem se Discordu vzhledově i funkčně nejvíce podobá program Slack. Ten byl spuštěn již v roce 2013 a od té doby si vybudoval reputaci jako standard pro komunikaci v technologických společnostech. \cite{lit_Discord}
 	
-	Slack se prezentuje jako software usnadňující interní komunikaci v organizacích a dal by se nazvat jako \quotedblbase Discord pro firmy\textquotedblleft. Namísto serverů jsou zde tzv. workspaces. Workspace má své členy a textové kanály, ve kterých lze zahájit i hlasový hovor. Členové jednoho workspace si mezi sebou mohou posílat přímé zprávy a pomocí funkce \textit{Slack Connect} je možné komunikovat i s lidmi z jiného workspace. Na rozdíl od Discordu, kde jsou přímé zprávy kompletně oddělené od ekosystému serverů, se zde všechny prováděné akce dějí uvnitř nějakého workspace.
+	Slack se prezentuje jako software usnadňující interní komunikaci v organizacích a dal by se nazvat jako ,,Discord pro firmy``. Namísto serverů jsou zde tzv. workspaces. Workspace má své členy a textové kanály, ve kterých lze zahájit i hlasový hovor. Členové jednoho workspace si mezi sebou mohou posílat přímé zprávy a pomocí funkce \textit{Slack Connect} je možné komunikovat i s lidmi z jiného workspace. Na rozdíl od Discordu, kde jsou přímé zprávy kompletně oddělené od ekosystému serverů, se zde všechny prováděné akce dějí uvnitř nějakého workspace.
 	
 	Slack má k dispozici několik úrovní měsíčního předplatného a verze zdarma je značně omezena. V bezplatné verzi nelze např. zobrazit zprávy starší než 90 dnů a provozovat hlasový hovor ve více než dvou lidech. Omezené je i použití tzv. aplikací.
 	
@@ -151,7 +151,7 @@
 	
 	\section{Guilded a Revolt}
 	
-	Guilded a Revolt jsou platformy, které jsou přímo inspirované Discordem a podobnost mezi nimi je nepřehlédnutelná. Ekosystém uživatelů, přímých zpráv, serverů a botů je u těchto tří platforem takřka identický. Guilded ani Revolt nemají ekvivalent k podpůrným příkazům. Boti tedy musí kontrolovat obsah každé odeslané zprávy na serveru, jestli neobsahuje nějaký z jejich příkazů. Každý bot má obvykle svůj prefix (např. vykřičník) a problém nastává, když má více botů stejný prefix a příkaz se stejným názvem (např. po napsání \quotedblbase!help\textquotedblleft\ do chatu zobrazí svou nápovědu všichni takoví boti)\footnote{Tímto způsobem se před představením podpůrných příkazů ovládali i boti na Discordu. Problém stejných příkazů se řešil buď víceznakovými prefixy (menší šance na kolizi), nebo nastavitelným prefixem (to vyžaduje nějaké úložiště uchovávající dvojice id serveru a prefix). Tento starý typ příkazů lze stále používat např. pokud je vývojář chce skrýt před běžnými uživateli (tyto příkazy se neobjeví v našeptávači).}. Obě platformy mají oproti Discordu znatelně menší uživatelskou základnu a počet jejich veřejných botů se pohybuje v řádu desítek.
+	Guilded a Revolt jsou platformy, které jsou přímo inspirované Discordem a podobnost mezi nimi je nepřehlédnutelná. Ekosystém uživatelů, přímých zpráv, serverů a botů je u těchto tří platforem takřka identický. Guilded ani Revolt nemají ekvivalent k podpůrným příkazům. Boti tedy musí kontrolovat obsah každé odeslané zprávy na serveru, jestli neobsahuje nějaký z jejich příkazů. Každý bot má obvykle svůj prefix (např. vykřičník) a problém nastává, když má více botů stejný prefix a příkaz se stejným názvem (např. po napsání ,,!help`` do chatu zobrazí svou nápovědu všichni takoví boti)\footnote{Tímto způsobem se před představením podpůrných příkazů ovládali i boti na Discordu. Problém stejných příkazů se řešil buď víceznakovými prefixy (menší šance na kolizi), nebo nastavitelným prefixem (to vyžaduje nějaké úložiště uchovávající dvojice id serveru a prefix). Tento starý typ příkazů lze stále používat např. pokud je vývojář chce skrýt před běžnými uživateli (tyto příkazy se neobjeví v našeptávači).}. Obě platformy mají oproti Discordu znatelně menší uživatelskou základnu a počet jejich veřejných botů se pohybuje v řádu desítek.
 	
 	Guilded (2017) lze považovat za konkurenci Discordu, která se zaměřuje na jeho původní účel. Tím je komunikace pro hráče videoher. Guilded přidává funkce užitečné pro pořádání pravidelných komunitních událostí. Uživatel zde také může propojit svůj účet s vybranými herními tituly. \cite{web_guilded} 
 	
@@ -185,7 +185,7 @@
 	
 	Struktura Flocku je podobná jako u ostatních platforem: Jednotlivé servery se nazývají týmy a obsahují textové kanály, ve kterých je možné zahájit hlasový hovor. Zdejší aplikace komunikují s Flock API a boti jsou jejich uživatelské reprezentace. Výběr aplikací je podobný jako u platforem Slack a Teams.
 	
-	Platforma pro vývoj Flock aplikací se nazývá FlockOS a má slogan \quotedblbase World's First Chat Operating System\textquotedblleft, s operačním systémem ale nemá nic společného. Boty lze programovat v oficiálním SDK, jehož poslední verze ale vyšla v roce 2017.
+	Platforma pro vývoj Flock aplikací se nazývá FlockOS a má slogan ,,World's First Chat Operating System``, s operačním systémem ale nemá nic společného. Boty lze programovat v oficiálním SDK, jehož poslední verze ale vyšla v roce 2017.
 	
 	\subsection{Mattermost, Rocket.Chat a Zulip}
 	
@@ -233,28 +233,28 @@
 		
 	Discord API, se kterým program ovládající bota komunikuje, se dělí na dvě hlavní vrstvy: Pro obecné operace slouží HTTPS REST API a pro odesílání a přihlašování k událostem v reálném čase se používají trvalá zabezpečená připojení pomocí protokolu WebSocket. Samotná komunikace pak probíhá ve formátu JSON a pro unikátní identifikátory všech objektů se využívá formát Twitter Snowflake ID.	Discord operuje na tak velkém měřítku, že zajistit úplnou konzistenci jeho dat by bylo nemožné, a proto je většina operací v Discord API eventuálně konzistentní. \cite{doc_Discord}
 	
-	Eventuální konzistence znamená, že distribuovaná a replikovaná databáze povoluje relativně velké množství nekonzistentních dat. Pokud ale po nějaký čas neproběhne operace zápisu, tak se data na všech replikách postupně \quotedblbase srovnají\textquotedblleft. \cite{book_distributedSystems4}
+	Eventuální konzistence znamená, že distribuovaná a replikovaná databáze povoluje relativně velké množství nekonzistentních dat. Pokud ale po nějaký čas neproběhne operace zápisu, tak se data na všech replikách postupně ,,srovnají``. \cite{book_distributedSystems4}
 	
 	Tvorba aplikací pracujících nad eventuálně konzistentními daty může být náročná. Události z Discord API navíc nemusí klientovi vždy přijít právě jen jednou, a proto je na ně nutné reagovat idempotentně. Výsledek několikrát provedené idempotentní operace by měl být stejný, jako kdyby byla provedena jen jednou. \cite{book_distributedSystemsUnderstanding}
 	
-	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko \textit{Example} odkazující na webovou stránku (obrázek \ref{_tag_img_pow}).
+	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko odkazující na webovou stránku (viz obrázky \ref{_tag_img_pow} až \ref{_tag_img_pow_last}).
 	
 	\begin{table}[ht]
 		\centering
 		\caption{Nejpopulárnější knihovny pro tvorbu Discord botů}\medskip
 		\begin{threeparttable}
-			\begin{tabular}{ l l r r }
-				\textbf{Název} & \textbf{Jazyk} & \textbf{Vznik} & \textbf{Popularita}\tnote{*} \\\hline
-				discord.js	& JavaScript 	& 2015 & 24 452 \\
-				discord.py	& Python		& 2015 & 14 024 \\
-				DiscordGo	& Go			& 2015 & 4 563 \\
-				serenity	& Rust			& 2016 & 4 259 \\
-				JDA			& Java			& 2015 & 4 038 \\
-				Discord.Net & C\#			& 2015 & 3 165 \\
-				Pycord		& Python		& 2021 & 2 619 \\
-				Discord4J	& Java			& 2015 & 1 697 \\
-				Eris		& JavaScript	& 2016 & 1 465 \\
-				DSharpPlus	& C\#			& 2016 & 1 179 \\
+			\begin{tabular}{ l l c c r }
+				\textbf{Název} & \textbf{Jazyk} & \textbf{Vznik} & \textbf{Oficiální tutoriály} & \textbf{Popularita}\tnote{*} \\\hline
+				discord.js	& JavaScript & 2015 & Ano & 24 452 \\
+				discord.py	& Python	 & 2015 & Ne  & 14 024 \\
+				DiscordGo	& Go		 & 2015 & Ne  &  4 563 \\
+				serenity	& Rust		 & 2016 & Ne  &  4 259 \\
+				JDA			& Java		 & 2015 & Ano &  4 038 \\
+				Discord.Net & C\#		 & 2015 & Ano &  3 165 \\
+				Pycord		& Python	 & 2021 & Ano &  2 619 \\
+				Discord4J	& Java		 & 2015 & Ano &  1 697 \\
+				Eris		& JavaScript & 2016 & Ne  &  1 465 \\
+				DSharpPlus	& C\#		 & 2016 & Ano &  1 179 \\
 			\hline\end{tabular}
 			\begin{tablenotes}
 				\item[*] počet GitHub hvězd ke dni 15. 2. 2024
@@ -265,13 +265,13 @@
 	\section{discord.py}
 	\label{_tag_section_discordpy}
 	
-	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python (verze 3.8 a vyšší), která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod ke konkrétní události se často používají dekorátory (syntax umožňující upravit chování metod bez zásahu do jejich těla). Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. 
+	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python, která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod ke konkrétní události se často používají dekorátory, což je syntax umožňující upravit chování metod bez zásahu do jejich těla. Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. 
 	
-	Cogs umožňují rozdělit logiku bota do více tříd (které dědí z třídy \textit{Cog} definované knihovnou). Každá taková třída je v discord.py terminologii zvaná cog a slouží jako kolekce souvisejících metod, které buď obsluhují příkazy, nebo reagují na události. Zvykem je, aby se každý cog nacházel ve zvláštním souboru a aby se každý z těchto souborů nacházel v adresáři pojmenovaném \textit{cogs}. Instance cog tříd jsou pak do bota nahrány nikoliv přes importování, ale pomocí mechanismu rozšíření (\textit{extensions}), který knihovna přidává. Za běhu programu je možné rozšíření přidávat a odebírat bez nutnosti restartování (\textit{hot reload}).
+	Cogs umožňují rozdělit logiku bota do více tříd, které dědí z třídy \textit{Cog} definované knihovnou. Každá taková třída je v discord.py terminologii zvaná cog a slouží jako kolekce souvisejících metod, které buď obsluhují příkazy, nebo reagují na události. Zvykem je, aby se každý cog nacházel ve zvláštním souboru a aby se každý z těchto souborů nacházel v adresáři pojmenovaném \textit{cogs}. Instance cog tříd jsou pak do bota nahrány nikoliv přes importování, ale pomocí mechanismu rozšíření (\textit{extensions}), který knihovna přidává. Za běhu programu je možné rozšíření přidávat a odebírat bez nutnosti restartování (\textit{hot reload}).
 	
 	Výhodou discord.py je jeho velká komunita, od které lze získat podporu např. na webu Stack Overflow nebo na oficiálním Discord serveru této knihovny. Díky použití dekorátorů (a jazyka Python obecně) může být psaný kód čitelný a zároveň mít vysokou hustotu. Pro definici příkazů lze navíc využít anotací a komentářů u příslušných metod. Knihovna má k dispozici referenční příručku, která stručně popisuje veškerou její funkcionalitu. Podrobnější popisy nebo příklady použití se zde ale vyskytují jen zřídka.
 	
-	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} právě absence uživatelské příručky. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce v kontextu Discordu (z pohledu uživatele).
+	Největším problémem discord.py je podle hlasování uživatelů na GitHub \mbox{Issues} absence oficiálních tutoriálů. Referenční příručka je dobrým nástrojem hlavně pro programátory, kteří už obecnou tvorbu botů v této knihovně ovládají, a neobsahuje např. informace o tom, jak strukturovat větší projekt nebo co znamenají jednotlivé funkce knihovny z pohledu koncového uživatele.
 	
 	V roce 2021, kdy byly mimo jiné představeny podpůrné příkazy, vyšla nová verze Discord API, která přinesla zásadní změny v jeho používání. To vedlo k frustraci autorů některých knihoven a vývoj discord.py byl pozastaven. Po šesti měsících se repozitář opět otevřel a vývoj mohl pokračovat, mezitím ale vzniklo několik nových knihoven založených na discord.py (konkrétně Pycord, Nextcord a disnake). Zároveň začaly vycházet balíky, které do existující knihovny přidávaly podporu pro novou verzi Discord API. Zdrojové kódy těchto knihoven jsou si velmi podobné, a proto je při hledání informací nutné dávat pozor na to, s jakou knihovnou daný zdroj pracuje.
 	
@@ -279,25 +279,25 @@
 	
 	Discord.js je knihovna pro běhové prostředí Node.js umožňující tvorbu Discord botů v jazycích JavaScript nebo TypeScript. Funkcionalita je založena na objektech \verb*|Promise| a při psaní kódu se využívá tzv. arrow funkcí. Režie pro zprovoznění podpůrných příkazů a modularity (zde ve stylu \textit{co soubor, to příkaz}) je o něco složitější než u discord.py.
 	
-	Velkou výhodou této knihovny je existence uživatelské příručky, která programátora provede krok za krokem od úvodní instalace npm balíčku až po tvorbu pokročilých příkazů. Krom popisu postupů a zdrojových kódu se díky tomuto návodu programátor rychle dozví, co všechno do svého bota vlastně může implementovat. Nechybí ani referenční příručka a početná komunita jako u discord.py.
+	Velkou výhodou této knihovny je existence oficiálních tutoriálů, které programátora provedou krok za krokem od úvodní instalace npm balíčku až po tvorbu pokročilých příkazů. Krom popisu postupů a zdrojových kódu se díky tomuto návodu programátor rychle dozví, co všechno do svého bota vlastně může implementovat. Nechybí ani referenční příručka a početná komunita jako u discord.py.
 	
 	Knihovna nevyužívá dekorátorů ani komentářů pro definování příkazů. Výsledný kód obsahuje mnoho vnořených nebo zřetězených funkcí, kvůli kterým může být delší a hůře čitelný. Knihovna sice podporuje TypeScript, oficiálních ani komunitních návodů pro jeho korektní použití ale není mnoho.
 	
 	\section{Discord.Net}
 	
-	Discord.Net je knihovna pro tvorbu Discord botů na platformě .NET distribuovaná přes systém NuGet. Dokumentace je psaná pro jazyk C\# (ve kterém je tato knihovna implementována), je ale možné použít i jiné jazyky z této platformy (např. F\# nebo Visual Basic). Knihovna má k dispozici referenční i uživatelskou příručku, její nevýhodou je menší komunita.
+	Discord.Net je knihovna pro tvorbu Discord botů na platformě .NET, kterou lze do projektu přidat přes systém NuGet. Dokumentace je psaná pro jazyk C\#, ve kterém je tato knihovna implementována. Pro tvorbu bota je ale možné použít i jiné jazyky z této platformy jako F\# nebo Visual Basic. Knihovna má k dispozici referenční příručku i tutoriály, její nevýhodou je menší komunita.
 	
-	 Pro tvorbu složitějších botů se doporučuje použít vkládání závislostí\footnote{Vkládání závislostí (\textit{dependency injection}) je návrhový vzor, kde se třetí strana stará o vztahy mezi komponentami a jejich závislostmi (aby byla za běhu programu do vybraných atributů dosazena správná instance) \cite{lit_distributedSystems}. Zde se konkrétně jedná o balík \textit{Microsoft.Extensions.DependencyInjection}.}. Oproti předchozím knihovnám Discord.Net u podpůrných příkazů odděluje logiku jejich synchronizace a obsluhy. Kód zde tedy není strukturován na metody odpovídající jednotlivým příkazům, ale všechny příkazy jsou obsluhovány jedinou metodou, ve které je kód dále rozvětven\footnote{Podpůrné příkazy musí být synchronizovány, aby je mohli uživatelé používat. V discord.py a discord.js jsou všechny potřebné informace pro synchronizaci (jméno, popis, a vstupní parametry) součástí definice obslužné funkce daného příkazu. V Discord.Net jsou tyto informace uvedeny ve speciální metodě pro synchronizaci. Druhá speciální metoda pak obsluhuje všechny příkazy. Obvykle je uvnitř této metody rozvětvení typu \textit{switch} podle jména příkazu.}.
+	 Pro tvorbu složitějších botů se doporučuje použít vkládání závislostí\footnote{Vkládání závislostí (\textit{dependency injection}) je návrhový vzor, kde se třetí strana stará o vztahy mezi komponentami a jejich závislostmi (aby byla za běhu programu do vybraných atributů dosazena správná instance) \cite{lit_distributedSystems}. Zde se konkrétně jedná o balík \textit{Microsoft.Extensions.DependencyInjection}.}. Oproti předchozím knihovnám Discord.Net u podpůrných příkazů odděluje logiku jejich synchronizace a obsluhy. Kód zde tedy není strukturován na metody odpovídající jednotlivým příkazům, ale všechny příkazy jsou obsluhovány jedinou metodou, ve které je kód dále rozvětven\footnote{Podpůrné příkazy musí být synchronizovány, aby je mohli uživatelé používat. V discord.py a discord.js jsou všechny potřebné informace pro synchronizaci (jméno, popis a vstupní parametry) součástí definice obslužné funkce daného příkazu. V Discord.Net jsou tyto informace uvedeny ve speciální metodě pro synchronizaci. Druhá speciální metoda pak obsluhuje všechny příkazy. Obvykle je uvnitř druhé metody rozvětvení typu \textit{switch} podle jména příkazu.}.
 	
 	\section{JDA}
 	
-	JDA je knihovna pro tvorbu botů v jazyce Java nebo Kotlin. Do projektu je přidána pomocí nástroje Maven nebo Gradle. Stejně jako u Discord.Net je zde oddělená logika synchronizace podpůrných příkazů s Discordem a jejich samotné obsluhy.
+	JDA je knihovna pro tvorbu botů v jazyce Java nebo Kotlin. Do projektu je přidána pomocí nástroje Maven nebo Gradle. Stejně jako u Discord.Net je zde oddělená logika synchronizace podpůrných příkazů s Discordem od jejich samotné obsluhy.
 	
-	Referenční příručka JDA je vygenerována přes Javadoc, což může být vhodné pro programátory zvyklé na jazyk Java, dokumentace ale působí složitě a nepřehledně. K dispozici je také uživatelská příručka včetně ukázkové implementace bota přehrávajícího hudbu v hlasovém hovoru. Ze čtyř zkoumaných knihoven se jedná o jedinou, která by takto v návodu obsahovala krok za krokem kompletní proces tvorby bota s konkrétním zaměřením.
+	Referenční příručka JDA je vygenerována přes Javadoc, což může být vhodné pro programátory zvyklé na jazyk Java, na první pohled ale působí složitě a nepřehledně. K dispozici jsou také tutoriály včetně ukázkové implementace bota přehrávajícího hudbu v hlasovém hovoru. Ze čtyř zkoumaných knihoven se jedná o jedinou, která by takto v návodu obsahovala krok za krokem kompletní proces tvorby bota s konkrétním zaměřením.
 	
 	\chapter{Tvorba matematického Discord bota}
 	
-	Tato kapitola popisuje tvorbu matematického Discord bota, který se konkrétně zaměřuje na výklad teorie a generování příkladů z lineární algebry. K výkladu této látky lze přistupovat s různou mírou obecnosti: Některé zdroje prezentují lineární algebru jako sadu postupů pro řešení určitých matematických úloh, jiné ji vykládají jako teorii vektorových prostorů a lineárních zobrazení \cite{lit_lingebra}. Bot byl vytvořen spíše pro prezentování informací z druhé zmíněné strany spektra, avšak jeho návrh obecně podporuje jakýkoliv typ matematických materiálů. Generované příklady se pak soustředí na základní výpočty s maticemi.
+	Tato kapitola popisuje tvorbu matematického Discord bota, který se zaměřuje na výklad teorie a generování příkladů z lineární algebry. K výkladu této látky lze přistupovat s různou mírou obecnosti: Některé zdroje prezentují lineární algebru jako sadu postupů pro řešení určitých matematických úloh, jiné ji vykládají jako teorii vektorových prostorů a lineárních zobrazení \cite{lit_lingebra}. Bot byl vytvořen spíše pro prezentování informací z druhé zmíněné strany spektra, avšak jeho návrh obecně podporuje jakýkoliv typ matematických materiálů. Generované příklady se pak soustředí na základní výpočty s maticemi.
 	
 	Pro tvorbu bota byla zvolena knihovna discord.py zejména kvůli její početné komunitě a čitelnosti výsledného zdrojového kódu. Při volbě také hrála roli existence matematických knihoven pro jazyk Python (konkrétně Matplotlib, NumPy, SciPy a SymPy), které jsou zavedené a dobře zdokumentované.
 		
@@ -305,7 +305,7 @@
 	
 	\subsection{Vykreslení matematických výrazů}
 	
-	Jak již bylo zmíněno v sekci \ref{_tag_section_texbot}, pro textovou komunikaci ohledně matematiky je vhodné používat správné matematické symboly. Příkladem je situace, kdy chce jeden uživatel odeslat a popsat druhému uživateli vzorec obsahující mocniny (např. $x^2$). Pokud si uživatel nepamatuje specifický alt kód, pak symbol \quotedblbase$^2$\textquotedblleft\ není možné na klávesnici napsat. Ne příliš praktickým řešením je najít a zkopírovat daný symbol buď z internetu, nebo programu jako je \textit{mapa znaků}. Další možností je zavést alternativní značení, tedy např. místo $x^2$ psát $x$\textsuperscript{$\wedge$}2 nebo $x$**2. Tato značení ale nejsou nijak normalizovaná a v textové konverzaci zejména více uživatelů mohou vést k nedorozuměním. Obě možnosti navíc selhávají ve chvíli, kdy je potřeba zapsat buď velké množství různých symbolů, nebo složitější výrazy obsahující zlomky, matice atd. Některá textová prostředí podporují vykreslování HTML: Pro horní a dolní index lze využít značek \verb*|sup| a \verb*|sub|, řecká písmena lze pak psát např. jako \verb*|&alpha;|. Pro jakýkoliv složitější matematický výraz je ale jediným zavedeným způsobem program TeX a jeho syntax.
+	Jak již bylo zmíněno v sekci \ref{_tag_section_texbot}, pro textovou komunikaci ohledně matematiky je vhodné používat správné matematické symboly. Příkladem je situace, kdy chce jeden uživatel odeslat a popsat druhému uživateli vzorec obsahující mocniny (např. $x^2$). Pokud si uživatel nepamatuje specifický alt kód, pak symbol ,,$^2$`` není možné na klávesnici napsat. Ne příliš praktickým řešením je najít a zkopírovat daný symbol buď z internetu, nebo programu jako je \textit{mapa znaků}. Další možností je zavést alternativní značení, tedy např. místo $x^2$ psát $x$\textsuperscript{$\wedge$}2 nebo $x$**2. Tato značení ale nejsou nijak normalizovaná a v textové konverzaci zejména více uživatelů mohou vést k nedorozuměním. Obě možnosti navíc selhávají ve chvíli, kdy je potřeba zapsat buď velké množství různých symbolů, nebo složitější výrazy obsahující zlomky, matice atd. Některá textová prostředí podporují vykreslování HTML: Pro horní a dolní index lze využít značek \verb*|sup| a \verb*|sub|, řecká písmena lze pak psát např. jako \verb*|&alpha;|. Pro jakýkoliv složitější matematický výraz je ale jediným zavedeným způsobem program TeX a jeho syntax.
 	
 	Protože Discord vykreslování TeX výrazů nepodporuje, jedná se o jednu z funkcionalit navrhovaného bota. Konkrétně jde o příkaz \verb*|/render| (\textit{vykresli}), jehož parametrem je právě matematický výraz zapsaný v TeX (resp. Matplotlib Mathtext) syntaxi, který má být vykreslen. Po spuštění příkazu je do chatu odeslán obrázek obsahující vykreslení požadovaného výrazu. Pod tímto obrázkem se nachází trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Tlačítko pro smazání kompletně odstraní botem odeslanou zprávu. Tlačítkem pro úpravu se vyvolá vyskakovací okno s textovým polem, ve kterém je předvyplněn uživatelův původní vstup. Po opravě nebo rozšíření výrazu je daný obrázek překreslen. Pokud se ve vstupu od uživatele nachází chyba, pak zpráva místo obrázku obsahuje výpis z chybového hlášení, díky kterému může uživatel chybu snadněji detekovat. Tlačítko potvrzení pouze nechá trojici tlačítek zmizet a tedy znemožní výraz dále upravovat nebo ho smazat. Tato akce se po určitém časovém intervalu provede automaticky, aby tlačítka zbytečně neznepřehledňovala textovou konverzaci.
 	
@@ -315,7 +315,7 @@
 	
 	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb*|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, aby nebyly výpisky součástí zdrojového kódu a bylo snazší je upravovat. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
 	
-	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (\quotedblbase\$\$\textquotedblleft, dále jen \quotedblbase dvoudolar\textquotedblleft). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2 000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. %Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
+	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (,,\verb*|$$|``, dále jen ,,dvoudolar``). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. %Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
 	
 	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam, z nějž lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek. Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.
 	
@@ -337,11 +337,11 @@
 	
 	\textit{Administrátor} je typ oprávnění, které je součástí Discordu a uživatelům ho lze přidělit v rámci role. Pokud není taková role nikomu přidělena, pak je majitel serveru jediným uživatelem s těmito právy (a zároveň jediným, kdo může tuto roli někomu dalšímu přidělit).
 	
-	Za \quotedblbase moderátora bota\textquotedblleft\ je považován uživatel, kterému byla (administrátorem) přidělena speciální role. Tato role je vytvořena navrhovaným botem po jeho připojení na daný server. Díky této roli lze uživatele bez administrátorských práv rozdělit na dvě skupiny a pouze jedné z nich povolit používání určitých příkazů.
+	Za ,,moderátora bota`` je považován uživatel, kterému byla (administrátorem) přidělena speciální role. Tato role je vytvořena navrhovaným botem po jeho připojení na daný server. Díky této roli lze uživatele bez administrátorských práv rozdělit na dvě skupiny a pouze jedné z nich povolit používání určitých příkazů.
 	
 	Nastavení může vypadat např. následovně: Kdokoliv může vykreslovat matematické výrazy pomocí \verb*|/render|, pouze moderátoři bota (a tedy i administrátoři, kteří jim jsou nadřazeni) mohou generovat příklady pomocí \verb*|/generate| a pouze administrátoři mohou používat výklad teorie příkazem \verb*|/explain|.
 	
-	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena (zadavatel daného příkazu). Interakci s \quotedblbase cizími\textquotedblleft\ ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota. Tlačítko pro přeposlání daného podtématu do přímých zpráv je vždy dostupné všem.
+	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena (zadavatel daného příkazu). Interakci s ,,cizími`` ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota. Tlačítko pro přeposlání daného podtématu do přímých zpráv je vždy dostupné všem.
 	
 	\subsection{Další funkcionalita} % $> old_commands
 	
@@ -357,7 +357,7 @@
 
 	Před implementací jednotlivých funkčních částí výsledného bota bylo nutné rozhodnout, jak bude projekt strukturován. U knihovny discord.py je toto rozhodnutí ponecháno především na vývojáři: Dokumentace knihovny neobsahuje doporučený způsob, jak kód bota rozdělovat do více souborů, ani ukázku většího projektu, kterým by se dalo inspirovat.
 	
-	Zvyk ohledně cog souborů (viz \ref{_tag_section_discordpy}) byl během implementace bota dodržen. Logika vykonání příkazů ale byla ve většině případů oddělena do jiných souborů, které se v pomyslné hierarchii projektu nachází na jiné úrovni. Cogs je pak importují a pouze volají jejich metody. Podle toho, zdali jsou tyto \quotedblbase jiné\textquotedblleft\ soubory závislé na knihovně discord.py, je lze rozdělit do dvou skupin.
+	Zvyk ohledně cog souborů (viz \ref{_tag_section_discordpy}) byl během implementace bota dodržen. Logika vykonání příkazů ale byla ve většině případů oddělena do jiných souborů, které se v pomyslné hierarchii projektu nachází na jiné úrovni. Cogs je pak importují a pouze volají jejich metody. Podle toho, zdali jsou tyto ,,jiné`` soubory závislé na knihovně discord.py, je lze rozdělit do dvou skupin.
 	
 	Soubory, jež Discord knihovnu importují (ale nejedná se o cogs), se nachází v adresáři \textit{d\_modules} (zkráceně pro \textit{Discord modules}). Je v nich implementována logika, která je společná pro více příkazů, jako je kontrola oprávnění pro spuštění příkazu nebo odesílání a mazání textových zpráv. Zároveň se zde nachází veškerá logika pro obsluhu interaktivních prvků (např. tlačítek nebo vyskakovacího okna), ale i modul obsahující definici samotného bota.
 	
@@ -450,27 +450,41 @@
 	
 	Discord sice umožňuje, aby jediná zpráva najednou obsahovala text i obrázky, problémem ale je, že jsou všechny obrázky umístěny na konci zprávy pod veškerým textem. Proto je rozdělování na více zpráv jedinou možností, jak zajistit přesné umístění obrázků v odeslaném textu. Pokud zpráva obsahuje internetový odkaz, který míří na určitý obrázek, pak ho Discord automaticky zobrazí. Umístěním takového odkazu mezi dvoudolary se opět zajistí správné umístění obrázku z internetu.
 	
-	Bot automaticky rozděluje zprávy, které jsou delší než 2 000 znaků, kvůli omezením ze strany Discordu. Využívá se Python modulu \textit{textwrap}, díky kterému se rozdělení zprávy může nacházet pouze na místě mezery nebo nového řádku. Pokud by automatické rozdělení nebylo vhodně zvoleno, je možné opět použít dvoudolar, který případně značí, kde bude zpráva rozdělena.
+	Bot automaticky rozděluje zprávy, které jsou delší než 2000 znaků, kvůli omezením ze strany Discordu. Využívá se Python modulu \textit{textwrap}, díky kterému se rozdělení zprávy může nacházet pouze na místě mezery nebo nového řádku. Pokud by automatické rozdělení nebylo vhodně zvoleno, je možné opět použít dvoudolar, který případně značí, kde bude zpráva rozdělena.
 	
 	\subsection{Implementace generace příkladů}
 	
 	Podobně jako u výkladu teorie, implementace uživatelského rozhraní u generátoru příkladů využívá komplexnějšího view. Logika odesílání zpráv s návodem po stisknutí tlačítka \textit{Jak počítat?} používá stejné funkce jako výklad teorie. Logika zobrazování příkladů a jejich výsledků se už liší.
 	
-	Dokud se nevyužije možnosti zobrazení návodu, který může být tvořen více odeslanými zprávami, tak je rodičovská zpráva daného view stále stejná a její obsah je modifikován na základě stisknutých tlačítek. Tato zpráva může obsahovat text a jeden obrázek.
+	Dokud se nevyužije možnosti zobrazení návodu, který může být tvořen více odeslanými zprávami, tak je rodičovská zpráva daného view stále stejná a její obsah je modifikován na základě stisknutých tlačítek. Tato zpráva obsahuje text a maximálně jeden obrázek. View má v sobě uložený řetězec se zadáním a řešením aktuálního příkladu. Po generaci nového příkladu je obsahem zprávy text zadání a po kliknutí na \textit{Zobrazit výsledek} je obsah změněn na text řešení.
+	
+	Obrázek obsažený v rodičovské zprávě je vykreslením matematického výrazu, jehož předpis je součástí řetězců se zadáním a řešením. Řetězec obsahuje nejprve textovou část zprávy a pokud jsou následně zapsány tři znaky dolaru, vše za nimi je považováno jako předpis výrazu pro vykreslení. Styl zápisu byl oproti \mbox{Markdown} souborům takto zjednodušen, protože zde není potřeba obsah rozdělovat do více zpráv a vykreslovat více obrázků.
 	
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/ProblemsDiagram}
-		\caption{UML}
+		\caption{Diagram tříd generátoru příkladů}
+		\label{_tag_img_problemuml}
 	\end{figure}
 	
+	Pro snadné implementování nových kategorií příkladů byla navržena struktura tříd, kterou popisuje obrázek \ref{_tag_img_problemuml}. Abstraktní třída \textit{GeneralProblem} obsahuje řetězce pro zadání a řešení příkladu. Pro jejich nastavení slouží metoda, která je definována v potomcích této třídy. Každý potomek reprezentuje jednu kategorii příkladů a nachází se ve vlastním souboru. Soubory jsou součástí balíku \textit{problems} kvůli snadnějšímu importování. O poskytnutí řetězců k vybrané kategorii se stará \mbox{\textit{ProblemManager}}, který obsahuje všechny potomky \textit{GeneralProblem}. Tato vrchní trojice bloků je nezávislá na platformě Discord a společně s logikou pro vykreslování matematických výrazů by mohla být použita v jakékoliv Python aplikaci.
 	
-	% Math_problems
-	% - General problem
-	% - Problem view
-	% - Jednotlivé příklady
+	Spodní část diagramu je závislá na knihovně discord.py. Cog po zadání příkazu odešle zprávu s view, které obsahuje instanci \textit{ProblemManager}. Z ní si view získá seznam dostupných kategorií pro naplnění výběrového seznamu a řetězce se zadáním a řešením, pokud je stisknuto příslušné tlačítko. View se také stará o načtení Markdown souboru s návodem pro výpočet, pokud nějaký existuje.
+	
+	Do bota byly přidány generátory příkladů pro výpočet násobení matic, soustav rovnic, inverzních matic, vlastních vektorů a determinantu. Příklady pro výpočet soustavy rovnic obsahují tři neznámé a vedou na Gaussovu–Jordanovu eliminační metodu. Příklad tedy začíná maticí s rozměrem 3$\times$3, která musí být převedena na jednotkovou, a tříprvkovým vektorem s výsledky. Pokud by byla počáteční matice vygenerována úplně náhodně, výsledek by pak pravděpodobně obsahoval desetinná čísla, což není pro výukové materiály vhodné. Proto je nejdříve vytvořena jednotková matice, na které je provedeno několik náhodných gaussovských operací, které nemění její lineární obal. Pro snazší kontrolu obsahuje řetězec s řešením kromě výsledku i mezikrok výpočtu, ve kterém je matice v horním stupňovitém tvaru. Pro tento účel je použita metoda LU rozkladu bez zlomků z balíku SymPy. Po použití této metody je ještě každý řádek matice vydělen jeho největším společným dělitelem. Tato podoba matice se totiž nejvíce podobá té, ke které se uživatel dopracuje při ručním výpočtu Gaussovy eliminační metody.
+	
+	Další kategorií příkladů, kde není vhodné generovat zadání úplně náhodně, je výpočet inverzní matice. V tomto případě je potřeba vygenerovat celočíselnou matici, jejíž inverze je také tvořena celými čísly. Tento požadavek splňují matice, které mají determinant roven $\pm1$. Determinant matice v horním (nebo dolním) stupňovitém tvaru je roven součinu jejích diagonálních prvků a determinant součinu dvou čtvercových matic stejné velikosti je roven součinu determinantů těchto dvou matic \cite{lit_lingebra}. Náhodnou matici, která má determinant roven jedné, tedy lze vytvořit součinem dvou matic, kde jedna je v horním a druhá v dolním stupňovitém tvaru. Obě matice musí mít na diagonále samé jedničky, zbylé prvky jsou zvoleny náhodně.
+	
+	% eigenvalues/eigenvectors
 	
 	\subsection{Databáze}
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/Database}
+		\caption{DB}
+	\end{figure}
+	
 	% Databáze a render theme
 	
 	\subsection{Implementace moderace}
@@ -483,7 +497,7 @@
 	% $> slash_sync
 	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
-	% Problém: Discord přestal vykreslovat kuzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
+	% Problém: Discord přestal vykreslovat kurzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
 	
 	\section{Nasazení a zpětná vazba}
 	
@@ -537,6 +551,7 @@
 	\begin{figure}[ht]
 		\lstinputlisting[language={Java18}]{code/discord.java}
 		\caption{Ukázkový příkaz: Implementace v JDA}
+		\label{_tag_img_pow_last}
 	\end{figure}
 	
 \end{document}
