@@ -11,8 +11,9 @@
 \usepackage[all]{nowidow}
 % Snížit šanci na rozdělení posledního slova odstavce
 \finalhyphendemerits=200000
-% Umožňuje vytvářet tabulky s vlastními footnotes
-\usepackage{threeparttable}
+% Tabulky
+\usepackage{threeparttable} % Tabulka s vlastními footnotes
+\usepackage[table]{xcolor}  % Tabulka s různě barevnými řádky
 % Zdrojové kódy
 \input{code/syntaxhighlight}
 
@@ -245,6 +246,7 @@
 		\centering
 		\caption{Nejpopulárnější knihovny pro tvorbu Discord botů}\medskip
 		\begin{threeparttable}
+			\rowcolors{2}{gray!10}{}
 			\begin{tabular}{ l l c c r }
 				\textbf{Název} & \textbf{Jazyk} & \textbf{Vznik} & \textbf{Oficiální tutoriály} & \textbf{Popularita}\tnote{*} \\\hline
 				discord.js	& JavaScript & 2015 & Ano & 24 452 \\
@@ -267,7 +269,7 @@
 	\section{discord.py}
 	\label{_tag_section_discordpy}
 	
-	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python, která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb*|async| a \verb*|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod ke konkrétní události se často používají dekorátory, což je syntax umožňující upravit chování metod bez zásahu do jejich těla. Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. 
+	Discord.py je knihovna pro tvorbu Discord botů v jazyce Python, která je distribuována v podobě balíku instalovaného programem pip. Pro definici veškeré funkcionality bota se využívá klíčových slov \verb|async| a \verb|await|. Bot je zde instancí předdefinované třídy s metodami, které se spouští při určité události a jejichž tělo lze dodefinovat. Pro přiřazení metod ke konkrétní události se často používají dekorátory, což je syntax umožňující upravit chování metod bez zásahu do jejich těla. Některé části discord.py (např. interaktivní prvky nebo tzv. \textit{cogs}) pak využívají objektového návrhu. 
 	
 	Cogs umožňují rozdělit logiku bota do více tříd, které dědí z třídy \textit{Cog} definované knihovnou. Každá taková třída je v discord.py terminologii zvaná cog a slouží jako kolekce souvisejících metod, které buď obsluhují příkazy, nebo reagují na události. Zvykem je, aby se každý cog nacházel ve zvláštním souboru a aby se každý z těchto souborů nacházel v adresáři pojmenovaném \textit{cogs}. Instance cog tříd jsou pak do bota nahrány nikoliv přes importování, ale pomocí mechanismu rozšíření (\textit{extensions}), který knihovna přidává. Za běhu programu je možné rozšíření přidávat a odebírat bez nutnosti restartování (\textit{hot reload}).
 	
@@ -279,7 +281,7 @@
 	
 	\section{discord.js}
 	
-	Discord.js je knihovna pro běhové prostředí Node.js umožňující tvorbu Discord botů v jazycích JavaScript nebo TypeScript. Funkcionalita je založena na objektech \verb*|Promise| a při psaní kódu se využívá tzv. arrow funkcí. Režie pro zprovoznění podpůrných příkazů a modularity (zde ve stylu \textit{co soubor, to příkaz}) je o něco složitější než u discord.py.
+	Discord.js je knihovna pro běhové prostředí Node.js umožňující tvorbu Discord botů v jazycích JavaScript nebo TypeScript. Funkcionalita je založena na objektech \verb|Promise| a při psaní kódu se využívá tzv. arrow funkcí. Režie pro zprovoznění podpůrných příkazů a modularity (zde ve stylu \textit{co soubor, to příkaz}) je o něco složitější než u discord.py.
 	
 	Velkou výhodou této knihovny je existence oficiálních tutoriálů, které programátora provedou krok za krokem od úvodní instalace npm balíčku až po tvorbu pokročilých příkazů. Krom popisu postupů a zdrojových kódu se díky tomuto návodu programátor rychle dozví, co všechno do svého bota vlastně může implementovat. Nechybí ani referenční příručka a početná komunita jako u discord.py.
 	
@@ -307,17 +309,17 @@
 	
 	\subsection{Vykreslení matematických výrazů}
 	
-	Jak již bylo zmíněno v sekci \ref{_tag_section_texbot}, pro textovou komunikaci ohledně matematiky je vhodné používat správné matematické symboly. Příkladem je situace, kdy chce jeden uživatel odeslat a popsat druhému uživateli vzorec obsahující mocniny (např. $x^2$). Pokud si uživatel nepamatuje specifický alt kód, pak symbol ,,$^2$`` není možné na klávesnici napsat. Ne příliš praktickým řešením je najít a zkopírovat daný symbol buď z internetu, nebo programu jako je \textit{mapa znaků}. Další možností je zavést alternativní značení, tedy např. místo $x^2$ psát $x$\textsuperscript{$\wedge$}2 nebo $x$**2. Tato značení ale nejsou nijak normalizovaná a v textové konverzaci zejména více uživatelů mohou vést k nedorozuměním. Obě možnosti navíc selhávají ve chvíli, kdy je potřeba zapsat buď velké množství různých symbolů, nebo složitější výrazy obsahující zlomky, matice atd. Některá textová prostředí podporují vykreslování HTML: Pro horní a dolní index lze využít značek \verb*|sup| a \verb*|sub|, řecká písmena lze pak psát např. jako \verb*|&alpha;|. Pro jakýkoliv složitější matematický výraz je ale jediným zavedeným způsobem program TeX a jeho syntax.
+	Jak již bylo zmíněno v sekci \ref{_tag_section_texbot}, pro textovou komunikaci ohledně matematiky je vhodné používat správné matematické symboly. Příkladem je situace, kdy chce jeden uživatel odeslat a popsat druhému uživateli vzorec obsahující mocniny (např. $x^2$). Pokud si uživatel nepamatuje specifický alt kód, pak symbol ,,$^2$`` není možné na klávesnici napsat. Ne příliš praktickým řešením je najít a zkopírovat daný symbol buď z internetu, nebo programu jako je \textit{mapa znaků}. Další možností je zavést alternativní značení, tedy např. místo $x^2$ psát $x$\textsuperscript{$\wedge$}2 nebo $x$**2. Tato značení ale nejsou nijak normalizovaná a v textové konverzaci zejména více uživatelů mohou vést k nedorozuměním. Obě možnosti navíc selhávají ve chvíli, kdy je potřeba zapsat buď velké množství různých symbolů, nebo složitější výrazy obsahující zlomky, matice atd. Některá textová prostředí podporují vykreslování HTML: Pro horní a dolní index lze využít značek \verb|sup| a \verb|sub|, řecká písmena lze pak psát např. jako \verb|&alpha;|. Pro jakýkoliv složitější matematický výraz je ale jediným zavedeným způsobem program TeX a jeho syntax.
 	
-	Protože Discord vykreslování TeX výrazů nepodporuje, jedná se o jednu z funkcionalit navrhovaného bota. Konkrétně jde o příkaz \verb*|/render| (\textit{vykresli}), jehož parametrem je právě matematický výraz zapsaný v TeX (resp. Matplotlib Mathtext) syntaxi, který má být vykreslen. Po spuštění příkazu je do chatu odeslán obrázek obsahující vykreslení požadovaného výrazu. Pod tímto obrázkem se nachází trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Tlačítko pro smazání kompletně odstraní botem odeslanou zprávu. Tlačítkem pro úpravu se vyvolá vyskakovací okno s textovým polem, ve kterém je předvyplněn uživatelův původní vstup. Po opravě nebo rozšíření výrazu je daný obrázek překreslen. Pokud se ve vstupu od uživatele nachází chyba, pak zpráva místo obrázku obsahuje výpis z chybového hlášení, díky kterému může uživatel chybu snadněji detekovat. Tlačítko potvrzení pouze nechá trojici tlačítek zmizet a tedy znemožní výraz dále upravovat nebo ho smazat. Tato akce se po určitém časovém intervalu provede automaticky, aby tlačítka zbytečně neznepřehledňovala textovou konverzaci.
+	Protože Discord vykreslování TeX výrazů nepodporuje, jedná se o jednu z funkcionalit navrhovaného bota. Konkrétně jde o příkaz \verb|/render| (\textit{vykresli}), jehož parametrem je právě matematický výraz zapsaný v TeX (resp. Matplotlib Mathtext) syntaxi, který má být vykreslen. Po spuštění příkazu je do chatu odeslán obrázek obsahující vykreslení požadovaného výrazu. Pod tímto obrázkem se nachází trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Tlačítko pro smazání kompletně odstraní botem odeslanou zprávu. Tlačítkem pro úpravu se vyvolá vyskakovací okno s textovým polem, ve kterém je předvyplněn uživatelův původní vstup. Po opravě nebo rozšíření výrazu je daný obrázek překreslen. Pokud se ve vstupu od uživatele nachází chyba, pak zpráva místo obrázku obsahuje výpis z chybového hlášení, díky kterému může uživatel chybu snadněji detekovat. Tlačítko potvrzení pouze nechá trojici tlačítek zmizet a tedy znemožní výraz dále upravovat nebo ho smazat. Tato akce se po určitém časovém intervalu provede automaticky, aby tlačítka zbytečně neznepřehledňovala textovou konverzaci.
 	
-	Vykreslování matematických výrazů je stěžejní funkcionalitou navrhovaného bota. Kromě příkazu \verb*|/render| totiž může být použito i během výkladu teorie nebo při zobrazování vygenerovaných příkladů.
+	Vykreslování matematických výrazů je stěžejní funkcionalitou navrhovaného bota. Kromě příkazu \verb|/render| totiž může být použito i během výkladu teorie nebo při zobrazování vygenerovaných příkladů.
 	
 	\subsection{Výklad teorie}
 	
-	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb*|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, aby nebyly výpisky součástí zdrojového kódu a bylo snazší je upravovat. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
+	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, aby nebyly výpisky součástí zdrojového kódu a bylo snazší je upravovat. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
 	
-	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (,,\verb*|$$|``, dále jen ,,dvoudolar``). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb*|/render|). Maximální délka odeslané zprávy na Discordu je 2000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. %Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
+	Jazyk Markdown nemá žádnou oficiální syntax pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (,,\verb|$$|``, dále jen ,,dvoudolar``). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána jako obrázek (podobně jako u příkazu \verb|/render|). Maximální délka odeslané zprávy na Discordu je 2000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. %Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
 	
 	Každé teoretické téma (a tedy soubor) se dělí na několik podtémat, jejichž názvy a rozdělení jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam, z nějž lze vybrat jakékoliv podtéma a není nutné je procházet popořadě jako při použití tlačítek. Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.
 	
@@ -327,7 +329,7 @@
 	
 	\subsection{Generace příkladů} % kalkulačka zavržena
 	
-	Příklady lze generovat použitím příkazu \verb*|/generate|, po jehož zadání je do textového kanálu opět odeslán výběrový seznam, který tentokrát obsahuje dostupné kategorie příkladů. Po volbě některé z kategorií se objeví trojice tlačítek \textit{Generovat příklad}, \textit{Jak počítat?} a \textit{Změnit kategorii / Ukončit}. Po vygenerování příkladu jej bot bez výsledku odešle do chatu. Uživatel si může zkusit příklad vypočítat, a poté si nově objeveným tlačítkem nechat zobrazit výsledek. Tento proces lze opakovat, dokud není rozhraní ukončeno.
+	Příklady lze generovat použitím příkazu \verb|/generate|, po jehož zadání je do textového kanálu opět odeslán výběrový seznam, který tentokrát obsahuje dostupné kategorie příkladů. Po volbě některé z kategorií se objeví trojice tlačítek \textit{Generovat příklad}, \textit{Jak počítat?} a \textit{Změnit kategorii / Ukončit}. Po vygenerování příkladu jej bot bez výsledku odešle do chatu. Uživatel si může zkusit příklad vypočítat, a poté si nově objeveným tlačítkem nechat zobrazit výsledek. Tento proces lze opakovat, dokud není rozhraní ukončeno.
 	
 	Navrhovaný bot neobsahuje funkcionalitu pro kontrolu uživatelem zadaných výsledků. Pokud by takovým výsledkem byla např. matice většího rozměru, její zadávání by bylo zdlouhavé a náchylné na překlepy. Muselo by také mít nastavená jasná pravidla zápisu, nebo by uživatelský vstup musel projít komplexnější syntaktickou analýzou. Pokud se uživatel dozví, že jeho výsledek je nesprávný, dalším krokem by mělo v každém případě být nalezení chyby a poučení se z ní. Znalost výsledku sice může hledání chyby trivializovat, avšak frustrace z nesprávných výsledků u uživatelů pravděpodobně stejně vede k okamžitému zobrazení těch správných.
 	
@@ -335,21 +337,21 @@
 		
 	\subsection{Možnosti moderace}
 	
-	Aby byly demonstrovány specifické vlastnosti platformy Discord, byla do bota přidána funkcionalita pro moderaci (administraci) pomocí sady příkazů \verb*|/setup|. Administrátoři serveru mohou u každého příkazu nastavit, kdo má oprávnění jej používat. Lze vybrat ze tří kategorií: pouze administrátoři, administrátoři a moderátoři bota, nebo kdokoliv (výchozí stav). Tato nastavení dávají smysl pouze při používání bota na serverech a v přímé konverzaci nemají význam.
+	Aby byly demonstrovány specifické vlastnosti platformy Discord, byla do bota přidána funkcionalita pro moderaci (administraci) pomocí sady příkazů \verb|/setup|. Administrátoři serveru mohou u každého příkazu nastavit, kdo má oprávnění jej používat. Lze vybrat ze tří kategorií: pouze administrátoři, administrátoři a moderátoři bota, nebo kdokoliv (výchozí stav). Tato nastavení dávají smysl pouze při používání bota na serverech a v přímé konverzaci nemají význam.
 	
 	\textit{Administrátor} je typ oprávnění, které je součástí Discordu a uživatelům ho lze přidělit v rámci role. Pokud není taková role nikomu přidělena, pak je majitel serveru jediným uživatelem s těmito právy (a zároveň jediným, kdo může tuto roli někomu dalšímu přidělit).
 	
 	Za ,,moderátora bota`` je považován uživatel, kterému byla administrátorem přidělena speciální role s názvem \textit{LingeMod}. Tato role je vytvořena navrhovaným botem po jeho připojení na nový server. Díky moderátorské roli lze uživatele bez administrátorských práv rozdělit na dvě skupiny a pouze jedné z nich povolit používání určitých příkazů.
 	
-	Nastavení může vypadat např. následovně: Kdokoliv může vykreslovat matematické výrazy pomocí \verb*|/render|, pouze moderátoři bota (a tedy i administrátoři, kteří jim jsou nadřazeni) mohou generovat příklady pomocí \verb*|/generate| a pouze administrátoři mohou používat výklad teorie příkazem \verb*|/explain|.
+	Nastavení může vypadat např. následovně: Kdokoliv může vykreslovat matematické výrazy pomocí \verb|/render|, pouze moderátoři bota (a tedy i administrátoři, kteří jim jsou nadřazeni) mohou generovat příklady pomocí \verb|/generate| a pouze administrátoři mohou používat výklad teorie příkazem \verb|/explain|.
 	
 	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena (zadavatel daného příkazu). Interakci s ,,cizími`` ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota. Tlačítko pro přeposlání daného podtématu do přímých zpráv je vždy dostupné všem.
 	
 	\subsection{Další funkcionalita} % $> old_commands
 	
-	Navrhovaný bot obsahuje příkaz \verb*|/help| pro zobrazení stručné nápovědy. Zvykem při tvorbě Discord botů je také přidání příkazu \verb*|/ping|, pomocí kterého lze otestovat, zdali je bot online. Příkaz ping je inspirován stejnojmenným programem a odpověď na něj obvykle vypisuje dobu odezvy (latenci) daného bota. V tomto případě byly do výpisu přidány i další informace jako doba provozu (uptime) nebo počet serverů, na kterých se navrhovaný bot nachází.
+	Navrhovaný bot obsahuje příkaz \verb|/help| pro zobrazení stručné nápovědy. Zvykem při tvorbě Discord botů je také přidání příkazu \verb|/ping|, pomocí kterého lze otestovat, zdali je bot online. Příkaz ping je inspirován stejnojmenným programem a odpověď na něj obvykle vypisuje dobu odezvy (latenci) daného bota. V tomto případě byly do výpisu přidány i další informace jako doba provozu (uptime) nebo počet serverů, na kterých se navrhovaný bot nachází.
 	
-	Dalším přidaným příkazem, který byl inspirován prostředím terminálu, je \verb*|/clear|. Po jeho zadání bot do chatu odešle  prázdnou zprávu, která je tak dlouhá, aby se všechny předchozí zprávy již nevešly na obrazovku. To může být užitečné pro zpřehlednění konverzace v daném textovém kanále.
+	Dalším přidaným příkazem, který byl inspirován prostředím terminálu, je \verb|/clear|. Po jeho zadání bot do chatu odešle  prázdnou zprávu, která je tak dlouhá, aby se všechny předchozí zprávy již nevešly na obrazovku. To může být užitečné pro zpřehlednění konverzace v daném textovém kanále.
 	
 	U bota je možné změnit barevné schéma vykreslovaných matematických výrazů. Konkrétně jsou k dispozici čtyři kombinace barvy písma a pozadí u odeslaných obrázků. Barevné schéma je vázané na server a může být přenastaveno jeho administrátorem. Všechny botem odeslané obrázky na určitý server budou respektovat jeho nastavené schéma nezávisle na uživateli příkazu. Uživatel si totiž může nastavit barevné schéma pro konverzaci s botem v přímých zprávách. To je použito u zpráv reagujících na příkazy spuštěné v přímé konverzaci a zároveň u zpráv přeposlaných z jakéhokoliv serveru pomocí tlačítka \textit{Odeslat do DMs}.
 	
@@ -375,7 +377,7 @@
 
 	\subsection{Implementace vykreslování matematických výrazů}
 
-	První verze implementace příkazu \verb*|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek (\textit{figure}), jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno bytovým proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
+	První verze implementace příkazu \verb|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek (\textit{figure}), jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno bytovým proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
 
 	Výklad lineární algebry se neobejde bez vykreslování matic, ty ale Matplotlib Mathtext nepodporuje. Balík sice umožňuje nastavit, aby vykreslování používalo místní TeX distribuci, během implementace ale nebylo jasné, kde bude výsledný bot nasazen a jestli zde bude možné TeX nainstalovat. Vykreslování tímto způsobem je navíc pomalejší. Proto byla pro účely bota napsána vlastní logika vykreslování matic.
 	
@@ -387,13 +389,13 @@
 
 	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet nejkratších znaků. Písmo vykreslených matematických výrazů je totiž proporcionální a některé znaky tedy mohou být širší než jiné. Za nejkratší znaky se v tomto případě považují číslice a většina malých písmen. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala (podcenění by opět vedlo k překrývání sousedních prvků matice).
 	
-	Metoda postupně upravuje vstupní řetězec a nakonec vrací jeho délku (aproximovaná délka vstupního řetězce odpovídá jeho počtu znaků po provedení určitých úprav). Prvním krokem je nahrazení částí textu, které začínají zpětným lomítkem a končí libovolným nepísmenným znakem, za řetězec \verb*|00| (dvě nuly). To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Stejným řetězcem jsou nahrazeny také symboly, u kterých bylo zjištěno, že jsou delší než běžná číslice (např. velká písmena nebo symbol $+$ (plus)). Nakonec jsou zahozeny znaky jako mezery nebo závorky. %todo první věta je žalostná
+	Metoda postupně upravuje vstupní řetězec a nakonec vrací jeho délku (aproximovaná délka vstupního řetězce odpovídá jeho počtu znaků po provedení určitých úprav). Prvním krokem je nahrazení částí textu, které začínají zpětným lomítkem a končí libovolným nepísmenným znakem, za řetězec \verb|00| (dvě nuly). To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Stejným řetězcem jsou nahrazeny také symboly, u kterých bylo zjištěno, že jsou delší než běžná číslice (např. velká písmena nebo symbol $+$ (plus)). Nakonec jsou zahozeny znaky jako mezery nebo závorky. %todo první věta je žalostná
 	
-	Řetězec \verb*|1+\sqrt{2}| (vykreslen jako $1+\sqrt{2}$) je tedy po úpravách změněn na \verb*|100002| (podřetězce \verb*|+| a \verb*|\sqrt| jsou nahrazeny dvěma nulami, závorky jsou zahozeny, výsledná délka je 6 znaků). Délka řetězce \verb*|1+\sqrt[N]{2}| ($1+\sqrt[N]{2}$), který je po vykreslení stejně dlouhý, je takto vyhodnocena na 8 znaků, protože velké písmeno přidává další dvě nuly. To je příklad přecenění délky výrazu, jehož důsledkem jsou pak širší mezery mezi prvky v matici.
+	Řetězec \verb|1+\sqrt{2}| (vykreslen jako $1+\sqrt{2}$) je tedy po úpravách změněn na \verb|100002| (podřetězce \verb|+| a \verb|\sqrt| jsou nahrazeny dvěma nulami, závorky jsou zahozeny, výsledná délka je 6 znaků). Délka řetězce \verb|1+\sqrt[N]{2}| ($1+\sqrt[N]{2}$), který je po vykreslení stejně dlouhý, je takto vyhodnocena na 8 znaků, protože velké písmeno přidává další dvě nuly. To je příklad přecenění délky výrazu, jehož důsledkem jsou pak širší mezery mezi prvky v matici.
 	
-	Při určování délky jsou problémové také zlomky psané jako \verb*|\frac{x}{y}|, jejichž šířka může být v nejhorším případě vyhodnocena jako dvojnásobek té skutečné (pokud je délka čitatele i jmenovatele stejně dlouhá). Proto se před provedením prvního kroku metoda nejprve rekurzivně volá na všechny zlomky ve vstupním řetězci, které jsou po jejím provedení nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele (podle toho, který je delší).
+	Při určování délky jsou problémové také zlomky psané jako \verb|\frac{x}{y}|, jejichž šířka může být v nejhorším případě vyhodnocena jako dvojnásobek té skutečné (pokud je délka čitatele i jmenovatele stejně dlouhá). Proto se před provedením prvního kroku metoda nejprve rekurzivně volá na všechny zlomky ve vstupním řetězci, které jsou po jejím provedení nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele (podle toho, který je delší).
 
-	Stejný problém jako zlomky také způsobují např. kombinační čísla (psaná jako \verb*|\binom{x}{y}|), ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté.
+	Stejný problém jako zlomky také způsobují např. kombinační čísla (psaná jako \verb|\binom{x}{y}|), ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté.
 
 	Jelikož je pro vykreslování matic použita vlastní implementace, bylo možné zvolit styl jejich zápisu. Pro svou přehlednost, snadné strojové zpracování a rychlost zápisu byla zvolena syntax podobná maticím v prostředí MATLAB: Do hranatých závorek jsou postupně vypsány prvky matice oddělené čárkou a pro oddělení jednotlivých řádků se místo čárky píše středník.
 
@@ -407,7 +409,7 @@
 	
 	V tomto případě byla vytvořena třída, která dědí z view a navíc uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění a odkaz na původní zprávu je potřeba pro funkci tlačítka \textit{Smazat}.
 	
-	Jednotlivá tlačítka také dědí z podobné obecné třídy, u které primárně přepisují metodu \textit{callback} volanou po jejich stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn v textovém vstupu vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci jako příkaz \verb*|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat.
+	Jednotlivá tlačítka také dědí z podobné obecné třídy, u které primárně přepisují metodu \textit{callback} volanou po jejich stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn v textovém vstupu vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci jako příkaz \verb|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat.
 	
 	Vlastní třídy rozšiřující základní view se používají i pro uživatelské rozhraní výkladu teorie a generace příkladů. Protože byl ve všech případech nakonec potřeba odkaz na rodičovskou zprávu a na zadavatele příkazu, byla pro tyto účely vytvořena třída, která tuto funkcionalitu implementuje a ze které ostatní dědí. Tyto třídy se již používají v samotné obsluze příkazů a dále v textu budou nazývány jako view, jelikož obecné view se už jinde nepoužívá.
 	
@@ -433,10 +435,11 @@
 	\subsection{Implementace výkladu teorie}
 
 	% - Zmínit vytvoření samotných Markdown souborů (?)
+	%todo ---------------------------------------------
 
 	Pro výběr teoretického tématu se využívá výběrový seznam. Názvy jednotlivých položek v seznamu odpovídají názvům Markdown souborů, ze kterých se čerpají výpisky pro výklad teorie. Podobně jako u tlačítka lze u výběrového seznamu využít metody \textit{callback}, která se volá po zvolení některé z položek. Název zvolené položky je uložen do atributu, který je již předán do view obstarávajícího zobrazení výpisků.% (\textit{TheoryThemeView}).
 	
-	Po výběru určitého tématu se tedy odešle zpráva obsahující view pro teorii, které si z Markdown souboru načte výpisky ke zvolenému tématu do interní proměnné. Z toho důvodu se změna obsahu v souborech s výpisky projeví až při dalším použití příkazu \verb*|/render|. Text výpisků je podle nadpisů druhé úrovně rozdělen na jednotlivá podtémata, jejichž výpis je jediným obsahem úvodní zprávy. Tlačítka \textit{Další}, \textit{Předchozí} a nový výběrový seznam slouží pro přepínání podtémat pomocí metod ve view.
+	Po výběru určitého tématu se tedy odešle zpráva obsahující view pro teorii, které si z Markdown souboru načte výpisky ke zvolenému tématu do interní proměnné. Z toho důvodu se změna obsahu v souborech s výpisky projeví až při dalším použití příkazu \verb|/render|. Text výpisků je podle nadpisů druhé úrovně rozdělen na jednotlivá podtémata, jejichž výpis je jediným obsahem úvodní zprávy. Tlačítka \textit{Další}, \textit{Předchozí} a nový výběrový seznam slouží pro přepínání podtémat pomocí metod ve view.
 	
 	Metoda pro změnu podtémat nejprve zpracuje text patřící k aktuálně vybranému podtématu a rozdělí ho na jednotlivé zprávy, které jsou následně odeslány do textového kanálu. Na odeslané zprávy si view drží referenci. Jakmile je podtéma opět změněno a odešlou se zprávy nové, ty staré se smažou (a reference nyní ukazuje na ty nové). Před smazáním starých zpráv se jako nová rodičovská zpráva daného view nastaví ta poslední odeslaná. Díky tomu zůstanou ovládací prvky vždy dole.
 	
@@ -446,9 +449,9 @@
 	
 	\subsection{Zpracování Markdown souborů}
 	
-	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb*|sup| a \verb*|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat. Pro převod se používá Python balík \textit{UnicodeIt}. Vytvořené zápisky pro lineární algebru často používají dolní indexy. Počet znaků, které existují v Unicode ve variantě dolního indexu, je ale omezený. Pokud kvůli neexistujícímu znaku nedokáže balík \textit{UnicodeIt} obsah značky \verb*|sub| převést, je místo toho daný text vložen mezi zpětné uvozovky. Discord pak tuto část textu reprezentující dolní index zformátuje jako jednořádkový zdrojový kód: Písmo je neproporcionální, má menší velikost a tmavší pozadí. Text se díky tomu více odlišuje od zbytku a tváří se jako pomocný symbol.
+	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb|sup| a \verb|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat. Pro převod se používá Python balík \textit{UnicodeIt}. Vytvořené zápisky pro lineární algebru často používají dolní indexy. Počet znaků, které existují v Unicode ve variantě dolního indexu, je ale omezený. Pokud kvůli neexistujícímu znaku nedokáže balík \textit{UnicodeIt} obsah značky \verb|sub| převést, je místo toho daný text vložen mezi zpětné uvozovky. Discord pak tuto část textu reprezentující dolní index zformátuje jako jednořádkový zdrojový kód: Písmo je neproporcionální, má menší velikost a tmavší pozadí. Text se díky tomu více odlišuje od zbytku a tváří se jako pomocný symbol.
 	
-	Pro nahrazení textu umístěného mezi dvoudolary za obrázek s vykresleným matematickým výrazem je nejprve celý text podle dvoudolarů rozdělen na části. Aby nebylo nutné detekovat, které části jsou určené pro vykreslení a které jsou obyčejný text, bylo přidáno pravidlo, že zprávy pro vykreslení musí začínat řetězcem \verb*|$render|. Tento řetězec je případně zahozen a zbytek textu je vstupem vykreslovací funkce. Pravidla pro zápis jsou tedy stejná jako u příkazu \verb*|/render|.
+	Pro nahrazení textu umístěného mezi dvoudolary za obrázek s vykresleným matematickým výrazem je nejprve celý text podle dvoudolarů rozdělen na části. Aby nebylo nutné detekovat, které části jsou určené pro vykreslení a které jsou obyčejný text, bylo přidáno pravidlo, že zprávy pro vykreslení musí začínat řetězcem \verb|$render|. Tento řetězec je případně zahozen a zbytek textu je vstupem vykreslovací funkce. Pravidla pro zápis jsou tedy stejná jako u příkazu \verb|/render|.
 	
 	Discord sice umožňuje, aby jediná zpráva najednou obsahovala text i obrázky, problémem ale je, že jsou všechny obrázky umístěny na konci zprávy pod veškerým textem. Proto je rozdělování na více zpráv jedinou možností, jak zajistit přesné umístění obrázků v odeslaném textu. Pokud zpráva obsahuje internetový odkaz, který míří na určitý obrázek, pak ho Discord automaticky zobrazí. Umístěním takového odkazu mezi dvoudolary se opět zajistí správné umístění obrázku z internetu.
 	
@@ -485,6 +488,7 @@
 		\centering
 		\includegraphics[width=\textwidth]{img/Database}
 		\caption{Databáze}
+		\label{_tag_img_db}
 	\end{figure}
 	
 	Požadavky bota na databázi nejsou vysoké. Je potřeba ukládat nastavení barevného schématu pro vykreslování matematických výrazů, pokud jej uživatel nebo administrátor změní. Dále je pro každý server, na kterém se bot nachází, ukládán identifikátor moderátorské role LingeMod. Pokud by bot detekoval roli pomocí jejího názvu a role by byla přejmenována, přestala by pak fungovat moderace. Poslední tabulka uchovává nastavení oprávnění pro jednotlivé servery.
@@ -493,22 +497,38 @@
 	
 	Identifikátory serverů, rolí a uživatelů jsou spravovány na straně Discordu. Každá funkce v knihovně discord.py, která reaguje na událost jako např. zadání příkazu uživatelem, má jako první vstupní parametr objekt typu interakce (\textit{discord.Interaction}), ze kterého lze zjistit ID daného uživatele a serveru, kde byl příkaz zadán. 
 	
-	Pokud např. uživatel zadá příkaz pro změnu barevného schématu, tak je ID daného serveru získáno z objektu interakce a v tabulce je k němu přiřazen název zvoleného schématu. Pokud je příkaz zadán v přímých zprávách, pak je místo ID serveru, které v tomto kontextu neexistuje, použito ID uživatele. Všechny Discord identifikátory by měly být unikátní, a proto nejsou potřeba dvě tabulky pro schémata serveru a schémata uživatelů. Při použití příkazu \verb*|/render| je pak z interakce opět zjištěno ID, pomocí něhož se v databázi dohledá nastavené barevné schéma, které se použije pro vykreslení.
+	Pokud např. uživatel zadá příkaz pro změnu barevného schématu, tak je ID daného serveru získáno z objektu interakce a v tabulce je k němu přiřazen název zvoleného schématu. Pokud je příkaz zadán v přímých zprávách, pak je místo ID serveru, které v tomto kontextu neexistuje, použito ID uživatele. Všechny Discord identifikátory by měly být unikátní, a proto nejsou potřeba dvě tabulky pro schémata serveru a schémata uživatelů. Při použití příkazu \verb|/render| je pak z interakce opět zjištěno ID, pomocí něhož se v databázi dohledá nastavené barevné schéma, které se použije pro vykreslení.
 	
-	Identifikátory jsou tedy podle potřeby získávány z Discord API. V případě tohoto bota proto může být databáze jednoduchá a tabulky mezi sebou nemusí mít žádné vazby. Definice databáze ze strany SQL obsahuje pouze názvy tabulek a jejich sloupců. Veškerá logika se odehrává na straně programu v jazyce Python.
+	Identifikátory jsou tedy podle potřeby získávány z Discord API. V případě tohoto bota proto může být databáze jednoduchá a tabulky mezi sebou nemusí mít žádné vazby. Definice databáze ze strany SQL obsahuje pouze názvy tabulek a jejich sloupců. Ostatní logika se odehrává na straně programu v jazyce Python.
 	
-	% LITERAL
+	Pro reprezentaci hodnot uchovávající barevné schéma a oprávnění se používá typ \textit{Literal} z modulu \textit{typing}, který může nabývat jen předem definovaných hodnot. Literal je podporován knihovnou discord.py a pokud je nastaven jako datový typ argumentu příkazu, pak Discord uživateli povolí příkaz odeslat jen tehdy, když je zadaný argument roven některé z předem definovaných hodnot. K hodnotám je navíc dostupné našeptávání.
+	
+	Typ \textit{ThemeLiteral} může nabývat čtyř různých řetězců, které reprezentují jednotlivá barevná schémata. Tyto řetězce jsou přímo ukládány do databáze k příslušnému ID. U nastavení oprávnění existují dva typy: jeden pro zadání příkazu a druhý pro interakci s tlačítky a výběrovými seznamy. Tyto typy jsou před uložením do databáze převedeny na čísla 0, 1, nebo 2 (viz obrázek \ref{_tag_img_db}). SQLite nepodporuje výčtové typy, a proto se tato konverze opět odehrává na straně hlavního programu.
 	
 	\subsection{Implementace moderace}
-	% Setup
-
-	% DM Příkaz
-
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/SetupCommands}
+		\caption{Příkazy pro nastavení}
+	\end{figure}
+	
+	Příkazy \verb|/setup| jsou součástí tzv. skupiny podpůrných příkazů. Běžný příkaz je zapsán pomocí lomítka, po němž následuje název příkazu, který musí být jednoslovný. Příkazy ze skupiny se zadávají ve tvaru \verb|/<název_skupiny> <název_příkazu>|. Díky tomu mohou mít podobné příkazy stejný začátek a seznam příkazů je tak přehlednější. Skupiny příkazů je možné vnořovat, toho využívají příkazy \verb|/setup permissions|.
+	
+	Spuštění jednoho z příkazů nastavujících oprávnění změní v tabulce \textit{permissions} na řádku daného serveru příslušný atribut. Záznam v tabulce není přidán hned po připojení bota na server, ale až po prvním spuštění nastavujícího příkazu. Dokud záznam neexistuje, využívá se výchozích hodnot definovaných ve zdrojovém kódu. První volání příkazu nejprve přidá řádek s těmito výchozími hodnotami do tabulky a pak změní vybraný atribut.
+	
+	Při každém pokusu o spuštění příkazu nebo interakci s view jako první proběhne kontrola oprávnění. Funkce obstarávající tuto kontrolu přistupuje do databáze a má k dispozici objekt interakce, ze kterého lze zjistit údaje o daném uživateli. Pokud má uživatel dostatečná oprávnění, funkce proběhne bez efektu a obsluha jeho interakce může pokračovat. Při nedostatečných právech je vyhozena výjimka, na kterou reaguje cog \textit{on\_error}. Uživateli je v tomto případě odeslána zpráva informující o nedostatečných právech. Implementace funkce kontroly minimalizuje počet přístupů do databáze. Viz diagram/pseudokód. % TODO
+	
+	% app_commands.Group
+	% permissions.check ...
+	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
+	% $> lingemod_reset
 	% --------------------------------------------------------------------------------------------------------------------------
 	% Příkaz /dm
-	% $> slash_sync
-	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
+	% $> slash_sync	
+	
 	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
+	
 	% Problém: Discord přestal vykreslovat kurzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
 	
 	\section{Nasazení a zpětná vazba}
@@ -518,13 +538,14 @@
 	% * generovat sekvence příkladů, "simulace zkoušky"
 	% * right click to lingemod, multilang commands (~i témata), search in theory, nějaká vizualizace
 	% * Co se týče zápisků z teorie: přidat souvislost s IT
+	% * Multilang commands
 	% * Kód: Použít SQLAlchemy
 	% Vhodnost platformy Discord
 	% * Rozdíly mezi PC/web/phone/...
 	
 	\chapter{Závěr}
 	
-	Závěr. //TODO slova rozdělená na dvě stránky%todo
+	Závěr.
 	
 	% Zdroje
 	\chapter*{Seznam použité literatury}

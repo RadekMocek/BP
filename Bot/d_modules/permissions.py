@@ -1,6 +1,6 @@
 """Kontrola oprávnění."""
 
-from typing import Literal, Union, get_args
+from typing import Literal, NoReturn, Union, get_args
 
 import discord
 
@@ -32,7 +32,7 @@ __INT_2_VIEWINTERACTION: dict[int, PermissionViewInteractionLiteral] = {
 
 
 def __is_admin_or_dm(itx: discord.Interaction) -> bool:
-    """:return: Zdali je uživatel admin nebo se jedná o konverzaci v přímých zprávách"""
+    """:return: Zdali je uživatel admin, nebo se jedná o konverzaci v přímých zprávách"""
     return not itx.guild or itx.user.guild_permissions.administrator
 
 
@@ -44,13 +44,13 @@ def __get_permission(itx: discord.Interaction, action: database.ActionLiteral) -
         return database.DEFAULT_PERMISSIONS[action]  # Pokud oprávnění nenajdeme v databázi, použijeme ta defaultní
 
 
-def check_admin_or_dm_only(itx: discord.Interaction) -> None:
-    """Je uživatel admin nebo se jedná o DMs? Pokud ne, vyvolat výjimku."""
+def check_admin_or_dm_only(itx: discord.Interaction) -> None | NoReturn:
+    """Je uživatel admin, nebo se jedná o DMs? Pokud neplatí ani jedno, vyvolat výjimku."""
     if not __is_admin_or_dm(itx):
         raise discord.app_commands.MissingPermissions(["Nedostatečná práva."])
 
 
-def check_command(itx: discord.Interaction, action: database.ActionLiteral) -> None:
+def check_command(itx: discord.Interaction, action: database.ActionLiteral) -> None | NoReturn:
     """Má uživatel dostatečná oprávnění pro příkaz `action`? Pokud ne, vyvolat výjimku."""
     if not __check_command(itx, action):
         raise discord.app_commands.MissingPermissions(["Nedostatečná práva."])
@@ -99,19 +99,19 @@ def check_view_interaction(itx: discord.Interaction,
 def set_command_permission(gid: int,
                            action: database.ActionCommandLiteral,
                            permission: PermissionCommandLiteral) -> None:
-    """Uložit do dabáze oprávnění pro použití daného příkazu"""
+    """Uložit do dabáze oprávnění `permission` pro použití daného příkazu `action`"""
     database.permissions_set(gid, action, __COMMAND_2_INT[permission])
 
 
 def set_view_interaction_permission(gid: int,
                                     action: database.ActionViewInteractionLiteral,
                                     permission: PermissionViewInteractionLiteral) -> None:
-    """Uložit do dabáze oprávnění pro použití dané interakce"""
+    """Uložit do dabáze oprávnění `permission` pro použití dané interakce `action`"""
     database.permissions_set(gid, action, __VIEWINTERACTION_2_INT[permission])
 
 
 def get_permissions_info(gid: int) -> str:
-    """:return: Formátovaný řetězec informující o nastavení oprávnění na daném serveru"""
+    """:return: Formátovaný řetězec informující o nastavení oprávnění na daném serveru s ID `gid`"""
     permission_numbers = database.permissions_get_all(gid)  # Získat si oprávnění z SQLite databáze
     if not permission_numbers:  # Pokud v tabulce záznam není, server používá výchozí nastavení oprávnění
         permission_numbers = tuple(database.DEFAULT_PERMISSIONS.values())
@@ -128,7 +128,7 @@ def get_permissions_info(gid: int) -> str:
 
 
 def __permission_info_optional_newline(permission_name: str) -> str:
-    """Pomocná metoda pro formátovaný výpis oprávnění; má být před dalším řádkem přidán řádek prázdný?"""
+    """Pomocná metoda pro formátovaný výpis oprávnění; má být před dalším řádkem nejdříve přidán prázdný řádek?"""
     # Pokud další řádek končí na "_btns", pak se vztahuje k tomu nad ním
     if permission_name[-5:] == "_btns":
         return ""
@@ -141,7 +141,8 @@ def __int_2_permission(permission_tuple: tuple[str, int]) -> str:
     :param permission_tuple: Tuple (action: str, permission: int)
     :return: Pojmenování pro dané oprávnění, které je na vstupu vyjádřené číslem
     """
-    name, number = permission_tuple  # Podle jména akce se rozhodne, zdali se jedná o příkaz nebo interakci s View
+    name, number = permission_tuple
+    # Podle jména akce se rozhodne, zdali se jedná o příkaz, nebo interakci s View
     if name in get_args(database.ActionCommandLiteral):
         return __INT_2_COMMAND[number]
     else:

@@ -10,6 +10,7 @@ ActionCommandLiteral = Literal["clear", "explain", "generate", "render"]
 ActionViewInteractionLiteral = Literal["explain_btns", "generate_btns", "render_btns"]
 ActionLiteral = Literal[ActionCommandLiteral, ActionViewInteractionLiteral]
 
+DEFAULT_THEME: ThemeLiteral = "dark"
 DEFAULT_PERMISSIONS: dict[ActionLiteral, int] = {
     "clear": 0,
     "explain": 0,
@@ -49,7 +50,7 @@ def render_get_theme(iid: int) -> ThemeLiteral:
     if exists:
         cursor.execute("SELECT theme FROM render WHERE id=?", (iid,))
         return cursor.fetchone()[0]
-    return "dark"
+    return DEFAULT_THEME
 
 
 def lingemod_reset(gid: int, role_id: int) -> None:
@@ -74,7 +75,7 @@ def lingemod_get_role_id(gid: int) -> int:
 
 
 def permissions_get_all(gid: int) -> Any:
-    """:return: Řádek tabulky permissions kde id serveru == gid; None pokud záznam neexistuje"""
+    """:return: Řádek tabulky `permissions` k serveru s ID `gid`; None, pokud záznam neexistuje"""
     cursor.execute(f"SELECT * FROM permissions WHERE id=?", (gid,))
     return cursor.fetchone()
 
@@ -87,9 +88,11 @@ def permissions_get_one(gid: int, action: ActionLiteral) -> int:
 
 def permissions_set(gid: int, action: ActionLiteral, permission: int) -> None:
     """Nastavit oprávnění pro akci `action` na hodnotu `permission` pro server s ID `gid`."""
+    # Pokud řádek pro daný server v tabulce ještě není, vytvořit ho a naplnit výchozími hodnotami
     if not is_id_in_table(gid, "permissions"):
         cursor.execute("INSERT INTO permissions VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                        (gid,) + tuple(DEFAULT_PERMISSIONS.values()))
+    # (Poté) Změnit hodnotu v řádku
     cursor.execute(f"UPDATE permissions SET {action}=? WHERE id=?", (permission, gid))
     connection.commit()
 
