@@ -1,6 +1,5 @@
 {
   "tokenProduction": "token_for_main_bot_account",
   "tokenTesting": "token_for_secondary_bot_account",
-  "isProduction": true,
-  "secret1": "link_to_google_forms"
+  "isProduction": true
 }

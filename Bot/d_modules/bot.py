@@ -12,7 +12,6 @@ __config = json_read("config.json")
 __IS_PRODUCTION = __config["isProduction"]
 # Botův ověřovací token pro komunikaci s Discord API
 TOKEN = __config["tokenProduction"] if __IS_PRODUCTION else __config["tokenTesting"]
-SECRET1 = __config["secret1"]
 
 
 class LingeBot(commands.Bot):

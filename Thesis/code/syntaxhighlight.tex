@@ -44,6 +44,16 @@
     morendkeywords={onSlashCommandInteraction, getName, equals, getOption, getAsInt, reply, addActionRow, queue}
 }
 
+% Pseudokód
+\lstdefinelanguage{Pseudo1}{
+  emph={Funkce, vrací, Vrať, false, Pokud},
+  emphstyle=\textbf,
+  keywords={text, nahradit_zlomky, čitatel, jmenovatel},
+  ndkeywords={__approx_tex_len, __approx_tex_frac_replace, maximum},
+  morestring=[d]",
+  comment=[l]{Krok},
+}
+
 % Highlight českých znaků
 \makeatletter
 \lst@InputCatcodes
@@ -58,6 +68,13 @@
 	^^e0^^e1^^e2^^e3^^e4^^e5^^e6^^e7^^e8^^e9^^ea^^eb^^ec^^ed^^ee^^ef
 	^^f0^^f1^^f2^^f3^^f4^^f5^^f6^^f7^^f8^^f9^^fa^^fb^^fc^^fd^^fe^^ff
 	^^^^010c^^^^010d% č
+    ^^^^0158^^^^0159% ř
+    ^^^^011a^^^^011b% ě
+    ^^^^010e^^^^010f% ď
+    ^^^^0160^^^^0161% š
+    ^^^^016e^^^^016f% ů
+    ^^^^0147^^^^0148% ň
+    ^^^^0164^^^^0165% ť
 	^^00}
 \lst@RestoreCatcodes
 \makeatother

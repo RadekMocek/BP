@@ -8,8 +8,7 @@ from discord import app_commands
 from discord.ext import commands
 
 import d_modules.permissions as permissions
-from d_modules.bot import SECRET1
-from d_modules.common_modules import MessageView, UrlGitBookButton, UrlGitHubButton, UrlGoogleFormsButton
+from d_modules.common_modules import MessageView, UrlGitHubButton, UrlManualButton
 from d_modules.messages import try_dm_user
 from utils.file_io import txt_read
 
@@ -53,36 +52,27 @@ class Other(commands.Cog):
         `/help ` – Zobrazit tuto nápovědu
         `/ping ` – Ověřit dostupnost bota
         
-        `/setup` – Nastavení pro administrátory (viz podrobná nápověda)
+        `/setup` – Nastavení pro administrátory
         
         ### Podrobná nápověda
-        Kompletní nápověda se nachází na [GitBook](https://lingebot.gitbook.io/lingebot-napoveda/)*
-        \* Na nové (lepší) verzi manuálu se pracuje
-        
-        ### Zpětná vazba
-        Jedním z bodů mé práce je také __**vyhodnotit zpětnou vazbu od uživatelů**__
-        
-        Pokud budete bota používat, vyplňte pak prosím tento dotazník:
-        {SECRET1}        
-        
-        Děkuji
+        LingeBot manuál se nachází na adrese https://radekmocek.github.io/PDO/
         """)
         await itx.response.send_message(embed=embed_message)
         await MessageView.attach_to_message(None,
                                             await itx.original_response(),
                                             itx.user,
-                                            [UrlGitBookButton(), UrlGitHubButton(), UrlGoogleFormsButton()])
+                                            [UrlManualButton(), UrlGitHubButton()])
 
     @app_commands.command()
     async def ping(self, itx: discord.Interaction) -> None:
         """Ověřit dostupnost bota."""
         # Základní informace
         description = (
-            f"```Prodleva         {round(self.bot.latency * 1000)} ms```"
-            f"```Uptime           {self.bot.get_uptime()}```"
-            f"```Pčt. serverů     {len(self.bot.guilds)}```"
-            f"```Hosting OS       {platform.system()} {platform.release()}```"
-            f"```Python verze     {platform.python_version()}```"
+            f"`Prodleva . . . . . . {round(self.bot.latency * 1000)} ms`\n"
+            f"`Uptime . . . . . . . {self.bot.get_uptime()}`\n"
+            f"`Pčt. serverů . . . . {len(self.bot.guilds)}`\n"
+            f"`Hosting OS . . . . . {platform.system()} {platform.release().split('-')[0]}`\n"
+            f"`Python verze . . . . {platform.python_version()}`\n\n"
         )
         # Informace o balíčcích
         packages = txt_read("requirements.txt")

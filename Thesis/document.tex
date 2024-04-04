@@ -16,6 +16,8 @@
 \usepackage[table]{xcolor}  % Tabulka s různě barevnými řádky
 % Zdrojové kódy
 \input{code/syntaxhighlight}
+% Barevný verb
+\usepackage{newverbs}
 
 % Pro seznam použité literatury
 \usepackage[backend=biber, style=iso-numeric]{biblatex}
@@ -363,11 +365,11 @@
 	
 	Zvyk ohledně cog souborů (viz \ref{_tag_section_discordpy}) byl během implementace bota dodržen. Logika vykonání příkazů ale byla ve většině případů oddělena do jiných souborů, které se v pomyslné hierarchii projektu nachází na jiné úrovni. Cogs je pak importují a pouze volají jejich metody. Podle toho, zdali jsou tyto ,,jiné`` soubory závislé na knihovně discord.py, je lze rozdělit do dvou skupin.
 	
-	Soubory, jež Discord knihovnu importují (ale nejedná se o cogs), se nachází v adresáři \textit{d\_modules} (zkráceně pro \textit{Discord modules}). Je v nich implementována logika, která je společná pro více příkazů, jako je kontrola oprávnění pro spuštění příkazu nebo odesílání a mazání textových zpráv. Zároveň se zde nachází veškerá logika pro obsluhu interaktivních prvků (např. tlačítek nebo vyskakovacího okna), ale i modul obsahující definici samotného bota.
+	Soubory, jež Discord knihovnu importují, ale nejedná se o cogs, se nachází v adresáři \textit{d\_modules}. Je v nich implementována logika, která je společná pro více příkazů, jako je kontrola oprávnění pro spuštění příkazu nebo odesílání a mazání textových zpráv. Zároveň se zde nachází veškerá logika pro obsluhu interaktivních prvků jako tlačítek a vyskakovacích oken, ale i modul obsahující definici samotného bota.
 	
-	Druhá skupina souborů, které neimportují discord.py, se nachází v adresáři \textit{utils} (zkráceně pro \textit{utilities}). Metody těchto modulů jsou importovány a používány především v \textit{d\_modules} pro společnou funkcionalitu, která je nezávislá na Discordu. Tyto moduly naopak importují knihovny jako sqlite, Matplotlib nebo SymPy a starají se tedy o práci s databází, vykreslování matematických výrazů nebo generování příkladů. % šly by teoreticky použít v jiné aplikaci, problems dostaly vlastní adresář a balík(?)
+	Druhá skupina souborů, které neimportují discord.py, se nachází v adresáři \textit{utils}. Metody těchto modulů jsou importovány a používány především v \textit{d\_modules} pro společnou funkcionalitu, která je nezávislá na Discordu. Tyto moduly naopak importují knihovny jako sqlite, Matplotlib nebo SymPy a starají se tedy o práci s databází, vykreslování matematických výrazů nebo generování příkladů. % šly by teoreticky použít v jiné aplikaci, problems dostaly vlastní adresář a balík(?)
 	
-	Vedle těchto adresářů se ještě nachází soubory \textit{config.json} (pro uložení tokenu bota), \textit{db\_init.py} (vytvoření databáze), \textit{run.py} (spuštění bota) a adresáře \textit{\_database}, \textit{\_logs} a \textit{\_static}. Adresář \textit{\_static} obsahuje Markdown soubory s výpisky z teorie a návody pro počítání příkladů. % nic moc odstavec
+	Vedle těchto adresářů se ještě nachází soubory \textit{config.json} (uložení tokenu bota), \textit{db\_init.py} (vytvoření databáze), \textit{run.py} (spuštění bota) a adresáře \textit{\_database}, \textit{\_logs} a \textit{\_static}. Adresář \textit{\_static} obsahuje Markdown soubory s výpisky z teorie a návody pro počítání příkladů. % nic moc odstavec
 	
 	\begin{figure}[ht]
 		\centering
@@ -377,89 +379,137 @@
 
 	\subsection{Implementace vykreslování matematických výrazů}
 
-	První verze implementace příkazu \verb|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek (\textit{figure}), jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno bytovým proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
+	První verze implementace příkazu \verb|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek \textit{figure}, jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
 
 	Výklad lineární algebry se neobejde bez vykreslování matic, ty ale Matplotlib Mathtext nepodporuje. Balík sice umožňuje nastavit, aby vykreslování používalo místní TeX distribuci, během implementace ale nebylo jasné, kde bude výsledný bot nasazen a jestli zde bude možné TeX nainstalovat. Vykreslování tímto způsobem je navíc pomalejší. Proto byla pro účely bota napsána vlastní logika vykreslování matic.
 	
-	U textu vkládaného do Matplotlib obrázku lze nastavit i jeho souřadnice $x$ a $y$. Matice na vstupu je tedy rozdělena na její jednotlivé prvky, které jsou vykresleny zvlášť na odpovídajících souřadnicích. Pomocí úseček jsou pak vytvořeny hranaté závorky matice. Problém může nastat při určování souřadnic jednotlivých prvků v matici.
+	U textu vkládaného do Matplotlib obrázku lze nastavit i jeho souřadnice $x$ a $y$. Matice na vstupu implementované vykreslovací funkce je rozdělena na své jednotlivé prvky, které jsou vykresleny zvlášť na odpovídajících souřadnicích. Pomocí úseček jsou pak vytvořeny hranaté závorky matice. Problém může nastat při určování souřadnic jednotlivých prvků v matici.
 	
-	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku v matici. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnice $y$ by měla být záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to ale vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvku v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
+	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku v matici. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnic $y$ by měla být záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to ale vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvku v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
 	
 	Šířku prvku lze určit jeho dočasným vykreslením do samostatného obrázku, u kterého jsou následně zjištěny jeho rozměry. Tento obrázek je opět uložen do proudu BytesIO, který je po zjištění šířky zahozen. Takovýto způsob není nejefektivnější (zejména u vykreslování větších matic), a proto byla implementována rychlejší metoda, která šířku prvků pouze aproximuje.
 
-	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet nejkratších znaků. Písmo vykreslených matematických výrazů je totiž proporcionální a některé znaky tedy mohou být širší než jiné. Za nejkratší znaky se v tomto případě považují číslice a většina malých písmen. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala (podcenění by opět vedlo k překrývání sousedních prvků matice).
+	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet nejkratších znaků. Písmo vykreslených matematických výrazů je totiž proporcionální a některé znaky tedy mohou být širší než jiné. Za nejkratší znaky se v tomto případě považují číslice a většina malých písmen. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala. Podcenění by opět vedlo k překrývání sousedních prvků matice.
+		
+	\begin{figure}[ht]
+		\begin{lstlisting}[language=Pseudo1]
+Funkce __approx_tex_len(text: str, nahradit_zlomky: bool) vrací int:
+Krok 1:
+	Pokud nahradit_zlomky:
+		Nahraď všechny výrazy v text ve tvaru "\frac{Č}{J}"
+		za výstup funkce __approx_tex_frac_replace(Č, J).
+Krok 2:
+	Nahraď všechny podřetězce v text,
+	které začínají na "\" a končí libovolným nepísmenným znakem,
+	za dvouznakový řetězec "00".
+Krok 3:
+	Nahraď všechny znaky v text,
+	které se zároveň nachází v "+-=ABCDEFGHKMNOPQRUVWXYZmw",
+	za dvouznakový řetězec "00".
+Krok 4:
+	Odstraň všechny znaky z text,
+	které se zároveň nachází v " _^{}[]".
+Krok 5:
+	Vrať délku upraveného řetězce text.
 	
-	Metoda postupně upravuje vstupní řetězec a nakonec vrací jeho délku (aproximovaná délka vstupního řetězce odpovídá jeho počtu znaků po provedení určitých úprav). Prvním krokem je nahrazení částí textu, které začínají zpětným lomítkem a končí libovolným nepísmenným znakem, za řetězec \verb|00| (dvě nuly). To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Stejným řetězcem jsou nahrazeny také symboly, u kterých bylo zjištěno, že jsou delší než běžná číslice (např. velká písmena nebo symbol $+$ (plus)). Nakonec jsou zahozeny znaky jako mezery nebo závorky. %todo první věta je žalostná
-	
-	Řetězec \verb|1+\sqrt{2}| (vykreslen jako $1+\sqrt{2}$) je tedy po úpravách změněn na \verb|100002| (podřetězce \verb|+| a \verb|\sqrt| jsou nahrazeny dvěma nulami, závorky jsou zahozeny, výsledná délka je 6 znaků). Délka řetězce \verb|1+\sqrt[N]{2}| ($1+\sqrt[N]{2}$), který je po vykreslení stejně dlouhý, je takto vyhodnocena na 8 znaků, protože velké písmeno přidává další dvě nuly. To je příklad přecenění délky výrazu, jehož důsledkem jsou pak širší mezery mezi prvky v matici.
-	
-	Při určování délky jsou problémové také zlomky psané jako \verb|\frac{x}{y}|, jejichž šířka může být v nejhorším případě vyhodnocena jako dvojnásobek té skutečné (pokud je délka čitatele i jmenovatele stejně dlouhá). Proto se před provedením prvního kroku metoda nejprve rekurzivně volá na všechny zlomky ve vstupním řetězci, které jsou po jejím provedení nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele (podle toho, který je delší).
+Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
+	délka_čitatele = __approx_tex_len(čitatel, false)
+	délka_jmenovatele = __approx_tex_len(jmenovatel, false)
 
-	Stejný problém jako zlomky také způsobují např. kombinační čísla (psaná jako \verb|\binom{x}{y}|), ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté.
-
-	Jelikož je pro vykreslování matic použita vlastní implementace, bylo možné zvolit styl jejich zápisu. Pro svou přehlednost, snadné strojové zpracování a rychlost zápisu byla zvolena syntax podobná maticím v prostředí MATLAB: Do hranatých závorek jsou postupně vypsány prvky matice oddělené čárkou a pro oddělení jednotlivých řádků se místo čárky píše středník.
-
-	Po implementaci metod pro vykreslení základních matematických výrazů a matic bylo potřeba tyto metody zkombinovat, aby bylo možné vykreslovat rovnice obsahující více matic. Uživatelský vstup je nejprve nutné rozdělit na maticové a nematicové části (podvýrazy), pro jejichž vykreslení je pak zvolena příslušná metoda. První podvýraz je vykreslen na nulové souřadnici $x$, která se postupně zvětšuje o aproximovanou délku podvýrazu. Při rozdělování na podvýrazy je nutné ignorovat hranaté závorky u odmocnin (maticový podvýraz je totiž detekován podle hranatých závorek). Aby byl celý výraz správně vertikálně zarovnán, je potřeba předem zjistit počet řádků té nejvyšší matice a podle ní zarovnat zbytek.
+	Vrať řetězec tvořený znaky "0"
+	o délce maximum(délka_čitatele, délka_jmenovatele).
+		\end{lstlisting}
+		\caption{Pseudokód aproximace délky vykresleného výrazu}
+	\end{figure}
 	
-	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku (obvykle podle rovnítka). Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno zarovnání doprava (Matplotlib toto u textu umožňuje nastavit parametrem \textit{horizontalalignment}). Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání. Pokud se tedy v levé části řádku nachází matice, je nutné řádek zarovnat opět s pomocí metody pro aproximaci délky výrazu. %todo ne v levé části řádku ale v celém řádku, díky této kontrole lze vynechat krok s maticemi a rovnou sázet mathTEXt
+	\newverbcommand{\h}{\color{color_cyan!95!black}}{}
+	\begin{table}[ht]
+		\centering
+		\caption{Příklady aproximace délky vykresleného výrazu}\medskip
+		\begin{tabular}{ l | l >{\columncolor{gray!10}}l l }\hline
+			&&&\\[-1em]
+			\textbf{Krok 1}&\verb|1+\sqrt{t}|&\verb|1+\sqrt[N]{t}|&\verb|t^2\approx|\h|\frac{123}{4}|\\
+			&\verb|1+\sqrt{t}|&\verb|1+\sqrt[N]{t}|&\verb|t^2\approx|\h|000|\\\hline
+			&&&\\[-1em]
+			\textbf{Krok 2}&\verb|1+|\h|\sqrt|\verb|{t}|&\verb|1+|\h|\sqrt|\verb|[N]{t}|&\verb|t^2|\h|\approx|\verb|000|\\
+			&\verb|1+|\h|00|\verb|{t}|&\verb|1+|\h|00|\verb|[N]{t}|&\verb|t^2|\h|00|\verb|000|\\\hline
+			&&&\\[-1em]
+			\textbf{Krok 3}&\verb|1|\h|+|\verb|00{t}|&\verb|1|\h|+|\verb|00[|\h|N|\verb|]{t}|&\verb|t^200000|\\
+			&\verb|1|\h|00|\verb|00{t}|&\verb|1|\h|00|\verb|00[|\h|00|\verb|]{t}|&\verb|t^200000|\\\hline
+			&&&\\[-1em]
+			\textbf{Krok 4}&\verb|10000|\h|{|\verb|t|\h|}|&\verb|10000|\h|[|\verb|00|\h|]{|\verb|t|\h|}|&\verb|t|\h|^|\verb|200000|\\
+			&\verb|10000t|&\verb|1000000t|&\verb|t200000|\\\hline
+			&&&\\[-1em]
+			\textbf{Krok 5}&6&8&7\\\hline
+			&&&\\[-1em]
+			\textbf{Porovnání}&$1+\sqrt{t}$&$1+\sqrt[N]{t}$&$t^2\approx\frac{123}{4}$\\
+			&$123456$&$12345678$&$1234567$\\
+		\hline\end{tabular}
+	\end{table}
+	
+	Aproximovaná délka vykresleného výrazu odpovídá počtu znaků vstupního řetězce po tom, co je na něm provedeno několik úprav. Kroky 2 a 3 nahrazují určité části textu řetězcem s dvěma nulami. To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Následující krok odebere řídící znaky a mezery, pak už je vrácena délka řetězce.
+	
+	Při určování délky jsou problémové zlomky psané jako \verb|\frac{Č}{J}|. V nejhorším případě, pokud je délka čitatele \textit{\texttt{Č}} i jmenovatele \textit{\texttt{J}} stejně dlouhá, by byla šířka zlomku vyhodnocena jako dvojnásobek té skutečné. Proto byl přidán krok 1, ve kterém se metoda rekurzivně volá na všechny zlomky ve vstupním řetězci. Ty jsou pak nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele.
+
+	Stejný problém jako zlomky také způsobují kombinační čísla \verb|\binom{N}{K}|, ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté. % \iota
+
+	Jelikož je pro vykreslování matic použita vlastní implementace, bylo možné zvolit styl jejich zápisu. Pro svou přehlednost, snadné strojové zpracování a rychlost zápisu uživatelem byla zvolena syntax podobná maticím v prostředí MATLAB: Do hranatých závorek jsou postupně vypsány prvky matice oddělené čárkou a pro oddělení jednotlivých řádků se místo čárky píše středník.
+
+	Po implementaci metod pro vykreslení základních matematických výrazů a matic bylo potřeba tyto metody zkombinovat, aby bylo možné vykreslovat rovnice obsahující více matic. Uživatelský vstup je nejprve nutné rozdělit na maticové a nematicové části (podvýrazy), pro jejichž vykreslení je pak zvolena příslušná metoda. První podvýraz je vykreslen na nulové souřadnici $x$, která se postupně zvětšuje o aproximovanou délku podvýrazu. Při rozdělování na podvýrazy je nutné ignorovat hranaté závorky u odmocnin, maticový podvýraz je totiž detekován podle hranatých závorek. Aby byl celý výraz správně vertikálně zarovnán, je potřeba předem zjistit počet řádků té nejvyšší matice a podle ní určovat souřadnici $y$ zbylých podvýrazů.
+	
+	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku. Obvykle se zarovnává podle rovnítka. Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno Matplotlib zarovnání vpravo pomocí parametru \textit{horizontalalignment}.
+	
+	Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání na úrovni balíku Matplotlib. Pokud se tedy ve zpracovávaném řádku nachází matice, pak je jeho levá část zarovnána pomocí metody pro aproximaci délky výrazu: Matplotlib zarovnání je ponecháno za výchozí hodnotě vlevo a souřadnice $x$ je rovna záporné aproximované délce. V opačném případě, kdy se v řádku žádné matice nevyskytují, je krok s rozdělováním na podvýrazy přeskočen a rovnou se sází Matplotlib Mathtext.
 	
 	\subsection{View a interaktivní prvky}
 	
-	K odeslané zprávě s vykresleným matematickým výrazem je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořen tzv. view (pohled). View slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidán přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). Pro definici složitější view logiky je možné vytvořit třídu, která dědí z obecného view. Do této třídy se pak přidají atributy pro uchování určitého stavu a metody pro změnu tohoto stavu. Každý interaktivní prvek má referenci na své view, díky tomu v něm lze např. po stisknutí tlačítka volat určitou metodu.
+	K odeslané zprávě s vykresleným matematickým výrazem je přidána trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Aby mohl být ke zprávě přidán jakýkoliv interaktivní prvek, musí být nejprve vytvořeno tzv. view. To slouží jako kontejner pro všechny interaktivní prvky a ke zprávě je přidáno přes stejnojmenný parametr (viz obrázek \ref{_tag_img_discordpy}). Pro definici složitější view logiky je možné vytvořit třídu, která dědí z obecného view. Do této třídy se pak přidají atributy pro uchování určitého stavu a metody pro změnu tohoto stavu. Každý interaktivní prvek má referenci na své view, díky tomu v něm lze např. po stisknutí tlačítka volat určitou metodu.
 	
-	V tomto případě byla vytvořena třída, která dědí z view a navíc uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění a odkaz na původní zprávu je potřeba pro funkci tlačítka \textit{Smazat}.
+	Pro případy bota byla vytvořena třída \textit{LingeBotView}, která rozšiřuje obecné view. Třída uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění. Odkaz na původní zprávu v tomto případě není potřeba. Z \mbox{LingeBotView} ale dědí další třídy, které se používají pro uživatelské rozhraní výkladu teorie a generace příkladů. Tyto třídy již odkaz na původní zprávu využívají. Protože se obecné view nikde jinde nepoužívá, jsou tyto třídy pro zjednodušení dále v textu nazývány jako view. 
 	
-	Jednotlivá tlačítka také dědí z podobné obecné třídy, u které primárně přepisují metodu \textit{callback} volanou po jejich stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn v textovém vstupu vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci jako příkaz \verb|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat.
-	
-	Vlastní třídy rozšiřující základní view se používají i pro uživatelské rozhraní výkladu teorie a generace příkladů. Protože byl ve všech případech nakonec potřeba odkaz na rodičovskou zprávu a na zadavatele příkazu, byla pro tyto účely vytvořena třída, která tuto funkcionalitu implementuje a ze které ostatní dědí. Tyto třídy se již používají v samotné obsluze příkazů a dále v textu budou nazývány jako view, jelikož obecné view se už jinde nepoužívá.
-	
-	% TODO  5.2.1, 5.2.2, 5.2.3 vyžadují revizi --------
-	% Důkladně zkontrolovat text
-	% Lepší obrázek u struktury projektu
-	% U popisů funkce lepší použít obr/diagram/pseudokod
-	% Více popsat render align/matrix/... algoritmus ?
-	% TODO ---------------------------------------------
-		
+	Jednotlivá tlačítka také dědí z podobné obecné třídy, u které primárně přepisují metodu \textit{callback} volanou po jejich stisknutí. Tlačítko pro úpravu matematického výrazu navíc musí mít uložený původní uživatelský vstup, který je předvyplněn v textovém vstupu vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci jako příkaz \verb|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat z databáze.
+			
 	% - zmínit/zjistit WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
 	
 	\subsection{Zpracování chyb}
 	
-	Pokud je za běhu bota v nějaké části kódu vyvolána výjimka, neznamená to ukončení programu. Boti napsaní v knihovně discord.py výjimky v podstatě ignorují. Průběh funkce, ve které výjimka vznikla, sice není dokončen a Discord uživateli zahlásí chybové hlášení, bota by však tímto způsobem nemělo být možné vyřadit z provozu. Ve výchozím nastavení knihovny je výjimka vypsána pouze do standardního chybového výstupu.
+	Pokud je za běhu bota v nějaké části kódu vyvolána výjimka, neznamená to ukončení programu. Knihovna discord.py výjimky v podstatě ignoruje. Ve výchozím nastavení jsou pouze vypsány do standardního chybového výstupu. Průběh funkce, ve které výjimka vznikla, sice není dokončen a Discord uživateli zobrazí hlášku ,,interakce se nezdařila``, bota by však tímto způsobem nemělo být možné vyřadit z provozu.
 	
-	Do implementovaného bota byla přidána funkcionalita logování chyb do souboru. Zároveň byl vytvořen cog \textit{on\_error}, který hlásí chyby uživateli. Výjimka, která byla vyvolána z důvodu nedostatečného oprávnění uživatele pro vykonání určité akce, může při používání bota na serveru nastávat běžně. Proto není součástí logování a má svou připravenou odpověď pro uživatele (ve stylu \textit{Nemáte dostatečná oprávnění\dots}). Tuto výjimku vyvolává dekorátor přidaný knihovnou, který kontroluje, zdali je uživatel administrátor. Stejné chování bylo implementováno i do vlastní funkce pro kontrolu oprávnění.
+	Do implementovaného bota byla přidána funkce logování chyb do textového souboru. Zároveň byl vytvořen cog \textit{on\_error}, který hlásí chyby uživateli. Výjimka, která byla vyvolána z důvodu nedostatečného oprávnění uživatele pro vykonání určité akce, může při používání bota na serveru nastávat běžně. Proto není součástí logování a má svou připravenou odpověď. Tuto výjimku vyvolává dekorátor přidaný knihovnou, který kontroluje, zdali je uživatel administrátor. Vyvolání stejné výjimky bylo implementováno i do vlastní funkce pro kontrolu, která bere v potaz roli moderátora a nastavení oprávnění na daném serveru.
 	
-	U ostatních výjimek je do příslušného textového kanálu odeslán polední řádek jejich výpisu. Tento přístup není vždy žádoucí, protože může případným útočníkům pomoci lépe pochopit vnitřní implementaci programu. Zdrojové kódy tohoto bota jsou ale dohledatelné, jelikož je tvořen s možností provozu vlastní instance a případného rozšiřování funkcionality. Díky výpisu chyb do chatu mohou uživatelé tyto chyby snadněji nahlašovat.
+	U ostatních výjimek je do příslušného textového kanálu odeslán polední řádek jejich výpisu. Tento přístup není vždy žádoucí, protože může případným útočníkům pomoci lépe pochopit vnitřní implementaci programu. Zdrojové kódy tohoto bota jsou ale dohledatelné, jelikož je tvořen s možností provozu vlastní instance a případného rozšiřování jeho obsahu. Díky výpisu chyb do chatu mohou uživatelé tyto chyby snadněji nahlašovat.
 	
 	%Pro zdůraznění má text výpisu chyb červenou barvu. Barevný text na Discordu je ale značně omezen. Využívá možnosti odesílat zdrojové kódy se zvýrazněním syntaxe.
 	
 	\subsection{Implementace výkladu teorie}
 
-	% - Zmínit vytvoření samotných Markdown souborů (?)
-	%todo ---------------------------------------------
+	Před implementací logiky výkladu teorie byly vytvořeny samotné Markdown soubory. Ty ve formě převážně odrážkových výpisků pokrývají určitá témata z lineární algebry. Souborů je celkem 13 a zaměřují se především na vektorové prostory a lineární zobrazení mezi nimi.
 
 	Pro výběr teoretického tématu se využívá výběrový seznam. Názvy jednotlivých položek v seznamu odpovídají názvům Markdown souborů, ze kterých se čerpají výpisky pro výklad teorie. Podobně jako u tlačítka lze u výběrového seznamu využít metody \textit{callback}, která se volá po zvolení některé z položek. Název zvolené položky je uložen do atributu, který je již předán do view obstarávajícího zobrazení výpisků.% (\textit{TheoryThemeView}).
 	
-	Po výběru určitého tématu se tedy odešle zpráva obsahující view pro teorii, které si z Markdown souboru načte výpisky ke zvolenému tématu do interní proměnné. Z toho důvodu se změna obsahu v souborech s výpisky projeví až při dalším použití příkazu \verb|/render|. Text výpisků je podle nadpisů druhé úrovně rozdělen na jednotlivá podtémata, jejichž výpis je jediným obsahem úvodní zprávy. Tlačítka \textit{Další}, \textit{Předchozí} a nový výběrový seznam slouží pro přepínání podtémat pomocí metod ve view.
+	Po výběru určitého tématu se tedy odešle zpráva obsahující view pro teorii, které si z Markdown souboru načte výpisky ke zvolenému tématu do interní proměnné. Z toho důvodu se změna obsahu v souborech s výpisky projeví až při dalším použití příkazu \verb|/explain|. Text výpisků je podle nadpisů druhé úrovně rozdělen na jednotlivá podtémata, jejichž seznam je jediným obsahem úvodní zprávy. Tlačítka \textit{Další}, \textit{Předchozí} a nový výběrový seznam využívají metody ve view pro přepínání právě zobrazeného podtématu.
 	
-	Metoda pro změnu podtémat nejprve zpracuje text patřící k aktuálně vybranému podtématu a rozdělí ho na jednotlivé zprávy, které jsou následně odeslány do textového kanálu. Na odeslané zprávy si view drží referenci. Jakmile je podtéma opět změněno a odešlou se zprávy nové, ty staré se smažou (a reference nyní ukazuje na ty nové). Před smazáním starých zpráv se jako nová rodičovská zpráva daného view nastaví ta poslední odeslaná. Díky tomu zůstanou ovládací prvky vždy dole.
+	Metoda pro změnu podtémat nejprve zpracuje text patřící k aktuálně vybranému podtématu a rozdělí ho na jednotlivé zprávy, které jsou následně odeslány do textového kanálu. Na odeslané zprávy si view drží referenci. Jakmile je podtéma opět změněno a odešlou se zprávy nové, ty staré se smažou a reference nyní ukazuje na ty nové. Před smazáním starých zpráv se jako nová rodičovská zpráva daného view nastaví ta poslední odeslaná. Díky tomu zůstanou ovládací prvky vždy dole.
 	
-	Odesílání a mazání více zpráv není okamžité. Discord API obsahuje endpoint pro instantní smazání většího množství zpráv, který je implementován v knihovně discord.py. Tato funkce ale během testování nefungovala spolehlivě a vybrané zprávy nebyly ve zdánlivě náhodných případech smazány. Zprávy navíc nebylo možné po použití funkce smazat běžným způsobem (po jednom). Ekvivalentní endpoint pro odeslání více zpráv neexistuje, proto jsou zprávy odesílány i mazány po jednom. Pokud je zpráv více jak pět, byla mezi jednotlivé akce přidána krátká prodleva, aby se předešlo omezením proti spamu ze strany Discordu (\textit{rate limiting}).
+	Odesílání a mazání více zpráv není okamžité. Discord API obsahuje endpoint pro instantní smazání většího množství zpráv, který je implementován v knihovně discord.py. Tato funkce ale během testování nefungovala spolehlivě a vybrané zprávy nebyly ve zdánlivě náhodných případech smazány. Zprávy navíc nebylo možné po použití této funkce smazat běžným způsobem jednu po druhé. Ekvivalentní endpoint pro odeslání více zpráv neexistuje, proto jsou zprávy odesílány i mazány po jednom. Pokud je zpráv více jak pět, byla mezi jednotlivé akce přidána krátká prodleva, aby se předešlo omezením proti spamu ze strany Discordu (\textit{rate limiting}).
 		
 	% - fwd to dms
 	
 	\subsection{Zpracování Markdown souborů}
 	
-	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb|sup| a \verb|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat. Pro převod se používá Python balík \textit{UnicodeIt}. Vytvořené zápisky pro lineární algebru často používají dolní indexy. Počet znaků, které existují v Unicode ve variantě dolního indexu, je ale omezený. Pokud kvůli neexistujícímu znaku nedokáže balík \textit{UnicodeIt} obsah značky \verb|sub| převést, je místo toho daný text vložen mezi zpětné uvozovky. Discord pak tuto část textu reprezentující dolní index zformátuje jako jednořádkový zdrojový kód: Písmo je neproporcionální, má menší velikost a tmavší pozadí. Text se díky tomu více odlišuje od zbytku a tváří se jako pomocný symbol.
+	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb|sup| a \verb|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat.
+	
+	Pro převod se používá Python balík \textit{UnicodeIt}. Vytvořené zápisky pro lineární algebru často používají dolní indexy. Počet znaků, které existují v Unicode ve variantě dolního indexu, je ale omezený. Pokud kvůli neexistujícímu znaku nedokáže UnicodeIt obsah značky \verb|sub| převést, je místo toho daný text vložen mezi zpětné uvozovky. Discord pak tuto část textu reprezentující dolní index zformátuje jako jednořádkový zdrojový kód: Písmo je neproporcionální, má menší velikost a tmavší pozadí. Text se díky tomu více odlišuje od zbytku a tváří se jako pomocný symbol.
 	
 	Pro nahrazení textu umístěného mezi dvoudolary za obrázek s vykresleným matematickým výrazem je nejprve celý text podle dvoudolarů rozdělen na části. Aby nebylo nutné detekovat, které části jsou určené pro vykreslení a které jsou obyčejný text, bylo přidáno pravidlo, že zprávy pro vykreslení musí začínat řetězcem \verb|$render|. Tento řetězec je případně zahozen a zbytek textu je vstupem vykreslovací funkce. Pravidla pro zápis jsou tedy stejná jako u příkazu \verb|/render|.
 	
 	Discord sice umožňuje, aby jediná zpráva najednou obsahovala text i obrázky, problémem ale je, že jsou všechny obrázky umístěny na konci zprávy pod veškerým textem. Proto je rozdělování na více zpráv jedinou možností, jak zajistit přesné umístění obrázků v odeslaném textu. Pokud zpráva obsahuje internetový odkaz, který míří na určitý obrázek, pak ho Discord automaticky zobrazí. Umístěním takového odkazu mezi dvoudolary se opět zajistí správné umístění obrázku z internetu.
 	
-	Bot automaticky rozděluje zprávy, které jsou delší než 2000 znaků, kvůli omezením ze strany Discordu. Využívá se Python modulu \textit{textwrap}, díky kterému se rozdělení zprávy může nacházet pouze na místě mezery nebo nového řádku. Pokud by automatické rozdělení nebylo vhodně zvoleno, je možné opět použít dvoudolar, který případně značí, kde bude zpráva rozdělena.
+	Bot automaticky rozděluje zprávy, které jsou delší než 2000 znaků, kvůli omezením ze strany Discordu. Využívá se Python modulu \textit{textwrap}, díky kterému se rozdělení zprávy může nacházet pouze na místě mezery nebo nového řádku. Pokud by automatické rozdělení nebylo vhodně zvoleno, je možné opět použít dvoudolar, který značí, kde bude zpráva rozdělena.
 	
 	\subsection{Implementace generace příkladů}
 	
-	Podobně jako u výkladu teorie, implementace uživatelského rozhraní u generátoru příkladů využívá komplexnějšího view. Logika odesílání zpráv s návodem po stisknutí tlačítka \textit{Jak počítat?} používá stejné funkce jako výklad teorie. Logika zobrazování příkladů a jejich výsledků se už liší.
+	Podobně jako u výkladu teorie, implementace uživatelského rozhraní generátoru příkladů využívá komplexnějšího view. Logika odesílání zpráv s návodem po stisknutí tlačítka \textit{Jak počítat?} používá stejné funkce jako výklad teorie. Logika zobrazování příkladů a jejich výsledků se už liší.
 	
 	Dokud se nevyužije možnosti zobrazení návodu, který může být tvořen více odeslanými zprávami, tak je rodičovská zpráva daného view stále stejná a její obsah je modifikován na základě stisknutých tlačítek. Tato zpráva obsahuje text a maximálně jeden obrázek. View má v sobě uložený řetězec se zadáním a řešením aktuálního příkladu. Po generaci nového příkladu je obsahem zprávy text zadání a po kliknutí na \textit{Zobrazit výsledek} je obsah změněn na text řešení.
 	
@@ -478,7 +528,7 @@
 	
 	Do bota byly přidány generátory příkladů pro výpočet násobení matic, soustav rovnic, inverzních matic, vlastních vektorů a determinantu. Příklady pro výpočet soustavy rovnic obsahují tři neznámé a vedou na Gaussovu–Jordanovu eliminační metodu. Příklad tedy začíná maticí s rozměrem 3$\times$3, která musí být převedena na jednotkovou, a tříprvkovým vektorem s výsledky. Pokud by byla počáteční matice vygenerována úplně náhodně, výsledek by pak pravděpodobně obsahoval desetinná čísla, což není pro výukové materiály vhodné. Proto je nejdříve vytvořena jednotková matice, na které je provedeno několik náhodných gaussovských operací, které nemění její lineární obal. Pro snazší kontrolu obsahuje řetězec s řešením kromě výsledku i mezikrok výpočtu, ve kterém je matice v horním stupňovitém tvaru. Pro tento účel je použita metoda LU rozkladu bez zlomků z balíku SymPy. Po použití této metody je ještě každý řádek matice vydělen jeho největším společným dělitelem. Tato podoba matice se totiž nejvíce podobá té, ke které se uživatel dopracuje při ručním výpočtu Gaussovy eliminační metody.
 	
-	Další kategorií příkladů, kde není vhodné generovat zadání úplně náhodně, je výpočet inverzní matice. V tomto případě je potřeba vygenerovat celočíselnou matici, jejíž inverze je také tvořena celými čísly. Tento požadavek splňují matice, které mají determinant roven $\pm1$. Determinant matice v horním (nebo dolním) stupňovitém tvaru je roven součinu jejích diagonálních prvků a determinant součinu dvou čtvercových matic stejné velikosti je roven součinu determinantů těchto dvou matic \cite{lit_lingebra}. Náhodnou matici, která má determinant roven jedné, tedy lze vytvořit součinem dvou matic, kde jedna je v horním a druhá v dolním stupňovitém tvaru. Obě matice musí mít na diagonále samé jedničky, zbylé prvky jsou zvoleny náhodně.
+	Další kategorií příkladů, kde není vhodné generovat zadání úplně náhodně, je výpočet inverzní matice. V tomto případě je potřeba vygenerovat celočíselnou matici, jejíž inverze je také tvořena celými čísly. Tento požadavek splňují matice, které mají determinant roven $\pm1$. Determinant matice v horním (nebo dolním) stupňovitém tvaru je roven součinu jejích diagonálních prvků a determinant součinu dvou čtvercových matic stejné velikosti je roven součinu determinantů těchto dvou matic \cite{lit_lingebra}. Náhodnou matici, která má determinant roven jedné, tedy lze vytvořit součinem dvou matic, kde jedna je v horním a druhá v dolním stupňovitém tvaru. Obě matice musí mít na diagonále samé jedničky, aby byl jejich determinant roven jedné, a zbylé prvky jsou zvoleny náhodně.
 	
 	% eigenvalues/eigenvectors
 	
@@ -510,28 +560,31 @@
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/SetupCommands}
-		\caption{Příkazy pro nastavení}
+		\caption{Seznam příkazů pro nastavení}
 	\end{figure}
 	
 	Příkazy \verb|/setup| jsou součástí tzv. skupiny podpůrných příkazů. Běžný příkaz je zapsán pomocí lomítka, po němž následuje název příkazu, který musí být jednoslovný. Příkazy ze skupiny se zadávají ve tvaru \verb|/<název_skupiny> <název_příkazu>|. Díky tomu mohou mít podobné příkazy stejný začátek a seznam příkazů je tak přehlednější. Skupiny příkazů je možné vnořovat, toho využívají příkazy \verb|/setup permissions|.
 	
 	Spuštění jednoho z příkazů nastavujících oprávnění změní v tabulce \textit{permissions} na řádku daného serveru příslušný atribut. Záznam v tabulce není přidán hned po připojení bota na server, ale až po prvním spuštění nastavujícího příkazu. Dokud záznam neexistuje, využívá se výchozích hodnot definovaných ve zdrojovém kódu. První volání příkazu nejprve přidá řádek s těmito výchozími hodnotami do tabulky a pak změní vybraný atribut.
 	
-	Při každém pokusu o spuštění příkazu nebo interakci s view jako první proběhne kontrola oprávnění. Funkce obstarávající tuto kontrolu přistupuje do databáze a má k dispozici objekt interakce, ze kterého lze zjistit údaje o daném uživateli. Pokud má uživatel dostatečná oprávnění, funkce proběhne bez efektu a obsluha jeho interakce může pokračovat. Při nedostatečných právech je vyhozena výjimka, na kterou reaguje cog \textit{on\_error}. Uživateli je v tomto případě odeslána zpráva informující o nedostatečných právech. Implementace funkce kontroly minimalizuje počet přístupů do databáze. Viz diagram/pseudokód. % TODO
+	Při každém pokusu o spuštění příkazu nebo interakci s view jako první proběhne kontrola oprávnění. Funkce obstarávající tuto kontrolu přistupuje do databáze a má k dispozici objekt interakce, ze kterého lze zjistit údaje o daném uživateli. Pokud má uživatel dostatečná oprávnění, funkce proběhne bez efektu a obsluha jeho interakce může pokračovat. Při nedostatečných právech je vyhozena výjimka, na kterou reaguje cog \textit{on\_error}. Uživateli je v tomto případě odeslána zpráva informující o nedostatečných právech.
 	
-	% app_commands.Group
-	% permissions.check ...
+	Implementace funkce kontroly minimalizuje počet přístupů do databáze. Administrátorům je např. vždy povoleno použít jakýkoliv příkaz nehledě na nastavení oprávnění daného serveru. Nastavení je z databáze získáno až poté, co je z objektu interakce zjištěno, že uživatel administrátorem není. Identifikátor role LingeMod je z databáze získán až v posledním případě, kdy je zjištěno, že příkaz není dostupný všem.
+	
 	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
 	% $> lingemod_reset
 	% --------------------------------------------------------------------------------------------------------------------------
 	% Příkaz /dm
-	% $> slash_sync	
-	
-	% Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
-	
-	% Problém: Discord přestal vykreslovat kurzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
-	
+	% $> slash_sync
+	% - Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
+		
 	\section{Nasazení a zpětná vazba}
+	
+	Po implementaci všech navrhovaných funkcí byl bot nasazen do testovacího provozu a zpřístupněn skupině uživatelů na otestování. Součástí bylo také dotazníkové šetření, kterého se zúčastnilo celkem devět respondentů.
+	
+	<< GRAFY DO PŘÍLOHY, ZDE SE K NIM VYJÁDŘIT ? >>
+	
+	\subsection{Návrhy na vylepšení}
 	
 	% Jak vylepšit?
 	% * Využívat threads nebo nějak lépe spravovat konverzaci, nyní používání bota na větším serveru chaos
@@ -540,8 +593,12 @@
 	% * Co se týče zápisků z teorie: přidat souvislost s IT
 	% * Multilang commands
 	% * Kód: Použít SQLAlchemy
+	
+	\subsection{Vhodnost platformy Discord}
+	
 	% Vhodnost platformy Discord
 	% * Rozdíly mezi PC/web/phone/...
+	% * Problém: Discord přestal vykreslovat kurzívu u výrazů jako _f_(_x_), ale *f*(_x_) funguje (za ukončujícím podtržítkem nesmí začínat závorka)
 	
 	\chapter{Závěr}
 	

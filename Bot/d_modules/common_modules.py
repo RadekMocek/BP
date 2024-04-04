@@ -7,7 +7,6 @@ import discord
 
 import d_modules.permissions as permissions
 import utils.db_io as database
-from d_modules.bot import SECRET1
 
 
 # region Common Buttons
@@ -43,19 +42,14 @@ class CustomExitButton(discord.ui.Button):
         await self.view.exit(itx)
 
 
-class UrlGitBookButton(discord.ui.Button):
+class UrlManualButton(discord.ui.Button):
     def __init__(self) -> None:
-        super().__init__(label="GitBook", url="https://lingebot.gitbook.io/lingebot-napoveda/")
+        super().__init__(label="LingeBot manuál", url="https://radekmocek.github.io/PDO/")
 
 
 class UrlGitHubButton(discord.ui.Button):
     def __init__(self) -> None:
-        super().__init__(label="GitHub", url="https://github.com/RadekMocek/BP/issues")
-
-
-class UrlGoogleFormsButton(discord.ui.Button):
-    def __init__(self) -> None:
-        super().__init__(label="DOTAZNÍK", url=SECRET1)
+        super().__init__(label="GitHub repozitář", url="https://github.com/RadekMocek/BP/")
 
 
 # endregion
