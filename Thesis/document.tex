@@ -14,6 +14,7 @@
 % Tabulky
 \usepackage{threeparttable} % Tabulka s vlastními footnotes
 \usepackage[table]{xcolor}  % Tabulka s různě barevnými řádky
+%\usepackage{makecell}	    % Víceřádkové buňky
 % Zdrojové kódy
 \input{code/syntaxhighlight}
 % Barevný verb (pro tabulku s ukázkou __aprox_tex_len)
@@ -125,6 +126,40 @@
 	
 	Účet pro bota může být založen v rozhraní pro vývojáře (např. \textit{Discord Developer Portal}), kde je následně vygenerován jeho ověřovací token. Ten se pak používá při komunikaci programu s platformou a měl by zůstat tajný, jinak může dojít k tzv. odcizení bota. To znamená, že někdo jiný použije svůj vlastní program společně s uniklým tokenem pro předefinování chování bota, k jehož účtu daný token náleží.
 	
+	\begin{table}[ht]
+		\centering
+		\caption{Přehled sociálních platforem}\medskip
+		\rowcolors{2}{gray!10}{}
+		\begin{threeparttable}
+			\begin{tabular}{ l c c c c }
+				\textbf{Název}&\textbf{Vznik}&\textbf{Bezplatná verze}&\textbf{Zaměření}&\textbf{Čeština}\\\hline
+				Discord&2015&Ano&Obecné&Ano\\
+				Slack&2013&Omezená&Firemní&Ne\\
+				Guilded&2017&Ano&Herní&Ne\\
+				Revolt&2021&FOSS&Obecné&Ano\\
+				Matrix/Element&2014/2016&FOSS&Obecné&Ano\\
+				Teams&2017&Omezená&Firemní&Ano\\
+				Flock&2014&Omezená&Firemní&Ne\\
+			\hline\end{tabular}
+			\bigskip%Musí následovat prázdný řádek
+		
+			\rowcolors{2}{gray!10}{}
+			\begin{tabular}{ l c c c }
+				\textbf{Název}&\textbf{Oficiální SDK}&\textbf{Markdown}\tnote{*}&\textbf{TeX}\\\hline
+				Discord&Ne&5&Ne\\
+				Slack&Ano&2&Ne\\
+				Guilded&Ne&4&Ne\\
+				Revolt&Ano&5&Ano\\
+				Matrix/Element&Ano&4&Ne\\
+				Teams&Ano&3&Ne\\
+				Flock&Ano&1&Ne\\
+			\hline\end{tabular}			
+			\begin{tablenotes}
+				\item[*] 0 až 5 bodů za: kurzíva, seznamy, víceúrovňové nadpisy, odkazy a zdrojový kód se zvýrazněním klíčových slov
+			\end{tablenotes}
+		\end{threeparttable}
+	\end{table}
+	
 	\section{Discord}
 	
 	Platforma Discord vznikla v roce 2015 jako reakce na nedostatky tehdejších služeb pro online komunikaci mezi hráči videoher \cite{lit_Discord}. S nabývající popularitou se ale na Discordu začaly objevovat veřejné komunity zaměřené i na jiná témata, než ta herní. Často se jedná o oficiálně vytvořené servery patřící k určitému produktu, které slouží jako diskuzní fórum a propagace zároveň. Momentálně je podle počtu členů největší komunitou server Midjourney, který patří ke stejnojmennému nástroji pro tvorbu obrázků pomocí umělé inteligence. Uživatelé zde mohou o nástroji diskutovat, hlásit chyby, sdílet vytvořené obrázky, nebo je nechat generovat použitím Midjourney bota.
@@ -151,7 +186,7 @@
 		\caption{Uživatelské rozhraní platformy Discord}		
 	\end{figure}
 	
-	Boti tedy operují především na serverech\footnote{Boty lze ale používat i v přímých zprávách. Bot se sice tváří jako uživatel, do přátel ho ale přidat nelze a pro zahájení přímé konverzace je nutné s ním nejdříve mít nějaký společný server. Bota nelze přidat do soukromé skupiny.} a existuje několik možností, jak je na nějaký server pozvat. Na konci roku 2022 byl do Discordu přidán tzv. adresář aplikací (\textit{App Directory}), který momentálně obsahuje seznam více než 5500 dostupných botů, kde každý z nich má svou stránku s podrobnějším popisem a tlačítkem pro přidání na server. Aby byl bot v tomto adresáři obsažen, musí nejprve projít schvalovacím procesem, a proto se jich zde nachází pouze zlomek ze všech existujících. Každý bot pak má svůj speciální zvací odkaz (\textit{bot invite link}) a existuje několik neoficiálních databází jako \href{https://top.gg}{top.gg}, které obsahují seznam botů s jejich popisem a zvacím odkazem. Poslední možností jsou boti s otevřeným zdrojovým kódem, které si uživatel stáhne a spustí na svém stroji. Jedná se o provoz vlastní instance bota. Tento způsob tedy vyžaduje botu založit účet a vygenerovat token.
+	Boti tedy operují především na serverech\footnote{Boty lze ale používat i v přímých zprávách. Bot se sice tváří jako uživatel, do přátel ho ale přidat nelze a pro zahájení přímé konverzace je nutné s ním nejdříve mít nějaký společný server. Bota nelze přidat do soukromé skupiny.} a existuje několik možností, jak je na nějaký server pozvat. Na konci roku 2022 byl do Discordu přidán tzv. adresář aplikací (\textit{App Directory}), který momentálně obsahuje seznam více než 6000 dostupných botů, kde každý z nich má svou stránku s podrobnějším popisem a tlačítkem pro přidání na server. Aby byl bot v tomto adresáři obsažen, musí nejprve projít schvalovacím procesem, a proto se jich zde nachází pouze zlomek ze všech existujících. Každý bot pak má svůj speciální zvací odkaz (\textit{bot invite link}) a existuje několik neoficiálních databází jako \href{https://top.gg}{top.gg}, které obsahují seznam botů s jejich popisem a zvacím odkazem. Poslední možností jsou boti s otevřeným zdrojovým kódem, které si uživatel stáhne a spustí na svém stroji. Jedná se o provoz vlastní instance bota. Tento způsob tedy vyžaduje botu založit účet a vygenerovat token.
 	
 	Discord boti nabízející nástroje pro usnadnění moderace zejména na velkých serverech patří mezi ty nejpoužívanější. Obvykle mají svou stránku s administrací, kde si lze např. zobrazit statistiky serveru, nastavit automatické přivítání a přiřazení rolí novým členům, vyhození za spam apod. Oblíbenou kategorií byli také hudební boti, kteří v hlasovém hovoru pouštěli vybrané skladby. Jejich popularita klesla roku 2021, kdy Google zakázal provoz botů přehrávajících hudbu z webu \mbox{YouTube}. Další častá kategorie botů jsou hry a zábava. Jedná se buď o boty poskytující jednoduché hry v prostředí textového chatu, nebo propojující nějakou existující videohru s Discordem.
 	
@@ -210,6 +245,8 @@
 	\subsection{Flock}
 	
 	Flock je platforma pro firemní komunikaci, která podle svého webu nabízí oproti konkurenčnímu Slacku a Teams více funkcí za méně peněz. Tento web obsahuje výčet více jak sta vlastností, ve kterých je Flock údajně lepší než konkurence. Po bližším průzkumu je ale zjevné, že některá uvedená tvrzení jsou nepravdivá nebo zavádějící.
+	
+	Např. je zde uvedeno, že do Slacku se nelze přihlásit pomocí účtu Google, soukromý Slack kanál nejde přepnout na veřejný a ve Slacku není k dispozici UI pro spravování seznamu úkolů. Během testování platformy Slack byla tato tři tvrzení prověřena a žádné z nich není pravdivé. Platforma Flock byla i přesto do rešerše zahrnuta, protože podporuje tvorbu botů a objevuje se v několika webových článcích typu \textit{nejlepší platformy pro komunikaci}.
 	
 	Struktura Flocku je podobná jako u ostatních platforem: Jednotlivé servery se nazývají týmy a obsahují textové kanály, ve kterých je možné zahájit hlasový hovor. Zdejší aplikace komunikují s Flock API a boti jsou jejich uživatelské reprezentace. Výběr aplikací je podobný jako u platforem Slack a Teams.
 	
@@ -398,19 +435,19 @@
 		\caption{Struktura projektu}
 	\end{figure}
 
-	\subsection{Implementace vykreslování matematických výrazů}
+	\subsection{Implementace vykreslování matematických výrazů}\label{_tag_section_approxtexlen}
 
-	První verze implementace příkazu \verb|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek \textit{figure}, jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je následně odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
+	První verze implementace příkazu \verb|/render| byla prostá. Pomocí balíku Matplotlib je vytvořen prázdný obrázek \textit{figure}, jehož barva odpovídá barvě pozadí Discord klienta ve výchozím nastavení. Parametr příkazu, který obsahuje předpis matematického výrazu, je do obrázku vložen jako text se zapnutým parametrem \textit{render\_math}. Balík Matplotlib se postará o správné vykreslení výrazu a obrázek je uložen do souboru, který je odeslán do textového kanálu. Později bylo ukládání do souboru nahrazeno proudem \textit{io.BytesIO}, který souborové rozhraní pouze simuluje.
 
 	Výklad lineární algebry se neobejde bez vykreslování matic, ty ale Matplotlib Mathtext nepodporuje. Balík sice umožňuje nastavit, aby vykreslování používalo místní TeX distribuci, během implementace ale nebylo jasné, kde bude výsledný bot nasazen a jestli zde bude možné TeX nainstalovat. Vykreslování tímto způsobem je navíc pomalejší. Proto byla pro účely bota napsána vlastní logika vykreslování matic.
 	
-	U textu vkládaného do Matplotlib obrázku lze nastavit i jeho souřadnice $x$ a $y$. Matice na vstupu implementované vykreslovací funkce je rozdělena na své jednotlivé prvky, které jsou vykresleny zvlášť na odpovídajících souřadnicích. Pomocí úseček jsou pak vytvořeny hranaté závorky matice. Problém může nastat při určování souřadnic jednotlivých prvků v matici.
+	U textu vkládaného do Matplotlib obrázku lze nastavit jeho souřadnice $x$ a $y$. Matice na vstupu vykreslovací funkce je rozdělena na své jednotlivé prvky, které jsou vykresleny zvlášť na odpovídajících souřadnicích. Pomocí úseček jsou pak vytvořeny hranaté závorky matice. Problém může nastat při určování souřadnic jednotlivých prvků v matici.
 	
-	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku v matici. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnic $y$ by měla být záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to ale vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvku v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
+	Pokud jsou všechny prvky matice jednociferná čísla, pak jejich souřadnice $x$ odpovídá číslu sloupce a $y$ číslu řádku v matici. Tyto souřadnice jsou ještě vynásobeny konstantou, která určuje velikost mezery mezi jednotlivými prvky\footnote{Konstanta u souřadnic $y$ by měla být záporná, protože řádky matice jsou obvykle číslovány odshora, zatímco souřadnice v Matplotlib obrázku mají počátek vlevo dole. V této implementaci je to ale vyřešeno tak, že se jednotlivé řádky matice při vykreslování procházejí pozpátku.}. Jakmile by ale byl některý z prvků matice širší (např. trojciferné číslo), začal by se překrývat se svými sousedními prvky. Proto je potřeba přidat funkcionalitu, která dokáže zjistit šířku prvků v matici. Odsazení je pak nastaveno podle nejširšího nalezeného prvku.
 	
-	Šířku prvku lze určit jeho dočasným vykreslením do samostatného obrázku, u kterého jsou následně zjištěny jeho rozměry. Tento obrázek je opět uložen do proudu BytesIO, který je po zjištění šířky zahozen. Takovýto způsob není nejefektivnější (zejména u vykreslování větších matic), a proto byla implementována rychlejší metoda, která šířku prvků pouze aproximuje.
+	Šířku prvku lze určit jeho dočasným vykreslením do samostatného obrázku, u kterého jsou následně zjištěny jeho rozměry. Tento obrázek je opět uložen do proudu BytesIO, který je po zjištění šířky zahozen. Takovýto způsob není nejefektivnější zejména u vykreslování větších matic, a proto byla implementována rychlejší metoda, která šířku prvků pouze aproximuje.
 
-	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet nejkratších znaků. Písmo vykreslených matematických výrazů je totiž proporcionální a některé znaky tedy mohou být širší než jiné. Za nejkratší znaky se v tomto případě považují číslice a většina malých písmen. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala. Podcenění by opět vedlo k překrývání sousedních prvků matice.
+	Cílem metody je pro zadaný matematický výraz v TeX syntaxi vrátit číslo, které odpovídá jeho délce. Jednotkou délky je počet vykreslených číslic. Písmo použité u vykreslovaných matematických výrazů je proporcionální a některé znaky tedy mohou být širší než jiné. Číslice jsou ale jako jediné neproporcionální, a proto byly zvoleny jako jednotka délky. Protože se jedná pouze o aproximaci, je důležité, aby metoda délku výrazu přeceňovala. Podcenění by opět vedlo k překrývání sousedních prvků matice.
 		
 	\begin{figure}[ht]
 		\begin{lstlisting}[language=Pseudo1]
@@ -422,7 +459,7 @@ Krok 1:
 Krok 2:
 	Nahraď všechny podřetězce v text,
 	které začínají na "\" a končí libovolným nepísmenným znakem,
-	za dvouznakový řetězec "00".
+	za tříznakový řetězec "000".
 Krok 3:
 	Nahraď všechny znaky v text,
 	které se zároveň nachází v "+-=ABCDEFGHKMNOPQRUVWXYZmw",
@@ -449,30 +486,32 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 		\caption{Příklady aproximace délky vykresleného výrazu}\medskip
 		\begin{tabular}{ l | l >{\columncolor{gray!10}}l l }\hline
 			&&&\\[-1em]
-			\textbf{Krok 1}&\verb|1+\sqrt{t}|&\verb|1+\sqrt[N]{t}|&\verb|t^2\approx|\h|\frac{123}{4}|\\
-			&\verb|1+\sqrt{t}|&\verb|1+\sqrt[N]{t}|&\verb|t^2\approx|\h|000|\\\hline
+			\textbf{Krok 1}&\verb|1+\sqrt{x}|&\verb|1+\sqrt[N]{x}|&\verb|x^2\approx|\h|\frac{123}{4}|\\
+			&\verb|1+\sqrt{x}|&\verb|1+\sqrt[N]{x}|&\verb|x^2\approx|\h|000|\\\hline
 			&&&\\[-1em]
-			\textbf{Krok 2}&\verb|1+|\h|\sqrt|\verb|{t}|&\verb|1+|\h|\sqrt|\verb|[N]{t}|&\verb|t^2|\h|\approx|\verb|000|\\
-			&\verb|1+|\h|00|\verb|{t}|&\verb|1+|\h|00|\verb|[N]{t}|&\verb|t^2|\h|00|\verb|000|\\\hline
+			\textbf{Krok 2}&\verb|1+|\h|\sqrt|\verb|{x}|&\verb|1+|\h|\sqrt|\verb|[N]{x}|&\verb|x^2|\h|\approx|\verb|000|\\
+			&\verb|1+|\h|000|\verb|{x}|&\verb|1+|\h|000|\verb|[N]{x}|&\verb|x^2|\h|000|\verb|000|\\\hline
 			&&&\\[-1em]
-			\textbf{Krok 3}&\verb|1|\h|+|\verb|00{t}|&\verb|1|\h|+|\verb|00[|\h|N|\verb|]{t}|&\verb|t^200000|\\
-			&\verb|1|\h|00|\verb|00{t}|&\verb|1|\h|00|\verb|00[|\h|00|\verb|]{t}|&\verb|t^200000|\\\hline
+			\textbf{Krok 3}&\verb|1|\h|+|\verb|000{x}|&\verb|1|\h|+|\verb|000[|\h|N|\verb|]{x}|&\verb|x^2000000|\\
+			&\verb|1|\h|00|\verb|000{x}|&\verb|1|\h|00|\verb|000[|\h|00|\verb|]{x}|&\verb|x^2000000|\\\hline
 			&&&\\[-1em]
-			\textbf{Krok 4}&\verb|10000|\h|{|\verb|t|\h|}|&\verb|10000|\h|[|\verb|00|\h|]{|\verb|t|\h|}|&\verb|t|\h|^|\verb|200000|\\
-			&\verb|10000t|&\verb|1000000t|&\verb|t200000|\\\hline
+			\textbf{Krok 4}&\verb|100000|\h|{|\verb|x|\h|}|&\verb|100000|\h|[|\verb|00|\h|]{|\verb|x|\h|}|&\verb|x|\h|^|\verb|2000000|\\
+			&\verb|100000x|&\verb|10000000x|&\verb|x2000000|\\\hline
 			&&&\\[-1em]
-			\textbf{Krok 5}&6&8&7\\\hline
+			\textbf{Krok 5}&7&9&8\\\hline
 			&&&\\[-1em]
-			\textbf{Porovnání}&$1+\sqrt{t}$&$1+\sqrt[N]{t}$&$t^2\approx\frac{123}{4}$\\
-			&$123456$&$12345678$&$1234567$\\
+			\textbf{Porovnání}&$1+\sqrt{x}$&$1+\sqrt[N]{x}$&$x^2\approx\frac{123}{4}$\\
+			&$1234567$&$123456789$&$12345678$\\
 		\hline\end{tabular}
 	\end{table}
 	
-	Aproximovaná délka vykresleného výrazu odpovídá počtu znaků vstupního řetězce po tom, co je na něm provedeno několik úprav. Kroky 2 a 3 nahrazují určité části textu řetězcem s dvěma nulami. To, že je nahrazujícím znakem nula, není podstatné. Důležité je, že jsou nuly právě dvě. Následující krok odebere řídící znaky a mezery, pak už je vrácena délka řetězce.
+	Aproximovaná délka vykresleného výrazu odpovídá počtu znaků vstupního řetězce po tom, co je na něm provedeno několik úprav. Kroky 2 a 3 nahrazují určité části textu řetězcem s dvěma (třemi) nulami. To, že je nahrazujícím znakem nula, není podstatné. Důležitá je délka těchto řetězců. Následující krok odebere řídící znaky a mezery, které se nevykreslují. Poté už je vrácena délka řetězce.
 	
-	Při určování délky jsou problémové zlomky psané jako \verb|\frac{Č}{J}|. V nejhorším případě, pokud je délka čitatele \textit{\texttt{Č}} i jmenovatele \textit{\texttt{J}} stejně dlouhá, by byla šířka zlomku vyhodnocena jako dvojnásobek té skutečné. Proto byl přidán krok 1, ve kterém se metoda rekurzivně volá na všechny zlomky ve vstupním řetězci. Ty jsou pak nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele.
+	Krok 2 pokrývá příkazy jako \verb|\sqrt| a \verb|\approx|. Ne všechny tyto symboly jsou dlouhé jako tři číslice. Extrémním případem je příkaz \verb|\iota|, který je dokonce kratší než jediná číslice. Jak již ale bylo zmíněno, délku je lepší přecenit nežli podcenit. Krok 3 nahrazuje znaky, u kterých bylo zjištěno, že jsou delší než jedna číslice. Jedná se především o velká písmena, ale patří sem i znaky jako plus a minus.
+	
+	Při určování délky jsou problémové zlomky psané jako \verb|\frac{Č}{J}|. V nejhorším případě, pokud je délka čitatele \textit{\texttt{Č}} i jmenovatele \textit{\texttt{J}} stejně dlouhá, by byla šířka zlomku vyhodnocena jako dvojnásobek té skutečné. Proto byl přidán krok 1, ve kterém se metoda rekurzivně volá na všechny zlomky ve vstupním řetězci. Ty jsou pak nahrazeny řetězcem o aproximované délce jejich čitatele, nebo jmenovatele. Vybrán je ten delší z nich.
 
-	Stejný problém jako zlomky také způsobují kombinační čísla \verb|\binom{N}{K}|, ta se ale běžně v maticích nenachází. Popisovaná metoda by šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté. % \iota
+	Stejný problém jako zlomky také způsobují kombinační čísla \verb|\binom{N}{K}|, ta se ale běžně v maticích nenachází. Krok 2 původně nahrazoval pouze dvouznakovým řetězcem, to ale bylo málo např. pro příkazy \verb|\sin| a \verb|\cos|, které lze použít pro popis matice rotace. Proto byla délka zvýšena na tři, to je ale stále málo pro příkaz \verb|\sinh|. Popisovaná metoda by tedy šla dále vylepšovat pro mnoho dalších případů, které by mohly nastat. Jelikož ale byla navržena pro určování šířky prvků v matici, všechny časté scénáře by již měly být pokryté.
 
 	Jelikož je pro vykreslování matic použita vlastní implementace, bylo možné zvolit styl jejich zápisu. Pro svou přehlednost, snadné strojové zpracování a rychlost zápisu uživatelem byla zvolena syntax podobná maticím v prostředí MATLAB: Do hranatých závorek jsou postupně vypsány prvky matice oddělené čárkou a pro oddělení jednotlivých řádků se místo čárky píše středník.
 
@@ -480,7 +519,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Posledním krokem bylo přidání podpory pro víceřádkové výrazy zarovnané podle určitého znaku. Obvykle se zarovnává podle rovnítka. Pomocí dvou zpětných lomítek je v uživatelském vstupu označen nový řádek. Na každém řádku lze zapsat ampersand, který není vykreslen ve výsledném obrázku a značí, že následující symbol je ten zarovnávací. Každý řádek je podle ampersandu rozdělen na levou a pravou část. Obě tyto části jsou vykresleny na nulové souřadnici $x$, u té levé je ale nastaveno Matplotlib zarovnání vpravo pomocí parametru \textit{horizontalalignment}.
 	
-	Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání na úrovni balíku Matplotlib. Pokud se tedy ve zpracovávaném řádku nachází matice, pak je jeho levá část zarovnána pomocí metody pro aproximaci délky výrazu: Matplotlib zarovnání je ponecháno za výchozí hodnotě vlevo a souřadnice $x$ je rovna záporné aproximované délce. V opačném případě, kdy se v řádku žádné matice nevyskytují, je krok s rozdělováním na podvýrazy přeskočen a rovnou se sází Matplotlib Mathtext.
+	Vlastní metoda pro vykreslování matic ale nepočítá s přenastavováním zarovnání na úrovni balíku Matplotlib. Pokud se tedy ve zpracovávaném řádku nachází matice, pak je jeho levá část zarovnána pomocí metody pro aproximaci délky výrazu: Matplotlib zarovnání je ponecháno na výchozí hodnotě (vlevo) a souřadnice $x$ je rovna záporné aproximované délce. V opačném případě, kdy se v řádku žádné matice nevyskytují, je krok s rozdělováním na podvýrazy přeskočen a rovnou se sází Matplotlib Mathtext.
 	
 	\subsection{View a interaktivní prvky}
 	
@@ -615,6 +654,8 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Z pohledu zdrojového kódu je nedostatkem způsob práce s databází. Potřeby bota pro databázi jsou minimální a z důvodu záměru zachování této jednoduchosti nebylo žádoucí, aby kvůli ní musela běžet další aplikace. Vzhledem ke struktuře ukládaných dat by se k tomuto projektu více hodila dokumentová NoSQL databáze, žádné zavedené embedded řešení ale nebylo nalezeno, a proto byla zvolena databáze SQLite. S tou se pracuje přímo pomocí Python modulu \textit{sqlite3} a její schéma je tvořeno ,,ručně`` příkazy typu \verb|CREATE TABLE|. Vhodnější by bylo použít balík \textit{SQLAlchemy}, který by usnadnil modifikaci stávajícího schématu a případný přechod na alternativní databázový systém.
 	
+	Jak je zmíněno v \ref{_tag_section_approxtexlen}, funkce pro aproximaci délky vykreslených matematických výrazů podporuje pouze podmnožinu všech možných vstupů. Pro její vylepšení by se musel druhý krok rozšířit o rozvětvení, které by explicitně reagovalo na určité TeX příkazy. Např. \verb|\sin| by nahradil řetězcem o délce tří a \verb|\sinh| o délce čtyř znaků. 
+	
 	%Pro demonstraci specifických funkcí Discordu byla přidána moderace, která využívá systém serverových rolí. Roli LingeMod lze uživatelům přidělit přes uživatelské rozhraní Discordu nebo jedním z příkazů \verb|/setup|. Dalším možným způsobem...	
 	% /explain - Zápisky: příklady/souvislosti, vizualizace)
 	% Z pohledu Discord fcí (Multilang commands (i témata)), (threads)
@@ -652,7 +693,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Příkaz \verb|/render| vloží do textového kanálu obrázek s vykresleným matematickým výrazem, který odpovídá uživatelskému vstupu. Formát vstupního řetězce je podobný jazyku TeX a pro vykreslení se využívá balík Matplotlib, jehož funkce jsou ale v tomto ohledu omezené. Bot byl proto rozšířen o vlastní funkce pro vykreslování matic libovolných rozměrů. Matice mohou být součástí delších rovnic a rovnice lze rozdělit na více řádků s případným nastavení zarovnání.
 	
-	Příkaz \verb|/explain| poskytuje rozhraní výkladu teorie. Pro účely bota byly vytvořeny materiály pokrývající především témata vektorových prostorů a zobrazení mezi nimi. Jednotlivá teoretická témata jsou psána v jazyce Markdown a uložena v samostatných souborech. Bot pak formátovaný text z těchto souborů odesílá do textového kanálu. Soubory lze upravovat bez nutnosti restartování bota.
+	Příkaz \verb|/explain| poskytuje rozhraní výkladu teorie. Pro účely bota byly vytvořeny materiály pokrývající především témata vektorových prostorů a zobrazení mezi nimi. Jednotlivá teoretická témata jsou psána v jazyce Markdown a uložena v samostatných souborech. Bot pak formátovaný text z těchto souborů odesílá do textového kanálu. Soubory lze upravovat bez nutnosti restartování bota. %podporuje jakýkoliv typ matematických materiálů
 	
 	Příkaz \verb|/generate| poskytuje rozhraní pro generaci příkladů. Uživatel si může nechat vygenerovat příklad z vybrané kategorie a následně si zobrazit výsledek s případným postupem řešení. Při implementaci byl kladen důraz na snadnou rozšiřitelnost mechanismu o nové kategorie příkladů.
 	
@@ -661,7 +702,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	% LZE PROVOZOVAT VLASTNí INSTANCI
 	% VHODNOST PLATFORMY DISCORD
 	
-	Nasazení a dotazník \dots % + finální zhodnocení; přínos a budoucnost?
+	Nasazení a dotazník \dots % + finální zhodnocení (jak zlepšit); přínos a budoucnost?
 	
 	\iffalse
 	\section{Shrnutí obsahu}

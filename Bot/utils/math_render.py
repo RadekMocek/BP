@@ -138,6 +138,7 @@ def __render_matrix_equation_at(fig: plt.figure,
                 __render_tex_at(fig, x, text_y, item, ha)
                 if index != last_item_index:  # U poslední části výrazu není třeba počítat její šířku
                     x += __approx_tex_len(item) * __CHAR_WIDTH + __CHAR_WIDTH
+                    print(__approx_tex_len(item), item)
     return max_n_rows * __CHAR_HEIGHT + __ALIGN_SPACE_HEIGHT_ADDITION
 
 
@@ -228,30 +229,30 @@ def __render_matrix_at(fig: plt.figure, x: float, y: float, text: str) -> float:
 
 
 def __approx_tex_len(text: str, frac_recursive: bool = True) -> int:
-    """Vrací PŘIBLIŽNOU (nadceněnou) délku TeX výrazu, jednotkou je počet krátkých znaků (Mathtext není monospace)."""
+    """:return: Přibližná (přeceněná) délka TeX výrazu. Jednotkou je počet vykreslených číslic (TeX není monospace)."""
     # Vstupní řetězec je postupně upravován a nakonec je změřena jeho délka
-    # 1 - Zlomky \frac{...}{...}
+    # Krok 1 - Zlomky ve tvaru \frac{Č}{J} nahradit řetězcem o aproximované délce Č nebo J podle toho, co je delší
     if frac_recursive:
         text = re.sub(r"\\frac{([^{}]*)}{([^{}]*)}", __approx_tex_frac_replace, text)
-    # 2 - Hledáme výrazy začínající na "\", které jsou po libovolném počtu písmen ukončeny nějakým znakem
-    #   - Ty jsou nahrazeny řetězcem "00", důležitá je délka řetězce len("00") == 2
-    #   - Některé výrazy (např. \iota) nejsou široké jako dva krátké znaky, lepší ale délku nadcenit nežli podcenit
-    text = re.sub(r"\\[a-zA-Z]+(?=[^a-zA-Z])", "00", text + " ")
-    # 3 - Znaky které jsou širší než běžná číslice jsou také nahrazeny dvouznakovým řetězcem "00"
+    # Krok 2 - Hledáme výrazy začínající na "\", které jsou po libovolném počtu písmen ukončeny nějakým znakem
+    #        - Ty jsou nahrazeny řetězcem "000", důležitá je délka řetězce len("000") == 3
+    #        - Některé výrazy (např. \iota) nejsou široké jako tři číslice, lepší ale délku přecenit nežli podcenit
+    text = re.sub(r"\\[a-zA-Z]+(?=[^a-zA-Z])", "000", text + " ")
+    # Krok 3 - Znaky které jsou širší než číslice, jsou nahrazeny dvouznakovým řetězcem "00"
     for ch in "+-=ABCDEFGHKMNOPQRUVWXYZmw":
         if ch in text:
             text = text.replace(ch, "00")
-    # 4 - Znaky " _^{}[]" jsou zahozeny
+    # Krok 4 - Znaky " _^{}[]" jsou zahozeny
     text = text.translate(str.maketrans("", "", " _^{}[]"))
-    # 5 - Délka upraveného řetězce je vrácena
+    # Krok 5 - Délka upraveného řetězce je vrácena
     return len(text)
 
 
 def __approx_tex_frac_replace(match: re.Match[str]) -> str:
-    frac_numerator_len = __approx_tex_len(match.group(1), False)  # Délka čitatele
-    frac_denominator_len = __approx_tex_len(match.group(2), False)  # Délka jmenovatele
-    longer_part = max(frac_numerator_len, frac_denominator_len)
-    return "0" * longer_part  # String s délkou odpovídající délce delšího prvku ve zlomku
+    numerator_len = __approx_tex_len(match.group(1), False)  # Délka čitatele
+    denominator_len = __approx_tex_len(match.group(2), False)  # Délka jmenovatele
+    longer_part_len = max(numerator_len, denominator_len)
+    return "0" * longer_part_len  # String s délkou odpovídající délce delšího prvku ve zlomku
 
 
 def __plt_to_image_buffer(buffer: io.BytesIO) -> None:
