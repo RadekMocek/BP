@@ -138,7 +138,6 @@ def __render_matrix_equation_at(fig: plt.figure,
                 __render_tex_at(fig, x, text_y, item, ha)
                 if index != last_item_index:  # U poslední části výrazu není třeba počítat její šířku
                     x += __approx_tex_len(item) * __CHAR_WIDTH + __CHAR_WIDTH
-                    print(__approx_tex_len(item), item)
     return max_n_rows * __CHAR_HEIGHT + __ALIGN_SPACE_HEIGHT_ADDITION
 
 

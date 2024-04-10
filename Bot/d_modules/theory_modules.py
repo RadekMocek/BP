@@ -56,6 +56,8 @@ class TheoryThemeSelect(discord.ui.Select):
         themes = list_themes()
         for theme in themes:
             options.append(discord.SelectOption(label=theme))
+        if not themes:
+            options.append(discord.SelectOption(label="Nebyla nalezena žádná témata", default=True))
         super().__init__(placeholder="Zvolte si téma", min_values=1, max_values=1, options=options)
 
     async def callback(self, itx: discord.Interaction) -> None:
