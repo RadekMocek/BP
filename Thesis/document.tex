@@ -87,38 +87,24 @@
 		\textbf{REST} & Representational State Transfer, architektura pro výměnu dat \\
 		\textbf{SDK} & Software Development Kit, sada nástrojů pro vývoj softwaru \\
 		\textbf{SQL} & Structured Query Language, dotazovací jazyk pro relační databáze \\
+		\textbf{TUL} & Technická univerzita v Liberci \\
 		\textbf{UI} & User Interface, uživatelské rozhraní \\
 		\textbf{VoIP} & Voice over Internet Protocol, telefonie přes internetový protokol \\
 	\end{abbrList}
 	
-	% Začátek hlavního textu
-	
-	% 1. Vypracujte rešerši sociálních platforem, které umožňují integraci botů.
-	% 2. Analyzujte vybranou skupinu existujících botů na platformě Discord a knihoven pro jejich tvorbu.
-	% 3. Navrhněte bot zaměřený na výklad a příklady z lineární algebry při využití specifických funkcí Discordu včetně administrace a interaktivních zpráv.
-	% 4. Navržené řešení implementujte a nasaďte do testovacího provozu pro vybranou skupinu uživatelů.
-	% 5. Vyhodnoďte zpětnou vazbu od uživatelů a navrhněte případné úpravy a vylepšení.
-	
+	% Jádro zprávy
 	\chapter{Úvod}
+		
+	Cílem této práce je přiblížit problematiku tvorby botů pro sociální platformu \mbox{Discord}. Tato platforma, která původně vznikla za účelem poskytnutí online komunikace hráčům videoher, se dnes řadí mezi nejpoužívanější nástroje pro okamžité zasílání zpráv a internetovou telefonii. Kromě běžných uživatelů zde existuje ekosystém tzv. botů. Bot je speciální typ uživatele, jehož chování je určené programem. Velké množství existujících botů se zaměřuje na veřejné Discord servery, kde usnadňují jejich správu, poskytují statistiky, nebo přidávají nové sociální funkce. Jelikož je součástí komunity na platformě \mbox{Discord} mnoho mladších uživatelů – tedy i mnoho studentů – a zároveň se jedná o validní aplikaci pro provozování online výuky, nabízí se otázka, zdali by pro výukové účely na této platformě nemohl být vytvořen specializovaný bot.
 	
-	% Úvod
-	% – Stručné vysvětlení problematiky, uvedení řešeného problému a motivace k jeho řešení
-	% – pokud motivace není jasná, práce se špatně řeší (a obhajuje)…
-	% – v takovém případě je dobré (nutné) zeptat se vedoucího)
-	% Cíl práce
-	% – Jasné a poměrně přesné vymezení předmětu práce
-	% – BP málo kdy řeší rozsáhlé a komplexní problémy, spíše jen dílčí úlohy za určitých omezujících podmínek …
-	% – …a toto všechno je potřeba deklarovat
+	V této práci je navržen Discord bot, který se zaměřuje na výklad a příklady z lineární algebry. Pro jeho implementaci je použita knihovna discord.py, která umožňuje tvorbu botů v jazyce Python. Výklad probíhá pomocí odesílání zpráv s teoretickými materiály do textového kanálu. Matematické příklady jsou pak náhodně generovány. Bot navíc demonstruje využití specifických vlastností platformy Discord, jako je systém rolí a interaktivní zprávy. Důraz je kladen na snadnou  rozšiřitelnost o nové teoretické materiály a nové kategorie generovaných příkladů.
+	%Administrátor serveru může ostatním uživatelům měnit oprávnění přístupu k funkcím bota a botem odeslané zprávy obsahují interaktivní prvky jako tlačítka a výběrové seznamy.
+	Po implementaci je bot nasazen do testovacího provozu pro vybranou skupinu uživatelů, jejichž zpětná vazba je následně vyhodnocena.
 	
-	% V úvodu by měly být uvedeny účel a cíle práce a v hrubých rysech popsána metoda řešení. Rozhodně by se neměl opakovat text abstraktu, ani by zde neměly být popisovány výsledky.
+	Zpráva nejprve v kapitole \ref{Chapter2} popisuje, jak jsou v tomto kontextu myšleny výrazy sociální platforma a bot. Následně je provedena rešerše sociálních platforem, které integraci botů oficiálně podporují. Nejvíce pozornosti je věnováno platformě Discord, která je následně vybrána pro implementaci bota. Kapitola \ref{Chapter3} krátce popisuje, jaké postavení má téma matematiky na platformě Discord a poté shrnuje dva základní typy matematických botů, které se zde vyskytují. V kapitole \ref{Chapter4} je provedena rešerše komunitních knihoven pro tvorbu Discord botů.
 	
-	%(a) Je shrnuto zadánı́ práce?
-	%(b) Je naznačena struktura práce?
-	%(c) Neopakuje se text abstraktu?
-	%(d) Nejsou prozrazeny výsledky práce?
+	Kapitola \ref{Chapter5} se věnuje praktické části práce. V sekci \ref{Chapter5_1}, která se zaměřuje na návrh, je bot popsán ,,zvenčí``. Je zde tedy představeno a zdůvodněno, jak by jednotlivé funkce měly vypadat z pohledu koncového uživatele. Implementační sekce \ref{Chapter5_2} již popisuje, jaké kroky musely být provedeny, aby byl tento návrh realizován. Poslední sekce \ref{Chapter5_3} obsahuje vyhodnocení zpětné vazby od uživatelů, návrhy na případná vylepšení a shrnutí problematiky vývoje pro zvolenou platformu.
 	
-	Cílem této práce je přiblížit problematiku tvorby botů pro sociální platformu \mbox{Discord}. Tato platforma, která původně vznikla za účelem poskytnutí online komunikace pro hráče videoher, se dnes řadí mezi nejpoužívanější nástroje pro okamžité zasílání zpráv a internetovou telefonii.
-			
 	\chapter{Boti na sociálních platformách}\label{Chapter2}
 	
 	Tato kapitola představuje Discord a některé další sociální platformy, které přímo podporují tvorbu a integraci botů. Nejdříve je ale nutné upřesnit, jak jsou v tomto kontextu myšleny výrazy \textit{sociální platforma} a \textit{bot}.
@@ -307,7 +293,7 @@
 	
 	Tvorba aplikací pracujících nad eventuálně konzistentními daty může být náročná. Události z Discord API navíc nemusí klientovi vždy přijít právě jen jednou, a proto je na ně nutné reagovat idempotentně. Výsledek několikrát provedené idempotentní operace by měl být stejný, jako kdyby byla provedena jen jednou. \cite{book_distributedSystemsUnderstanding}
 	
-	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko odkazující na webovou stránku (viz příloha \ref{Appendix3}).
+	Z důvodu usnadnění tvorby Discord botů začaly pro tento účel vznikat komunitní knihovny. Oficiální dokumentace jich zmiňuje celkem 21 pro 11 různých programovacích jazyků. Tato kapitola blíže představuje některé z těchto knihoven, ve kterých byl v rámci rešerše implementován jednoduchý příkaz pojmenovaný \textit{pow}. Ten přijímá dva celočíselné parametry, se kterými provede umocňování. Ke zprávě s výsledkem je ještě přidáno tlačítko odkazující na webovou stránku (viz příloha \ref{AppendixCodeExamples}).
 	
 	\begin{table}[ht]
 		\centering
@@ -371,7 +357,7 @@
 	
 	Pro tvorbu bota byla zvolena knihovna discord.py zejména kvůli její početné komunitě a čitelnosti výsledného zdrojového kódu. Při volbě také hrála roli existence matematických knihoven pro jazyk Python (konkrétně Matplotlib, NumPy, SciPy a SymPy), které jsou zavedené a dobře zdokumentované.
 		
-	\section{Návrh}
+	\section{Návrh}\label{Chapter5_1}
 	
 	\subsection{Vykreslování matematických výrazů}
 	
@@ -379,15 +365,27 @@
 	
 	Protože Discord vykreslování TeX výrazů nepodporuje, jedná se o jednu z funkcionalit navrhovaného bota. Konkrétně jde o příkaz \verb|/render| (\textit{vykresli}), jehož parametrem je právě matematický výraz zapsaný v TeX (resp. Matplotlib Mathtext) syntaxi, který má být vykreslen. Po spuštění příkazu je do chatu odeslán obrázek obsahující vykreslení požadovaného výrazu. Pod tímto obrázkem se nachází trojice tlačítek \textit{Potvrdit}, \textit{Upravit} a \textit{Smazat}. Tlačítko pro smazání kompletně odstraní botem odeslanou zprávu. Tlačítkem pro úpravu se vyvolá vyskakovací okno s textovým polem, ve kterém je předvyplněn uživatelův původní vstup. Po opravě nebo rozšíření výrazu je daný obrázek překreslen. Pokud se ve vstupu od uživatele nachází chyba, pak zpráva místo obrázku obsahuje výpis z chybového hlášení, díky kterému může uživatel chybu snadněji detekovat. Tlačítko potvrzení pouze nechá trojici tlačítek zmizet a tedy znemožní výraz dále upravovat nebo ho smazat. Tato akce se po určitém časovém intervalu provede automaticky, aby tlačítka zbytečně neznepřehledňovala textovou konverzaci.
 	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/5X/Render}
+		\caption{Příkaz \texttt{/render} – vykreslený matematický výraz a vyskakovací okno}
+	\end{figure}
+	
 	Vykreslování matematických výrazů je stěžejní funkcionalitou navrhovaného bota. Kromě příkazu \verb|/render| totiž může být použito i během výkladu teorie nebo při zobrazování vygenerovaných příkladů.
 	
 	\subsection{Výklad teorie}
 	
 	Výklad teorie funguje na principu odesílání zpráv obsahujících předem připravené výpisky z určitého tématu. Je dostupný pod příkazem \verb|/explain| (\textit{vysvětli}), po jehož zadání je uživateli zobrazen výběrový seznam všech dostupných témat. Každé téma odpovídá jednomu textovému souboru, díky tomu nejsou výpisky součástí zdrojového kódu a snadněji se upravují. Obsah souborů je psaný v jazyce Markdown, který Discord v textových zprávách podporuje a tedy umožňuje jejich formátování.
 	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/5X/Explain0}
+		\caption{Příkaz \texttt{/explain} – výběr témat}
+	\end{figure}
+	
 	Jazyk Markdown nemá žádný oficiální styl zápisu pro označení matematických výrazů, zvykem ale je výraz uzavřít z obou stran řetězcem tvořeným dvěma symboly dolaru (,,\verb|$$|``, dále jen ,,dvoudolar``). Pokud se tedy ve výpiscích nachází text ohraničený dvoudolary, pak je tato část do textového kanálu odeslána ve formě obrázku podobně jako u příkazu \verb|/render|. Maximální délka odeslané zprávy na Discordu je 2000 znaků, a proto je bot schopen odesílané výpisky rozdělit do více zpráv. %Rozdělování do více zpráv je nutné právě i pro kombinování zpráv textových a těch obsahující obrázek.
 	
-	Každé teoretické téma se dělí na několik podtémat, jejichž názvy a obsah jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam, z něhož lze vybrat jakékoliv podtéma bez nutnosti procházet je popořadě jako při použití tlačítek. Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.
+	Každé teoretické téma se dělí na několik podtémat, jejichž názvy a obsah jsou určeny podle nadpisů druhé úrovně v Markdown souboru. Po zvolení tématu z výběrového seznamu je do chatu odeslán seznam příslušných podtémat, mezi kterými lze přepínat pomocí tlačítek \textit{Další} a \textit{Předchozí}. V textovém kanálu se tedy vždy nachází zprávy patřící k aktuálně vybranému podtématu, které jsou po stisknutí jednoho z tlačítek smazány a nahrazeny novými. K flexibilnějšímu přepínání mezi podtématy byl přidán další výběrový seznam, z něhož lze vybrat jakékoliv podtéma bez nutnosti procházet je popořadě jako při použití tlačítek. Dalšími tlačítky u rozhraní výkladu teorie jsou \textit{Odeslat do DMs} (přepošle uživateli zprávy k danému podtématu do přímých zpráv), \textit{Ukončit} (nechá zmizet tlačítka, odeslané zprávy zůstanou) a \textit{Ukončit a smazat} (tlačítka i zprávy jsou odstraněny). Pokud konverzace s botem již probíhá v přímých zprávách (namísto serveru), pak tlačítko \textit{Odeslat do DMs} není dostupné.	
 	
 	Během návrhu se původně uvažovalo o možnosti nahrávání nových témat uživateli. Discord umožňuje jako parametr příkazu předat soubor a uživatel by takto mohl do bota nahrát vlastní Markdown zápisky. Tento návrh ale otevírá několik otázek: Budou si moct nahrané zápisky zobrazit všichni uživatelé, nebo jen členové stejného serveru? Má být nastaven limit maximálního počtu nahraných souborů na konkrétního uživatele, nebo na server? Jak se stavět k nevhodnému obsahu? Navíc by bylo potřeba rozhraní, kde by uživatel mohl své nahrané soubory spravovat. To by v prostředí textového chatu nebylo příliš praktické, vhodnější by bylo k botu ještě vytvořit webové rozhraní.
 	
@@ -400,6 +398,12 @@
 	Navrhovaný bot neobsahuje funkcionalitu pro kontrolu uživatelem zadaných výsledků. Pokud by takovým výsledkem byla např. matice většího rozměru, její zadávání by bylo zdlouhavé a náchylné na překlepy. Muselo by také mít nastavená jasná pravidla zápisu, nebo by uživatelský vstup musel projít komplexnější syntaktickou analýzou. Pokud se uživatel dozví, že jeho výsledek je nesprávný, dalším krokem by mělo v každém případě být nalezení chyby a poučení se z ní. Znalost výsledku sice může hledání chyby trivializovat, avšak frustrace z nesprávných výsledků u uživatelů pravděpodobně stejně vede k okamžitému zobrazení těch správných.
 	
 	Po stisknutí tlačítka \textit{Jak počítat?} jsou do textového kanálu odeslány zprávy s návodem pro výpočet příkladů z dané kategorie. Logika odesílání těchto zpráv je stejná jako u výkladu teorie. Obsah je tedy čerpán z Markdown souborů, které lze snadno upravovat, a nechybí tlačítko pro přeposlání návodu do přímých zpráv. Každá kategorie příkladů nemusí nutně obsahovat návod, pak je tlačítko pro jeho zobrazení zašedlé a nelze s ním interagovat. Opačný stav, kdy existuje pouze návod a nelze generovat příklady, je také možný. % TODO (???)
+	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/5X/Generate}
+		\caption{Příkaz \texttt{/generate} – výběr kategorie a vygenerovaný příklad}
+	\end{figure}
 		
 	\subsection{Možnosti moderace}
 	
@@ -421,7 +425,7 @@
 	
 	U bota je možné změnit barevné schéma vykreslovaných matematických výrazů. Konkrétně jsou k dispozici čtyři kombinace barvy písma a pozadí u odeslaných obrázků. Barevné schéma je vázané na server a může být přenastaveno jeho administrátorem. Všechny botem odeslané obrázky na určitý server budou respektovat jeho nastavené schéma nezávisle na uživateli příkazu. Uživatel si totiž může nastavit barevné schéma pro konverzaci s botem v přímých zprávách. To je použito u zpráv reagujících na příkazy spuštěné v přímé konverzaci a zároveň u zpráv přeposlaných z jakéhokoliv serveru pomocí tlačítka \textit{Odeslat do DMs}.
 	
-	\section{Implementace}
+	\section{Implementace}\label{Chapter5_2}
 	
 	\subsection{Struktura projektu}
 
@@ -569,6 +573,12 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Pro nahrazení textu umístěného mezi dvoudolary za obrázek s vykresleným matematickým výrazem je nejprve celý text podle dvoudolarů rozdělen na části. Aby nebylo nutné detekovat, které části jsou určené pro vykreslení a které jsou obyčejný text, bylo přidáno pravidlo, že zprávy pro vykreslení musí začínat řetězcem \verb|$render|. V takovém případě je řetězec \verb|$render| zahozen a zbytek textu je vstupem vykreslovací funkce. Pravidla pro zápis jsou tedy stejná jako u příkazu \verb|/render|.
 	
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/5X/Explain1}
+		\caption{Příkaz \texttt{/explain} – převod Markdown souboru do textového kanálu}
+	\end{figure}
+	
 	Discord sice umožňuje, aby jediná zpráva najednou obsahovala text i obrázky, problémem ale je, že jsou všechny obrázky umístěny na konci zprávy pod veškerým textem. Proto je rozdělování na více zpráv jedinou možností, jak zajistit přesné umístění obrázků v odeslaném textu. Pokud zpráva obsahuje internetový odkaz, který míří na určitý obrázek, pak ho Discord automaticky zobrazí. Vepsáním takového odkazu mezi dvoudolary se opět zajistí správné umístění tohoto obrázku z internetu.
 	
 	Bot automaticky rozděluje zprávy, které jsou delší než 2000 znaků, kvůli omezením ze strany Discordu. Využívá se Python modulu \textit{textwrap}, díky kterému se rozdělení zprávy může nacházet pouze na místě mezery nebo nového řádku. Pokud by automatické rozdělení nebylo vhodně zvoleno, je možné opět použít dvoudolar, který značí, kde bude zpráva rozdělena.
@@ -603,7 +613,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/Database}
-		\caption{Databáze}
+		\caption{Schéma databáze}
 		\label{_tag_img_db}
 	\end{figure}
 	
@@ -629,7 +639,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 		\caption{Seznam příkazů pro nastavení}
 	\end{figure}
 	
-	Příkazy \verb|/setup| jsou součástí tzv. skupiny podpůrných příkazů. Běžný příkaz je zapsán pomocí lomítka, po němž následuje název příkazu, který musí být jednoslovný. Příkazy ze skupiny se zadávají ve tvaru \verb|/<název_skupiny> <název_příkazu>|. Díky tomu mohou mít podobné příkazy stejný začátek a seznam příkazů je tak přehlednější. Skupiny příkazů je možné vnořovat, toho využívají příkazy \verb|/setup permissions|.
+	Příkazy \verb|/setup| jsou součástí tzv. skupiny podpůrných příkazů. Běžný příkaz je zapsán pomocí lomítka, po němž následuje název příkazu, který musí být jednoslovný. Příkazy ze skupiny se zadávají ve tvaru \verb|/<název_skupiny> <název_příkazu>|. Díky tomu mohou mít podobné příkazy stejný začátek a seznam příkazů je tak přehlednější. Skupiny příkazů je možné vnořovat, toho využívají příkazy \texttt{/setup permissions}.
 	
 	Spuštění jednoho z příkazů nastavujících oprávnění změní v tabulce \textit{permissions} na řádku daného serveru příslušný atribut. Záznam v tabulce není přidán hned po připojení bota na server, ale až po prvním spuštění nastavujícího příkazu. Dokud záznam neexistuje, využívá se výchozích hodnot definovaných ve zdrojovém kódu. První volání příkazu nejprve přidá řádek s těmito výchozími hodnotami do tabulky a pak změní vybraný atribut.
 	
@@ -644,13 +654,11 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	% $> slash_sync
 	% - Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
 		
-	\section{Nasazení a zpětná vazba}
+	\section{Nasazení a zpětná vazba}\label{Chapter5_3}
 	
-	Po implementaci všech navrhovaných funkcí byl bot nasazen do testovacího provozu a zpřístupněn skupině uživatelů na otestování. Součástí bylo také dotazníkové šetření, kterého se zúčastnilo celkem devět respondentů.
+	Po implementaci všech navrhovaných funkcí byl bot nasazen do testovacího provozu a zpřístupněn skupině uživatelů. Vybranou skupinou byly studenti TUL, kteří měli v té době zapsaný předmět zaměřený na lineární algebru. Součástí testovacího provozu bylo dotazníkové šetření, kterého se zúčastnilo celkem devět respondentů. Výsledek dotazníku se nachází v příloze \ref{AppendixQuestionnaire}.
 	
-	$ $% Kdo jsou respondenti ?
-	
-	<< GRAFY DO PŘÍLOHY, ZDE SE K NIM VYJÁDŘIT ? >>
+	Všichni respondenti již měli na platformě Discord založený účet a někteří z nich měli zkušenosti i s platformami Slack a Teams. Šest respondentů v minulosti již použilo nějakého Discord bota s tím, že nejčastější kategorií jsou boti přehrávající hudbu v hlasovém hovoru. Žádnému z respondentů se nestalo, že by měl problém s pochopením ovládání bota, avšak čtyřem z nich nepřišlo ovládání příliš intuitivní. Kvalita vytvořených teoretických materiálů byla ohodnocena jako velmi dobrá. Většina respondentů by tento typ obsahu raději konzumovala jiným způsobem, avšak názor, že prostředí platformy Discord s sebou nese určité výhody, je také většinový.
 	
 	\subsection{Návrhy na vylepšení}
 	
@@ -695,34 +703,20 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	%(a) Diskutuji v závěru shodu mezi zadánı́m a dosaženými výsledky?
 	
-	%\section{Výsledek práce}
+	V rámci této bakalářské práce byl vytvořen matematický bot pro sociální platformu Discord zvaný LingeBot. Ten byl implementován v jazyce Python za pomoci knihovny discord.py. Jeho třemi hlavními funkcemi jsou vykreslování matematických výrazů, výklad teorie a generování příkladů z lineární algebry. Veškeré funkce bota probíhají v prostředí textového chatu a lze je spouštět pomocí tzv. podpůrných příkazů, které začínají lomítkem.
 	
-	%V rámci této bakalářské práce byla nejprve v kapitole \ref{Chapter2} provedena rešerše sociálních platforem, které oficiálně podporují integraci botů.
+	Příkaz \verb|/render| vloží do textového kanálu obrázek s vykresleným matematickým výrazem, který odpovídá uživatelskému vstupu. Formát vstupního řetězce je podobný jazyku TeX a pro vykreslení se využívá balík Matplotlib, jehož funkce jsou ale v tomto ohledu omezené. Bot byl proto rozšířen o vlastní funkce pro vykreslování matic libovolných rozměrů. Matice mohou být součástí delších rovnic a rovnice lze rozdělit na více řádků s případným nastavením zarovnání.
 	
-	V rámci této bakalářské práce byl vytvořen matematický bot pro sociální platformu Discord zvaný LingeBot. Ten byl implementován v jazyce Python za pomoci knihovny discord.py. Jeho třemi hlavními prvky jsou vykreslování matematických výrazů, výklad teorie a generování příkladů z lineární algebry. Veškeré funkce bota probíhají v prostředí textového chatu a lze je spouštět pomocí tzv. podpůrných příkazů, které začínají lomítkem.
-	
-	Příkaz \verb|/render| vloží do textového kanálu obrázek s vykresleným matematickým výrazem, který odpovídá uživatelskému vstupu. Formát vstupního řetězce je podobný jazyku TeX a pro vykreslení se využívá balík Matplotlib, jehož funkce jsou ale v tomto ohledu omezené. Bot byl proto rozšířen o vlastní funkce pro vykreslování matic libovolných rozměrů. Matice mohou být součástí delších rovnic a rovnice lze rozdělit na více řádků s případným nastavení zarovnání.
-	
-	Příkaz \verb|/explain| poskytuje rozhraní výkladu teorie. Pro účely bota byly vytvořeny materiály z lineární algebry pokrývající především témata vektorových prostorů a zobrazení mezi nimi, obecně je ale podporován jakýkoliv typ matematických materiálů. Jednotlivá teoretická témata jsou psána v jazyce Markdown a uložena v samostatných souborech. Bot pak formátovaný text z těchto souborů odesílá do textového kanálu. Soubory lze upravovat bez nutnosti restartování bota. %podporuje jakýkoliv typ matematických materiálů
+	Příkaz \verb|/explain| poskytuje rozhraní výkladu teorie. Pro účely bota byly vytvořeny materiály z lineární algebry pokrývající především témata vektorových prostorů a lineárních zobrazení mezi nimi, obecně je ale podporován jakýkoliv typ matematických materiálů. Jednotlivá teoretická témata jsou psaná v jazyce Markdown a uložená v samostatných souborech. Bot pak formátovaný text z těchto souborů, který může obsahovat i vykreslené matematické výrazy, odesílá do textového kanálu. Soubory lze upravovat bez nutnosti restartování bota.
 	
 	Příkaz \verb|/generate| poskytuje rozhraní pro generaci příkladů. Uživatel si může nechat vygenerovat příklad z vybrané kategorie a následně si zobrazit výsledek s případným postupem řešení. Při implementaci byl kladen důraz na snadnou rozšiřitelnost mechanismu o nové kategorie příkladů.
 	
-	Pro demonstraci specifických funkcí platformy Discord byly přidány možnosti moderace. Bot po připojení na server vytvoří moderátorskou roli zvanou LingeMod, díky které může administrátor rozdělit členy serveru na dvě skupiny. Pro jednotlivé příkazy pak lze nastavit, jaká oprávnění uživatel musí mít, aby je mohl na daném serveru použít. Rozhraní výkladu teorie a generátoru příkladů pak pro své ovládání využívá interaktivních prvků jako tlačítek a výběrových seznamů.
+	Pro demonstraci specifických funkcí platformy Discord byly přidány možnosti moderace. Bot po připojení na server vytvoří moderátorskou roli zvanou LingeMod, díky které může administrátor rozdělit členy serveru na dvě skupiny. Pro jednotlivé příkazy pak lze nastavit, jaká oprávnění musí uživatel mít, aby je mohl na daném serveru použít. Rozhraní výkladu teorie a generátoru příkladů pak pro své ovládání využívá interaktivních prvků jako tlačítek a výběrových seznamů.
 	
 	% LZE PROVOZOVAT VLASTNí INSTANCI
 	% VHODNOST PLATFORMY DISCORD
 	
 	Nasazení a dotazník \dots % + finální zhodnocení (jak zlepšit); přínos a budoucnost?
-
-	\iffalse
-	\section{Shrnutí obsahu}
-	
-	Kapitola \ref{Chapter2} popisuje, jak jsou v kontextu této práce myšleny výrazy \textit{sociální platforma} a \textit{bot}. Následně je provedena rešerše sociálních platforem, které integraci botů oficiálně podporují. Nejvíce pozornosti je věnováno platformě Discord, která je následně vybrána pro implementaci bota. Důvodem výběru je dobře zdokumentovaný ekosystém botů, kolem kterého vznikla početná komunita.
-	
-	Kapitola \ref{Chapter3} krátce popisuje, jaké postavení má téma matematiky na platformě Discord. Následně jsou shrnuty dva základní typy matematických botů, které se na této platformě vyskytují.
-	
-	Kapitola \ref{Chapter4} \dots
-	\fi
 
 	% Zdroje
 	\chapter*{Seznam použité literatury}
@@ -730,45 +724,53 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	\printbibliography[heading=none]
 	
 	% Přílohy
-	\appendix
-	\chapter{Přílohy}
-	
-	\section{Odkazy zdrojové kódy a manuál}
-	
+	\appendix	
+	\chapter{Odkazy na zdrojové kódy a manuál}	
 	\begin{itemize}
 		\item Zdrojové kódy bota a této zprávy jsou dostupné na: \\\url{https://github.com/RadekMocek/BP}%.
 		\item Manuál pro použití bota je dostupný na: \\\url{https://radekmocek.github.io/PDO}%.
 		\item Hlavní instanci bota lze pozvat na server pomocí odkazu: \\ \href{https://discord.com/oauth2/authorize?client_id=1160906076179415070&permissions=2416045056&scope=bot+applications.commands}{\texttt{https://discord.com/oauth2/authorize\\?client\_id=1160906076179415070\\\&permissions=2416045056\\\&scope=bot+applications.commands}}%.
 	\end{itemize}
-	
-	\section{Výsledky dotazníkového šetření}
-	
-	\section{Zdrojové kódy implementace ukázkového příkazu}\label{Appendix3}
-	
+	{\let\clearpage\relax \chapter{Zdrojové kódy implementace ukázkového příkazu}\label{AppendixCodeExamples}}
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/ExampleCommand}
-		\caption{Ukázkový příkaz: Vstup a výstup}
-	\end{figure}
-	
+		\caption{Ukázkový příkaz – vstup a výstup}
+	\end{figure}	
 	\begin{figure}[ht]
 		\lstinputlisting[language=Python3]{code/discord.py}
-		\caption{Ukázkový příkaz: Implementace v discord.py}
-	\end{figure}
-	
+		\caption{Ukázkový příkaz – implementace v discord.py}
+	\end{figure}	
 	\begin{figure}[ht]
 		\lstinputlisting[language=JavaScript]{code/discord.js}
-		\caption{Ukázkový příkaz: Implementace v discord.js}
-	\end{figure}
-	
+		\caption{Ukázkový příkaz – implementace v discord.js}
+	\end{figure}	
 	\begin{figure}[ht]
 		\lstinputlisting[language={CSharp}]{code/discord.cs}
-		\caption{Ukázkový příkaz: Implementace v Discord.Net}
-	\end{figure}
-	
+		\caption{Ukázkový příkaz – implementace v Discord.Net}
+	\end{figure}	
 	\begin{figure}[ht]
 		\lstinputlisting[language={Java18}]{code/discord.java}
-		\caption{Ukázkový příkaz: Implementace v JDA}
+		\caption{Ukázkový příkaz – implementace v JDA}
 	\end{figure}
-	
+	\chapter{Výsledky dotazníkového šetření}\label{AppendixQuestionnaire}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/questionnaire/1}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/2}\bigskip\par
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/questionnaire/3}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/4}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/5}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/6}\bigskip\par
+	\end{figure}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{img/questionnaire/7}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/8}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/9}\bigskip\par
+		\includegraphics[width=\textwidth]{img/questionnaire/10}\bigskip\par
+	\end{figure}
 \end{document}
