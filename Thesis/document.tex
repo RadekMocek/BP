@@ -42,8 +42,12 @@
 	\end{acknowledgement}
 	
 	% Abstrakt česky
-	\begin{abstractCZ}
-		Abstrakt česky		
+	\begin{abstractCZ}		
+		V této práci je navržen Discord bot, který se zaměřuje na výklad a příklady z lineární algebry. Pro jeho implementaci je použita knihovna discord.py, která umožňuje tvorbu botů v jazyce Python. Výklad probíhá pomocí odesílání zpráv s teoretickými materiály do textového kanálu. Matematické příklady jsou pak náhodně generovány. Bot navíc demonstruje využití specifických vlastností platformy Discord, jako je systém rolí a interaktivní zprávy. Důraz je kladen na snadnou  rozšiřitelnost o nové teoretické materiály a nové kategorie generovaných příkladů. Po implementaci je bot nasazen do testovacího provozu pro vybranou skupinu uživatelů, jejichž zpětná vazba je následně vyhodnocena.	
+		
+		$ $
+		
+		TODO
 		% Abstrakt nebo též Referát je stručný výtah z celého díla; shrnuje obsah textu, konkrétní cíle, metodiku řešení, komentuje výsledky a závěry. Abstrakt slouží k tomu, aby se čtenář mohl na základě přečtení abstraktu rozhodnout, zda je pro něj přínosné číst celou práci.
 	\end{abstractCZ}
 	
@@ -95,13 +99,11 @@
 	% Jádro zprávy
 	\chapter{Úvod}
 		
-	Cílem této práce je přiblížit problematiku tvorby botů pro sociální platformu \mbox{Discord}. Tato platforma, která původně vznikla za účelem poskytnutí online komunikace hráčům videoher, se dnes řadí mezi nejpoužívanější nástroje pro okamžité zasílání zpráv a internetovou telefonii. Kromě běžných uživatelů zde existuje ekosystém tzv. botů. Bot je speciální typ uživatele, jehož chování je určené programem. Velké množství existujících botů se zaměřuje na veřejné Discord servery, kde usnadňují jejich správu, poskytují statistiky, nebo přidávají nové sociální funkce. Jelikož je součástí komunity na platformě \mbox{Discord} mnoho mladších uživatelů – tedy i mnoho studentů – a zároveň se jedná o validní aplikaci pro provozování online výuky, nabízí se otázka, zdali by pro výukové účely na této platformě nemohl být vytvořen specializovaný bot.
+	Platforma Discord, která původně vznikla za účelem poskytnutí online komunikace hráčům videoher, se dnes řadí mezi nejpoužívanější nástroje pro okamžité zasílání zpráv a internetovou telefonii. Kromě běžných uživatelů zde existuje ekosystém tzv. botů. Bot je speciální typ uživatele, jehož chování je určené programem. Velké množství existujících botů se zaměřuje na veřejné Discord servery, kde usnadňují jejich správu, poskytují statistiky, nebo přidávají nové sociální funkce. Jelikož je součástí komunity na platformě \mbox{Discord} mnoho mladších uživatelů – tedy i mnoho studentů – a zároveň se jedná o validní aplikaci pro provozování online výuky, nabízí se otázka, zdali by pro výukové účely na této platformě nemohl být vytvořen specializovaný bot.	
 	
-	V této práci je navržen Discord bot, který se zaměřuje na výklad a příklady z lineární algebry. Pro jeho implementaci je použita knihovna discord.py, která umožňuje tvorbu botů v jazyce Python. Výklad probíhá pomocí odesílání zpráv s teoretickými materiály do textového kanálu. Matematické příklady jsou pak náhodně generovány. Bot navíc demonstruje využití specifických vlastností platformy Discord, jako je systém rolí a interaktivní zprávy. Důraz je kladen na snadnou  rozšiřitelnost o nové teoretické materiály a nové kategorie generovaných příkladů.
-	%Administrátor serveru může ostatním uživatelům měnit oprávnění přístupu k funkcím bota a botem odeslané zprávy obsahují interaktivní prvky jako tlačítka a výběrové seznamy.
-	Po implementaci je bot nasazen do testovacího provozu pro vybranou skupinu uživatelů, jejichž zpětná vazba je následně vyhodnocena.
+	Cílem rešeršní části této práce je provést analýzu sociálních platforem, které oficiálně podporují integraci botů. Následuje analýza Discord botů, kteří se zaměřují na matematiku, a knihoven, které tvorbu těchto botů umožňují. Cílem praktické části je pak vytvoření matematického Discord bota zaměřeného na výklad teorie a generování příkladů z lineární algebry, který by zároveň měl demonstrovat specifické vlastnosti zvolené platformy. Po implementaci bota následuje jeho nasazení do testovacího provozu, vyhodnocení zpětné vazby od uživatelů a navržení případných vylepšení.
 	
-	Zpráva nejprve v kapitole \ref{Chapter2} popisuje, jak jsou v tomto kontextu myšleny výrazy sociální platforma a bot. Následně je provedena rešerše sociálních platforem, které integraci botů oficiálně podporují. Nejvíce pozornosti je věnováno platformě Discord, která je následně vybrána pro implementaci bota. Kapitola \ref{Chapter3} krátce popisuje, jaké postavení má téma matematiky na platformě Discord a poté shrnuje dva základní typy matematických botů, které se zde vyskytují. V kapitole \ref{Chapter4} je provedena rešerše komunitních knihoven pro tvorbu Discord botů.
+	Textová zpráva v kapitole \ref{Chapter2} popisuje, jak jsou v kontextu této práce myšleny výrazy sociální platforma a bot. Následně je provedena zmíněná rešerše sociálních platforem. Nejvíce pozornosti je věnováno platformě Discord, která je následně vybrána pro implementaci bota. Kapitola \ref{Chapter3} krátce popisuje, jaké postavení má téma matematiky na platformě Discord a poté shrnuje dva základní typy matematických botů, které se zde vyskytují. V kapitole \ref{Chapter4} je provedena rešerše komunitních knihoven pro tvorbu Discord botů.
 	
 	Kapitola \ref{Chapter5} se věnuje praktické části práce. V sekci \ref{Chapter5_1}, která se zaměřuje na návrh, je bot popsán ,,zvenčí``. Je zde tedy představeno a zdůvodněno, jak by jednotlivé funkce měly vypadat z pohledu koncového uživatele. Implementační sekce \ref{Chapter5_2} již popisuje, jaké kroky musely být provedeny, aby byl tento návrh realizován. Poslední sekce \ref{Chapter5_3} obsahuje vyhodnocení zpětné vazby od uživatelů, návrhy na případná vylepšení a shrnutí problematiky vývoje pro zvolenou platformu.
 	
@@ -686,7 +688,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Discord může sloužit i jako platforma pro online výuku ve školách. Vyučující by v tomto případě do bota vložil své teoretické materiály, ze kterých by pak studenti mohli čerpat a při neporozumění určitému tématu začít diskuzi v textovém kanálu. K lepšímu vyjádření pak slouží příkaz \verb|/render|, díky kterému není nutné pro potřebu odeslání matematického výrazu opustit okno chatu a použít externí aplikaci. Vyučující by také mohl chtít bota použít jako doprovod ke svému výkladu v hlasovém hovoru, pak by se např. nastavilo oprávnění, že příkaz \verb|/explain| mohou používat pouze administrátoři.
 	
-	Výhodou Discordu je jeho dostupnost na všech hlavních desktopových i mobilních operačních systémech a také ve webové aplikaci. Uživatelovi konverzace jsou okamžitě synchronizovány na všech jeho zařízeních. Pro uživatele, kteří Discord nepoužívají, může být odrazující nutnost zakládat si kvůli použití bota účet.
+	Výhodou Discordu je jeho dostupnost na všech hlavních desktopových i mobilních operačních systémech a také ve webové aplikaci. Uživatelovy konverzace jsou okamžitě synchronizovány na všech jeho zařízeních. Pro uživatele, kteří Discord nepoužívají, může být odrazující nutnost zakládat si kvůli použití bota účet.
 	
 	Nevýhodou Discord botů je jejich závislost na této platformě. Bot, který využívá specifických funkcí Discordu, nepůjde snadno přesunout na jinou platformu. Discord je proprietární a nelze provozovat jeho vlastní instanci. Pokud je platforma z důvodu výpadku nedostupná, pak je bot také nedostupný.
 	
@@ -696,14 +698,9 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	\chapter{Závěr}
 	
-	% Stručné shrnutí celé práce
-	% – Shrnutí nejdůležitějších bodů ze všech kapitol do krátkého závěrečného textu, včetně zhodnocení výsledků a přínosu práce a návrhu možného budoucího pokračování
+	V rámci této bakalářské práce byla provedena rešerše sociálních platforem, které oficiálně podporují integraci botů. Následně byla zanalyzována skupina existujících Discord botů, kteří se alespoň částečně zabývají tématem matematiky. Poslední část rešerše se zabývá knihovnami, které usnadňují tvorbu botů pro platformu Discord.
 	
-	% V této kapitole by mělo být umístěno zhodnocení celé zprávy, posouzení kvality výsledků, srovnání s jinými metodami, porovnání s cíli práce a posouzení jejich splnění. Text by neměl zacházet do přílišných podrobností	a neměly by se zde opakovat pasáže z hlavního textu. Je zde možné uvést i případná	návazná témata, či možnosti pokračování.
-	
-	%(a) Diskutuji v závěru shodu mezi zadánı́m a dosaženými výsledky?
-	
-	V rámci této bakalářské práce byl vytvořen matematický bot pro sociální platformu Discord zvaný LingeBot. Ten byl implementován v jazyce Python za pomoci knihovny discord.py. Jeho třemi hlavními funkcemi jsou vykreslování matematických výrazů, výklad teorie a generování příkladů z lineární algebry. Veškeré funkce bota probíhají v prostředí textového chatu a lze je spouštět pomocí tzv. podpůrných příkazů, které začínají lomítkem.
+	V praktické části práce byl vytvořen matematický bot zvaný LingeBot. Ten byl implementován v jazyce Python za pomoci knihovny discord.py. Jeho třemi hlavními funkcemi jsou vykreslování matematických výrazů, výklad teorie a generování příkladů z lineární algebry. Veškeré funkce bota probíhají v prostředí textového chatu a lze je spouštět pomocí tzv. podpůrných příkazů, které začínají lomítkem.
 	
 	Příkaz \verb|/render| vloží do textového kanálu obrázek s vykresleným matematickým výrazem, který odpovídá uživatelskému vstupu. Formát vstupního řetězce je podobný jazyku TeX a pro vykreslení se využívá balík Matplotlib, jehož funkce jsou ale v tomto ohledu omezené. Bot byl proto rozšířen o vlastní funkce pro vykreslování matic libovolných rozměrů. Matice mohou být součástí delších rovnic a rovnice lze rozdělit na více řádků s případným nastavením zarovnání.
 	
@@ -713,10 +710,11 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Pro demonstraci specifických funkcí platformy Discord byly přidány možnosti moderace. Bot po připojení na server vytvoří moderátorskou roli zvanou LingeMod, díky které může administrátor rozdělit členy serveru na dvě skupiny. Pro jednotlivé příkazy pak lze nastavit, jaká oprávnění musí uživatel mít, aby je mohl na daném serveru použít. Rozhraní výkladu teorie a generátoru příkladů pak pro své ovládání využívá interaktivních prvků jako tlačítek a výběrových seznamů.
 	
-	% LZE PROVOZOVAT VLASTNí INSTANCI
-	% VHODNOST PLATFORMY DISCORD
+	Bot byl nasazen do testovacího provozu pro vybranou skupinu uživatelů, kteří se zúčastnili dotazníkového šetření. Všichni respondenti již měli na platformě Discord založený účet. Nikdo neměl problém s pochopením ovládání bota, avšak v některých případech respondenti nepovažovali uživatelské rozhraní v prostředí textového chatu za příliš intuitivní. I přesto, že by většina respondentů preferovala pro tento typ obsahu jiné médium, většinový byl také názor, že výuka na platformě Discord má své výhody. Kvalita ukázkových teoretických materiálů byla ohodnocena jako velmi dobrá.
 	
-	Nasazení a dotazník \dots % + finální zhodnocení (jak zlepšit); přínos a budoucnost?
+	Při vývoji bota pro platformu Discord je výzvou poskytnutí intuitivního uživatelského rozhraní pouze prostřednictvím interaktivních zpráv. Zároveň je dostupnost bota závislá na dostupnosti platformy. Na druhou stranu má Discord velkou komunitu uživatelů, kterou lze pomocí bota oslovit. Rozhraní pro ovládání všech botů je omezené, ale jednotné a tím pádem snadněji uchopitelné. Výhodou platformy je také její dostupnost na všech hlavních desktopových i mobilních operačních systémech a ve webové aplikaci.
+	
+	Tato práce tedy nejprve v rámci rešerše představila obecný koncept botů na Discordu a dalších sociálních platformách. Praktická část pak přiblížila konkrétní problematiku tvorby botů pro platformu Discord od návrhu matematického bota až po jeho nasazení. Následovalo vyhodnocení zpětné vazby od uživatelů a navržení případných vylepšení. Nakonec byly shrnuty výhody a nevýhody provozu řešení na této platformě.
 
 	% Zdroje
 	\chapter*{Seznam použité literatury}
@@ -731,7 +729,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 		\item Manuál pro použití bota je dostupný na: \\\url{https://radekmocek.github.io/PDO}%.
 		\item Hlavní instanci bota lze pozvat na server pomocí odkazu: \\ \href{https://discord.com/oauth2/authorize?client_id=1160906076179415070&permissions=2416045056&scope=bot+applications.commands}{\texttt{https://discord.com/oauth2/authorize\\?client\_id=1160906076179415070\\\&permissions=2416045056\\\&scope=bot+applications.commands}}%.
 	\end{itemize}
-	{\let\clearpage\relax \chapter{Zdrojové kódy implementace ukázkového příkazu}\label{AppendixCodeExamples}}
+	{\let\clearpage\relax \chapter{Implementace ukázkového příkazu}\label{AppendixCodeExamples}}
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=\textwidth]{img/ExampleCommand}

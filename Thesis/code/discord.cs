@@ -1,6 +1,6 @@
 using Discord;
 using Discord.WebSocket;
-// ...
+
 private async Task SlashCommandHandler(SocketSlashCommand command) {
     if (command.Data.Name == "pow") {
         var num = (Int64)command.Data.Options.ElementAt(0).Value;
