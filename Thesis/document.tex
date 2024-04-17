@@ -5,6 +5,16 @@
 % Typografie pro češtinu; xelatex alternativa pro babel
 \usepackage{polyglossia}
 \setdefaultlanguage{czech}
+% Angličtina pro abstrakt
+\makeatletter
+\ExplSyntaxOn
+\pretocmd\xpg@set@alias@values{%
+	\prop_if_exist:cF { xpg@alias@keyvals@#1@#4 }
+	{ \prop_new:c {xpg@alias@keyvals@#1@#4} }
+}{}{}
+\ExplSyntaxOff
+\makeatother
+\setotherlanguage{english}
 % Automatické pevné mezery
 \usepackage{xevlna}
 % Zabránění vdov a sirotků
@@ -38,33 +48,30 @@
 	
 	% Poděkování
 	\begin{acknowledgement}
-		Děkuji
+		Děkuji vedoucímu své práce Ing. Igoru Kopetschke za poskytnutou podporu. Mé díky také patří všem testerům za poskytnutí zpětné vazby.
 	\end{acknowledgement}
 	
 	% Abstrakt česky
-	\begin{abstractCZ}		
-		V této práci je navržen Discord bot, který se zaměřuje na výklad a příklady z lineární algebry. Pro jeho implementaci je použita knihovna discord.py, která umožňuje tvorbu botů v jazyce Python. Výklad probíhá pomocí odesílání zpráv s teoretickými materiály do textového kanálu. Matematické příklady jsou pak náhodně generovány. Bot navíc demonstruje využití specifických vlastností platformy Discord, jako je systém rolí a interaktivní zprávy. Důraz je kladen na snadnou  rozšiřitelnost o nové teoretické materiály a nové kategorie generovaných příkladů. Po implementaci je bot nasazen do testovacího provozu pro vybranou skupinu uživatelů, jejichž zpětná vazba je následně vyhodnocena.	
-		
-		$ $
-		
-		TODO
-		% Abstrakt nebo též Referát je stručný výtah z celého díla; shrnuje obsah textu, konkrétní cíle, metodiku řešení, komentuje výsledky a závěry. Abstrakt slouží k tomu, aby se čtenář mohl na základě přečtení abstraktu rozhodnout, zda je pro něj přínosné číst celou práci.
+	\begin{abstractCZ}
+		Tato bakalářská práce přibližuje na problematiku tvorby Discord botů ve smyslu automatizovaných uživatelů. Jejím výsledkem je bot, který se zaměřuje na výklad a příklady z lineární algebry. Pro jeho implementaci je použita knihovna discord.py, která umožňuje tvorbu botů v jazyce Python. Výklad probíhá pomocí odesílání zpráv s teoretickými materiály do textového kanálu. Matematické příklady jsou pak náhodně generovány. Bot navíc demonstruje využití specifických vlastností platformy Discord, jako je systém rolí a interaktivní zprávy. Důraz je kladen na snadnou  rozšiřitelnost o nové teoretické materiály a nové kategorie generovaných příkladů. Po implementaci je bot nasazen do testovacího provozu pro vybranou skupinu uživatelů, jejichž zpětná vazba je následně vyhodnocena.
 	\end{abstractCZ}
 	
 	% Klíčová slova česky
 	\begin{keywordsCZ}
-		Klíčová slova česky
+		Discord bot, Python, discord.py, výuka matematiky, lineární algebra
 	\end{keywordsCZ}
-	\vspace{2cm}
+	\clearpage
 	
 	% Abstrakt anglicky
-	\begin{abstractEN}
-		Abstrakt anglicky
+	\begin{abstractEN}		
+		\begin{english}
+			This bachelor's thesis introduces the topic of creating automated users called bots on the Discord social platform. It results in a bot with a focus on theory explanation and mathematical problems from linear algebra. The bot is implemented in Python and uses the discord.py library. The theory explanation is achieved by sending messages containing theoretical sources to a text channel. Mathematical problems are generated randomly. Additionally, the bot demonstrates specific features of the Discord platform, such as roles and message components. Emphasis is placed on easy extensibility with new theoretical sources and mathematical problem categories. After the implementation, the bot is deployed for testing to a selected group of users, whose feedback is then evaluated.
+		\end{english}
 	\end{abstractEN}
 	
 	% Klíčová slova anglicky
 	\begin{keywordsEN}
-		Klíčová slova anglicky
+		\begin{english}Discord bot, Python, discord.py, teaching mathematics, linear algebra\end{english}
 	\end{keywordsEN}
 	
 	% Obsah
@@ -373,7 +380,7 @@
 		\caption{Příkaz \texttt{/render} – vykreslený matematický výraz a vyskakovací okno}
 	\end{figure}
 	
-	Vykreslování matematických výrazů je stěžejní funkcionalitou navrhovaného bota. Kromě příkazu \verb|/render| totiž může být použito i během výkladu teorie nebo při zobrazování vygenerovaných příkladů.
+	Vykreslování matematických výrazů je stěžejní funkcí navrhovaného bota. Kromě příkazu \verb|/render| totiž může být použito i během výkladu teorie nebo při zobrazování vygenerovaných příkladů.
 	
 	\subsection{Výklad teorie}
 	
@@ -666,11 +673,11 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Pro efektivnější procházení teoretických výpisků u příkazu \verb|/explain| by bylo vhodné přidat funkci vyhledávání. Výběrový seznam teoretických témat obsahuje pouze jejich názvy a nemusí být jasné, co vše je v nich obsaženo. Vyhledávání by šlo implementovat buď pomocí textového pole, nebo nového příkazu, kde by jediným argumentem byl řetězec pro vyhledání. Interaktivní prvek textového pole nemůže být součástí běžného view a lze použít pouze ve vyskakovacím okně. To by se vyvolalo buď příkazem, nebo reakcí na stisk tlačítka. Po zadání hledaného výrazu by byla uživateli vypsána všechna (pod)témata, kde se daný výraz nachází. Zobrazení výňatků z výpisků se zvýrazněním hledaných slov by už bylo složitější, protože podpora barevného písma na Discordu je velmi omezená a formátování např. na tučné písmo by mohlo rozbít již přítomný Markdown zápis. Také by bylo vhodné přidat intuitivní způsob, kterým by si uživatel mohl rychle zobrazit vybrané podtéma ze seznamu výsledků vyhledávání. Výběrový seznam se jeví jako nejvhodnější, protože může mít proměnný počet položek.
 	
-	U příkazu \verb|/generate| lze vždy generovat příklady pouze z jedné kategorie. Pro změnu je potřeba stisknout příslušné tlačítko a následně vybrat jinou kategorii z výběrového seznamu. Pro vylepšení by šla přidat funkce, která by vygenerovala sadu příkladů napříč více kategoriemi. Příklady by se buď postupně, nebo najednou ukázaly uživateli. Případně by mohl být přidán časový limit, během kterého by se uživatel musel pokusit stihnout všechny příklady vypočítat.
+	U příkazu \verb|/generate| lze vždy generovat příklady pouze z jedné kategorie. Pro změnu je potřeba stisknout příslušné tlačítko a následně vybrat jinou kategorii z výběrového seznamu. Pro vylepšení by šla přidat funkce, která by vygenerovala sadu příkladů napříč více kategoriemi. Příklady by se uživateli ukazovaly buď postupně, nebo všechny najednou. Případně by mohl být přidán časový limit, během kterého by se uživatel musel pokusit stihnout všechny příklady vypočítat.
 	
-	Při tvorbě teoretických výpisků a návodů pro počítání příkladů je možné \mbox{používat} pouze obrázky z internetu. Pro flexibilnější tvorbu by bylo vhodné přidat podporu vkládání obrázků z disku. Pravidla pro zápis vložení obrázku by ideálně měla dodržovat syntaxe jazyka Markdown, aby při tvorbě zápisků v libovolném editoru fungoval náhled i s obrázky. Cesty k souborům s těmito obrázky, které se uvádějí v Markdown souborech a jsou k nim relativní, by případně musely být převedeny na cesty relativní ke kořenu projektu, aby mohly být dosazeny do příslušného parametru v discord.py.
+	Při tvorbě teoretických výpisků a návodů pro počítání příkladů je možné \mbox{používat} pouze obrázky z internetu. Pro flexibilnější tvorbu by bylo vhodné přidat podporu vkládání obrázků z disku. Pravidla pro zápis vložení obrázku by ideálně měla dodržovat syntaxe jazyka Markdown, aby při tvorbě zápisků v libovolném editoru fungoval náhled i s obrázky. Cesty k obrázkům, které jsou relativní k příslušným Markdown souborům, by případně musely být převedeny na cesty relativní ke kořenu projektu, aby je mohla použít knihovna discord.py.
 	
-	Z pohledu zdrojového kódu je nedostatkem způsob práce s databází. Potřeby bota pro databázi jsou minimální a z důvodu záměru zachování této jednoduchosti nebylo žádoucí, aby kvůli ní musela běžet další aplikace. Vzhledem ke struktuře ukládaných dat by se k tomuto projektu více hodila dokumentová NoSQL databáze. Žádné zavedené embedded NoSQL řešení ale nebylo nalezeno, a proto byla zvolena databáze SQLite. S tou se pracuje přímo pomocí Python modulu \textit{sqlite3} a její schéma je tvořeno ,,ručně`` příkazy typu \verb|CREATE TABLE|. Vhodnější by bylo použít balík \textit{SQLAlchemy}, který by usnadnil modifikaci stávajícího schématu a případný přechod na alternativní databázový systém.
+	Z pohledu zdrojového kódu je nedostatkem způsob práce s databází. Potřeby bota pro databázi jsou minimální a z důvodu záměru zachování této jednoduchosti nebylo žádoucí, aby kvůli ní musela běžet další aplikace. Vzhledem ke struktuře ukládaných dat by se k tomuto projektu více hodila dokumentová NoSQL databáze. Žádné zavedené embedded NoSQL řešení ale nebylo nalezeno, a proto byla zvolena databáze SQLite. S tou zde se pracuje přímo pomocí Python modulu \textit{sqlite3} a její schéma je tvořeno ,,ručně`` příkazy typu \verb|CREATE TABLE|. Vhodnější by bylo použít balík \textit{SQLAlchemy}, který by usnadnil modifikaci stávajícího schématu a případný přechod na alternativní databázový systém.
 	
 	Jak je zmíněno v \ref{_tag_section_approxtexlen}, funkce pro aproximaci délky vykreslených matematických výrazů podporuje pouze podmnožinu všech možných vstupů. Pro její vylepšení by se musel druhý krok rozšířit o rozvětvení, které by explicitně reagovalo na určité TeX příkazy. Např. \verb|\sin| by nahradil řetězcem o délce tří a \verb|\sinh| o délce čtyř znaků. 
 	
@@ -698,7 +705,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	\chapter{Závěr}
 	
-	V rámci této bakalářské práce byla provedena rešerše sociálních platforem, které oficiálně podporují integraci botů. Následně byla zanalyzována skupina existujících Discord botů, kteří se alespoň částečně zabývají tématem matematiky. Poslední část rešerše se zabývá knihovnami, které usnadňují tvorbu botů pro platformu Discord.
+	V rámci této bakalářské práce byla provedena rešerše sociálních platforem, které oficiálně podporují integraci botů. Následně byla zanalyzována skupina existujících Discord botů, kteří se alespoň částečně zabývají tématem matematiky. Poslední část rešerše zanalyzovala knihovny, které usnadňují tvorbu botů pro platformu Discord.
 	
 	V praktické části práce byl vytvořen matematický bot zvaný LingeBot. Ten byl implementován v jazyce Python za pomoci knihovny discord.py. Jeho třemi hlavními funkcemi jsou vykreslování matematických výrazů, výklad teorie a generování příkladů z lineární algebry. Veškeré funkce bota probíhají v prostředí textového chatu a lze je spouštět pomocí tzv. podpůrných příkazů, které začínají lomítkem.
 	
@@ -711,6 +718,8 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Pro demonstraci specifických funkcí platformy Discord byly přidány možnosti moderace. Bot po připojení na server vytvoří moderátorskou roli zvanou LingeMod, díky které může administrátor rozdělit členy serveru na dvě skupiny. Pro jednotlivé příkazy pak lze nastavit, jaká oprávnění musí uživatel mít, aby je mohl na daném serveru použít. Rozhraní výkladu teorie a generátoru příkladů pak pro své ovládání využívá interaktivních prvků jako tlačítek a výběrových seznamů.
 	
 	Bot byl nasazen do testovacího provozu pro vybranou skupinu uživatelů, kteří se zúčastnili dotazníkového šetření. Všichni respondenti již měli na platformě Discord založený účet. Nikdo neměl problém s pochopením ovládání bota, avšak v některých případech respondenti nepovažovali uživatelské rozhraní v prostředí textového chatu za příliš intuitivní. I přesto, že by většina respondentů preferovala pro tento typ obsahu jiné médium, většinový byl také názor, že výuka na platformě Discord má své výhody. Kvalita ukázkových teoretických materiálů byla ohodnocena jako velmi dobrá.
+	
+	Funkce výkladu teorie by šla vylepšit přidáním fulltextového vyhledávání. Při tvorbě teoretických materiálů v podobě Markdown souborů by byla vhodná možnost vkládání obrázků z disku. U generování příkladů by šla přidat funkce, která by vygenerovala sadu příkazů z různých kategorií najednou. Z pohledu zdrojového kódu by pak bylo vhodné použít pro práci s databází balík SQLAlchemy, který by usnadnil případné rozšíření databáze nebo přechod na jiný databázový systém.
 	
 	Při vývoji bota pro platformu Discord je výzvou poskytnutí intuitivního uživatelského rozhraní pouze prostřednictvím interaktivních zpráv. Zároveň je dostupnost bota závislá na dostupnosti platformy. Na druhou stranu má Discord velkou komunitu uživatelů, kterou lze pomocí bota oslovit. Rozhraní pro ovládání všech botů je omezené, ale jednotné a tím pádem snadněji uchopitelné. Výhodou platformy je také její dostupnost na všech hlavních desktopových i mobilních operačních systémech a ve webové aplikaci.
 	
