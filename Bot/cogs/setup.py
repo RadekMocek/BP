@@ -60,6 +60,8 @@ class Setup(commands.Cog):
                                            description="Změnit nastavení oprávnění na tomto serveru.",
                                            parent=setup)
 
+    # Zde by se místo dekorátoru @...checks.has_permissions(administrator=True) více hodil @...guild_only, ale:
+    # "Due to a Discord limitation, this decorator does nothing in subcommands and is ignored."
     @setup_permissions.command()  # /setup permissions get
     @app_commands.checks.has_permissions(administrator=True)
     async def get(self, itx: discord.Interaction) -> None:

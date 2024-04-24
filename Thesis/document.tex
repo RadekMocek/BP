@@ -111,7 +111,7 @@
 	
 	Cílem rešeršní části této práce je provést analýzu sociálních platforem, které oficiálně podporují integraci botů. Následuje analýza Discord botů, kteří se zaměřují na matematiku, a knihoven, které tvorbu těchto botů umožňují. Cílem praktické části je pak vytvoření matematického Discord bota zaměřeného na výklad teorie a generování příkladů z lineární algebry, který by zároveň měl demonstrovat specifické vlastnosti zvolené platformy. Po implementaci bota následuje jeho nasazení do testovacího provozu, vyhodnocení zpětné vazby od uživatelů a navržení případných vylepšení.
 	
-	Textová zpráva v kapitole \ref{Chapter2} popisuje, jak jsou v kontextu této práce myšleny výrazy sociální platforma a bot. Následně je provedena zmíněná rešerše sociálních platforem. Nejvíce pozornosti je věnováno platformě Discord, která je  vybrána pro implementaci bota. Kapitola \ref{Chapter3} krátce popisuje, jaké postavení má téma matematiky na platformě Discord a poté shrnuje dva základní typy matematických botů, které se zde vyskytují. V kapitole \ref{Chapter4} je provedena rešerše komunitních knihoven pro tvorbu Discord botů.
+	Textová zpráva v kapitole \ref{Chapter2} popisuje, jak jsou v kontextu této práce myšleny výrazy sociální platforma a bot. Následně je provedena zmíněná rešerše sociálních platforem. Nejvíce pozornosti je věnováno platformě Discord, která je vybrána pro implementaci bota. Kapitola \ref{Chapter3} krátce popisuje, jaké postavení má téma matematiky na platformě Discord a poté shrnuje dva základní typy matematických botů, které se zde vyskytují. V kapitole \ref{Chapter4} je provedena rešerše komunitních knihoven pro tvorbu Discord botů.
 	
 	Kapitola \ref{Chapter5} se věnuje praktické části práce. V sekci \ref{Chapter5_1}, která se zaměřuje na návrh, je bot popsán ,,zvenčí``. Je zde tedy představeno a zdůvodněno, jak vypadají jeho jednotlivé funkce z pohledu koncového uživatele. Implementační sekce \ref{Chapter5_2} již popisuje, jaké kroky musely být provedeny, aby byl tento návrh realizován. Poslední sekce \ref{Chapter5_3} obsahuje vyhodnocení zpětné vazby od uživatelů, návrhy na případná vylepšení a shrnutí problematiky vývoje pro zvolenou platformu.
 	
@@ -174,7 +174,7 @@
 	
 	\subsection{Aplikace a boti}
 	
-	Jako Discord aplikace se označuje vše, co oficiálně komunikuje s Discord API. Bot je pak automatizovaný uživatel, který může být k aplikaci přidán. Od roku 2021 jsou preferovanou metodou ovládání bota příkazy začínající lomítkem. Seznam těchto tzv. podpůrných příkazů (\textit{slash commands}) se synchronizuje s Discordem a díky tomu je pak k dispozici jejich našeptávání. Namísto příkazu umí bot reagovat i na události jako \textit{uživatel klikl na tlačítko} a \textit{uživatel se připojil na server}. Botem odeslané zprávy pak mohou obsahovat interaktivní prvky jako tlačítko a výběrový seznam. Lze také vyvolat vyskakovací okno obsahující tyto prvky. Kromě práce se zprávami může bot upravovat nastavení serveru a  připojovat se do hlasových hovorů. \cite{pdf_apps101}
+	Jako Discord aplikace se označuje vše, co oficiálně komunikuje s Discord API. Bot je pak automatizovaný uživatel, který může být k aplikaci přidán. Od roku 2021 jsou preferovanou metodou ovládání bota příkazy začínající lomítkem. Seznam těchto tzv. podpůrných příkazů (\textit{slash commands}) se synchronizuje s Discordem a díky tomu je pak k dispozici jejich našeptávání. Namísto příkazu umí bot reagovat i na události jako \textit{uživatel klikl na tlačítko} a \textit{uživatel se připojil na server}. Botem odeslané zprávy pak mohou obsahovat interaktivní prvky jako tlačítko a výběrový seznam. Lze také vyvolat vyskakovací okno obsahující tyto prvky. Kromě práce se zprávami může bot upravovat nastavení serveru a připojovat se do hlasových hovorů. \cite{pdf_apps101}
 	
 	\begin{figure}[ht]
 		\centering
@@ -292,9 +292,7 @@
 	Kromě výpočtu numerických příkladů se také objevují příkazy např. pro úpravu výrazu a výpočet derivace. Sedm botů pak dokáže vygenerovat obrázek s jednoduchým grafem dle zadaného předpisu. Dva boti umí zadat uživatelův vstup do služby Wolfram Alpha a do chatu odeslat její výstup.
 	
 	Jeden bot dokáže generovat náhodné příklady, jedná se ale pouze o čtyři základní binární operace. Tedy např. $x+y$, kde $x$ a $y$ jsou v rozmezí 1 až 99. Bot postupně generuje sérii deseti příkladů a uživatel má u každého deset vteřin na zadání výsledku. Po dokončení série příkladů je pak uživateli zobrazeno jeho skóre.
-	
-	% \section{DAS} ?
-	
+		
 	\chapter{Prostředky pro tvorbu Discord botů}\label{Chapter4}
 		
 	Discord API, se kterým program ovládající bota komunikuje, se dělí na dvě hlavní vrstvy: Pro obecné operace slouží HTTPS REST API a pro odesílání a přihlašování k událostem v reálném čase se používají trvalá zabezpečená připojení pomocí protokolu WebSocket. Samotná komunikace pak probíhá ve formátu JSON a pro unikátní identifikátory všech objektů se využívá formát Twitter Snowflake ID. \mbox{Discord} operuje na tak velkém měřítku, že zajistit úplnou konzistenci jeho dat by bylo nemožné, a proto je většina operací v Discord API eventuálně konzistentní. \cite{doc_Discord}
@@ -353,7 +351,7 @@
 	
 	Discord.Net je knihovna pro tvorbu Discord botů na platformě .NET, kterou lze do projektu přidat přes systém NuGet. Dokumentace je psaná pro jazyk C\#, ve kterém je tato knihovna implementována. Pro tvorbu bota je ale možné použít i jiné jazyky z této platformy jako F\# a Visual Basic. Knihovna má k dispozici referenční příručku i tutoriály, její nevýhodou je menší komunita.
 	
-	 Pro tvorbu složitějších botů se doporučuje použít vkládání závislostí\footnote{Vkládání závislostí (\textit{dependency injection}) je návrhový vzor, kde se třetí strana stará o vztahy mezi komponentami a jejich závislostmi \cite{lit_distributedSystems}. Konkrétně jde o to, aby byla za běhu programu do vybraných atributů dosazena správná instance.}. Oproti předchozím knihovnám Discord.Net u podpůrných příkazů odděluje logiku jejich synchronizace a obsluhy. Kód zde tedy není strukturován na metody odpovídající jednotlivým příkazům, ale všechny příkazy jsou obsluhovány jedinou metodou, ve které je kód dále rozvětven\footnote{Podpůrné příkazy musí být synchronizovány, aby je mohli uživatelé používat. V discord.py a discord.js jsou všechny potřebné informace pro synchronizaci (jméno, popis a vstupní parametry) součástí definice obslužné funkce daného příkazu. V Discord.Net jsou tyto informace uvedeny ve speciální metodě pro synchronizaci. Druhá speciální metoda pak obsluhuje všechny příkazy. Obvykle je uvnitř druhé metody rozvětvení typu \textit{switch} podle jména příkazu.}.
+	Pro tvorbu složitějších botů se doporučuje použít vkládání závislostí\footnote{Vkládání závislostí (\textit{dependency injection}) je návrhový vzor, kde se třetí strana stará o vztahy mezi komponentami a jejich závislostmi \cite{lit_distributedSystems}. Konkrétně jde o to, aby byla za běhu programu do vybraných atributů dosazena správná instance.}. Oproti předchozím knihovnám Discord.Net u podpůrných příkazů odděluje logiku jejich synchronizace a obsluhy. Kód zde tedy není strukturován na metody odpovídající jednotlivým příkazům, ale všechny příkazy jsou obsluhovány jedinou metodou, ve které je kód dále rozvětven\footnote{Podpůrné příkazy musí být synchronizovány, aby je mohli uživatelé používat. V discord.py a discord.js jsou všechny potřebné informace pro synchronizaci (jméno, popis a vstupní parametry) součástí definice obslužné funkce daného příkazu. V Discord.Net jsou tyto informace uvedeny ve speciální metodě pro synchronizaci. Druhá speciální metoda pak obsluhuje všechny příkazy. Obvykle je uvnitř druhé metody rozvětvení typu \textit{switch} podle jména příkazu.}.
 	
 	\section{JDA}
 	
@@ -401,7 +399,7 @@
 	
 	Nakonec byl zvolen přístup, kde si každý uživatel může provozovat vlastní instanci navrhovaného bota. Soubory s tématy jsou pak nakopírovány do vyhrazeného adresáře, odkud mohou být snadno spravovány.
 	
-	\subsection{Generace příkladů} % kalkulačka zavržena
+	\subsection{Generace příkladů}
 	
 	Příklady lze generovat použitím příkazu \verb|/generate|, po jehož zadání je do textového kanálu opět odeslán výběrový seznam, který tentokrát obsahuje dostupné kategorie příkladů. Po volbě některé z kategorií se objeví trojice tlačítek \textit{Generovat příklad}, \textit{Jak počítat?} a \textit{Změnit kategorii / Ukončit}. Po vygenerování příkladu jej bot bez výsledku odešle do chatu. Uživatel si může zkusit příklad vypočítat, a poté si nově objeveným tlačítkem nechat zobrazit výsledek. Tento proces lze opakovat, dokud není rozhraní ukončeno.
 	
@@ -427,7 +425,7 @@
 	
 	Podobná oprávnění lze nastavit i u tlačítek a výběrových seznamů, které jsou součástí botem odeslaných zpráv. Ve výchozím stavu s nimi může interagovat pouze uživatel, na něhož je zpráva s interaktivními prvky mířena, tedy zadavatel daného příkazu. Interakci s ,,cizími`` ovládacími prvky je ale možné povolit jakémukoliv administrátorovi nebo i moderátorovi bota. Tlačítko pro přeposlání podtématu do přímých zpráv je vždy dostupné všem.
 	
-	\subsection{Další funkce} % $> old_commands
+	\subsection{Další funkce}
 	
 	Navrhovaný bot obsahuje příkaz \verb|/help| pro zobrazení stručné nápovědy. Zvykem při tvorbě Discord botů je také přidání příkazu \verb|/ping|, pomocí kterého lze otestovat, zdali je bot online. Příkaz ping je inspirován stejnojmenným programem a odpověď na něj obvykle vypisuje dobu odezvy (latenci) daného bota. V tomto případě byly do výpisu přidány i další informace jako doba provozu (uptime) a počet serverů, na kterých se navrhovaný bot nachází.
 	
@@ -554,9 +552,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Pro případy bota byla vytvořena třída \textit{LingeBotView}, která rozšiřuje obecné view. Třída uchovává referenci na zprávu, ke které je přiřazena, a na uživatele, který zadal příkaz vyvolávající tuto zprávu. Odkaz na uživatele se využívá pro kontrolu oprávnění. Odkaz na původní zprávu v tomto případě není potřeba, z \mbox{\textit{LingeBotView}} ale dědí další třídy, které se používají pro uživatelské rozhraní výkladu teorie a generace příkladů. Tyto třídy již odkaz na původní zprávu využívají. Protože se obecné view nikde jinde nepoužívá, jsou tyto třídy pro zjednodušení dále v textu nazývány pouze jako view. 
 	
 	Jednotlivá tlačítka také dědí z podobné obecné třídy, u které primárně přepisují metodu \textit{callback} volanou po jejich stisknutí. Tlačítko \textit{Smazat} nevyžaduje po svém view odkaz na rodičovskou zprávu, protože si ho může získat z objektu interakce, který je metodě \textit{callback} automaticky předáván jako první parametr. Tlačítko pro úpravu matematického výrazu v sobě musí mít uložen původní uživatelský vstup, který je předvyplněn v textovém poli vyvolaného vyskakovacího okna, a barevné schéma, které bylo pro dané vykreslení použito. Vyskakovací okno po svém potvrzení volá stejnou funkci jako příkaz \verb|/render|, jen místo nové zprávy upraví tu původní. Zvolené barevné schéma se uchovává v proměnné, aby se nemuselo při každé úpravě výrazu znovu zjišťovat z databáze.
-			
-	% - zmínit/zjistit WEBHOOKS TOKEN EXPIRATION AFTER 15 MINUTES ?
-	
+		
 	\subsection{Zpracování chyb}
 	
 	Pokud je za běhu bota v nějaké části kódu vyvolána výjimka, neznamená to ukončení programu. Knihovna discord.py výjimky v podstatě ignoruje. Ve výchozím nastavení jsou pouze vypsány do standardního chybového výstupu. Průběh funkce, ve které výjimka vznikla, sice není dokončen a Discord uživateli zobrazí hlášku ,,interakce se nezdařila``, bota by však tímto způsobem nemělo být možné vyřadit z provozu.
@@ -564,9 +560,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Do implementovaného bota byla přidána funkce logování chyb do textového souboru. Zároveň byl vytvořen cog \textit{on\_error}, který hlásí chyby uživatelům. Výjimka, která byla vyvolána z důvodu nedostatečného oprávnění uživatele pro vykonání určité akce, může při používání bota na serveru nastávat běžně. Proto není součástí logování a má svou připravenou odpověď. Tuto výjimku vyvolává dekorátor přidaný knihovnou, který kontroluje, zdali je uživatel administrátor. Vyvolání stejné \mbox{výjimky} bylo implementováno i do vlastní kontrolní funkce, která bere v potaz roli moderátora a nastavení oprávnění na daném serveru.
 	
 	U ostatních výjimek je do příslušného textového kanálu odeslán poslední řádek jejich výpisu. Tento přístup není vždy žádoucí, protože může případným útočníkům pomoci lépe pochopit vnitřní implementaci programu. Zdrojové kódy tohoto bota jsou ale dohledatelné, jelikož je tvořen s možností provozu vlastní instance a případného rozšiřování jeho obsahu. Díky výpisu chyb do chatu mohou uživatelé tyto chyby snadněji nahlašovat.
-	
-	%Pro zdůraznění má text výpisu chyb červenou barvu. Barevný text na Discordu je ale značně omezen. Využívá možnosti odesílat zdrojové kódy se zvýrazněním syntaxe.
-	
+		
 	\subsection{Implementace výkladu teorie}
 
 	Před implementací logiky výkladu teorie byly vytvořeny samotné Markdown soubory. Ty ve formě převážně odrážkových výpisků pokrývají určitá témata z \mbox{lineární} algebry. Souborů je celkem 13 a zaměřují se především na vektorové prostory a lineární zobrazení mezi nimi.
@@ -578,9 +572,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Metoda pro změnu podtémat nejprve zpracuje text patřící k aktuálně vybranému podtématu a rozdělí ho na jednotlivé zprávy, které jsou následně odeslány do textového kanálu. Na odeslané zprávy si view drží referenci. Jakmile je podtéma opět změněno a odešlou se zprávy nové, ty staré se smažou a reference nyní ukazuje na ty nové. Před smazáním starých zpráv se jako nová rodičovská zpráva daného view nastaví ta poslední odeslaná. Díky tomu zůstanou ovládací prvky vždy dole.
 	
 	Odesílání a mazání více zpráv není okamžité. Discord API obsahuje endpoint pro instantní smazání většího množství zpráv, který je implementován v knihovně discord.py. Tato funkce ale během testování nefungovala spolehlivě a vybrané zprávy nebyly ve zdánlivě náhodných případech smazány. Zprávy navíc nebylo možné po použití této funkce smazat běžným způsobem jednu po druhé. Ekvivalentní endpoint pro odeslání více zpráv neexistuje, proto jsou zprávy odesílány i mazány po jednom. Pokud je zpráv více jak pět, byla mezi jednotlivé akce přidána krátká prodleva, aby se předešlo omezením proti spamu ze strany Discordu (\textit{rate limiting}).
-		
-	% - fwd to dms
-	
+
 	\subsection{Zpracování Markdown souborů}
 	
 	Při tvorbě materiálů pro výuku matematiky je často potřeba použít určitý matematický symbol nebo výraz jako součást věty. Discord ale neumožňuje horizontálně vkládat obrázky mezi text, a proto je jedinou možností použít znaky Unicode. Pro usnadnění je možné v Markdown souborech využít HTML značek \verb|sup| a \verb|sub| pro psaní horních a dolních indexů. Protože Discord tyto značky nepodporuje, je jejich obsah převeden na Unicode znaky při rozdělování textu do jednotlivých podtémat.
@@ -622,8 +614,6 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	
 	Další kategorií příkladů, kde není vhodné generovat zadání úplně náhodně, je výpočet inverzní matice. V tomto případě je potřeba vygenerovat celočíselnou matici, jejíž inverze je také tvořena celými čísly. Tento požadavek splňují matice, které mají determinant roven $\pm1$. Determinant matice v horním (nebo dolním) stupňovitém tvaru je roven součinu jejích diagonálních prvků a determinant součinu dvou čtvercových matic stejné velikosti je roven součinu determinantů těchto dvou matic \cite{lit_lingebra}. Náhodnou matici, která má determinant roven jedné, tedy lze vytvořit součinem dvou matic, kde jedna je v horním a druhá v dolním stupňovitém tvaru. Obě matice mají na diagonále samé jedničky, aby byl jejich determinant roven jedné, a zbylé prvky jsou zvoleny náhodně.
 	
-	% eigenvalues/eigenvectors
-	
 	\subsection{Databáze}
 	
 	\begin{figure}[ht]
@@ -662,13 +652,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Při každém pokusu o spuštění příkazu nebo interakci s view jako první proběhne kontrola oprávnění. Funkce obstarávající tuto kontrolu přistupuje do databáze a má k dispozici objekt interakce, ze kterého lze zjistit údaje o daném uživateli. Pokud má uživatel dostatečná oprávnění, funkce proběhne bez efektu a obsluha jeho interakce může pokračovat. Při nedostatečných právech je vyhozena výjimka, na kterou reaguje cog \textit{on\_error}. V tomto případě je do chatu odeslána zpráva informující o nedostatečných právech.
 	
 	Implementace funkce kontroly minimalizuje počet přístupů do databáze. Administrátorům je např. vždy povoleno použít jakýkoliv příkaz nehledě na nastavení oprávnění daného serveru. Nastavení je z databáze získáno až poté, co je z objektu interakce zjištěno, že uživatel administrátorem není. Identifikátor role \textit{LingeMod} je z databáze získán až v posledním případě, kdy je zjištěno, že příkaz není dostupný všem.
-	
-	% /setup @app_commands.guild_only : Due to a Discord limitation, this decorator does nothing in subcommands and is ignored.
-	% $> lingemod_reset
-	% Příkaz /dm
-	% $> slash_sync
-	% - Problém testování nových funkcí u již nasazeného bota, udělat druhého ? (pak je problém slash commands sync (to by mohly řešit hybridní příkazy (u nich je ale problém ctx vs itx ?)))
-		
+
 	\section{Nasazení a zpětná vazba}\label{Chapter5_3}
 	
 	Po implementaci všech navrhovaných funkcí byl bot nasazen do testovacího provozu a zpřístupněn skupině uživatelů. Vybranou skupinou byly studenti TUL, kteří měli v té době zapsaný předmět zaměřený na lineární algebru. Součástí testovacího provozu bylo dotazníkové šetření, kterého se zúčastnilo celkem devět respondentů. Výsledek dotazníku se nachází v příloze \ref{AppendixQuestionnaire}.
@@ -686,11 +670,7 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Z pohledu zdrojového kódu je nedostatkem způsob práce s databází. Potřeby bota pro databázi jsou minimální a z důvodu záměru zachování této jednoduchosti nebylo žádoucí, aby kvůli ní musela běžet další aplikace. Vzhledem ke struktuře ukládaných dat by se k tomuto projektu více hodila dokumentová NoSQL databáze. Žádné zavedené embedded NoSQL řešení ale nebylo nalezeno, a proto byla zvolena databáze SQLite. S tou se zde pracuje přímo pomocí Python modulu \textit{sqlite3} a její schéma je tvořeno ,,ručně`` příkazy typu \verb|CREATE TABLE|. Vhodnější by bylo použít balík \textit{SQLAlchemy}, který by usnadnil modifikaci stávajícího schématu a případný přechod na alternativní databázový systém.
 	
 	Jak je zmíněno v \ref{_tag_section_approxtexlen}, funkce pro aproximaci délky vykreslených matematických výrazů podporuje pouze podmnožinu všech možných vstupů. Pro její vylepšení by se musel druhý krok rozšířit o rozvětvení, které by explicitně reagovalo na určité TeX příkazy. Např. \verb|\sin| by nahradil řetězcem o délce tří a \verb|\sinh| o délce čtyř znaků. 
-	
-	%Pro demonstraci specifických funkcí Discordu byla přidána moderace, která využívá systém serverových rolí. Roli LingeMod lze uživatelům přidělit přes uživatelské rozhraní Discordu nebo jedním z příkazů \verb|/setup|. Dalším možným způsobem...	
-	% /explain - Zápisky: příklady/souvislosti, vizualizace)
-	% Z pohledu Discord fcí (Multilang commands (i témata)), (threads)
-		
+
 	\subsection{Vhodnost platformy Discord}
 	
 	Discord je platforma s početnou komunitou uživatelů, která disponuje komplexním API pro tvorbu botů. Většina populárních botů se zaměřuje na servery s velkým počtem členů a nabízí usnadnění moderace, nebo přidává nové sociální funkce. Díky možnosti vytvoření soukromých serverů a komunikace s botem v přímých zprávách lze ale na platformě Discord nasadit řešení pro jakoukoliv cílovou skupinu.
@@ -706,8 +686,6 @@ Funkce __approx_tex_frac_replace(čitatel, jmenovatel: str) vrací str:
 	Nevýhodou Discord botů je jejich závislost na této platformě. Bot, který využívá specifických funkcí Discordu, nepůjde snadno přesunout na jinou platformu. Discord je proprietární a nelze provozovat jeho vlastní instanci. Pokud je platforma z důvodu výpadku nedostupná, pak je bot také nedostupný.
 	
 	Dva měsíce po nasazení bota přestal Discord interpretovat text ohraničený podtržítky jako kurzívu, pokud se přímo za ním nacházela otevírající závorka. Zpráva napsaná jako \verb|_f_(_x_)| se tedy místo ,,$f(x)$`` nyní zobrazuje jako ,,$\_\mathrm{f}\_(x)$``. Kvůli tomu musela být všechna podtržítka v teoretických materiálech u těchto případů nahrazena hvězdičkami. Pro Discord vychází aktualizace minimálně jednou za měsíc a instalují se automaticky. Takovéto změny mohou nečekaně změnit chování bota.
-
-	% * Rozdíly mezi PC/web/phone/...
 	
 	\chapter{Závěr}
 	
