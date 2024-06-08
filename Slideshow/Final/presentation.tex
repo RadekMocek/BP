@@ -5,8 +5,6 @@
 \institute{Ing. Igor Kopetschke}
 \newcommand{\authorPhone}{}
 \newcommand{\authorMail}{Aplikovaná informatika}
-\setbeamertemplate{enumerate items}[default]
-\newcommand{\h}[1]{{\usebeamercolor[fg]{framesubtitle}\textbf{#1}\par}}
 \begin{document}
 	\TULtitleframe
 	
@@ -50,7 +48,7 @@
 		\includegraphics[width=.95\paperwidth]{img/idk3}
 		\begin{itemize}
 			\item Čtení z Markdown souborů
-			\item ,,Hot reload``
+			\item „Hot reload“
 			\item \texttt{\$\$\$render} $\to$ \texttt{/render}
 			\item \texttt{<sub>} a \texttt{<sup>} $\to$ Unicode
 			\item Obrázky přes internetový odkaz
@@ -74,7 +72,7 @@
 	\end{frame}
 	
 	\begin{frame}\frametitle{Závěr}
-		\h{Shrnutí}
+		\subheader{Shrnutí}
 		\begin{itemize}
 			\item Rešerše sociálních platforem podporujících boty
 			\item Rešerše matematiky a knihoven pro tvorbu botů na Discordu
@@ -87,7 +85,7 @@
 			\end{itemize}
 			\item Ukázkové materiály
 		\end{itemize}
-		\h{Možná vylepšení}
+		\subheader{Možná vylepšení}
 		\begin{itemize}
 			\item \texttt{/explain} – obrázky ze souboru a vyhledávání
 			\item \texttt{/generate} – generovat sadu různých příkladů
@@ -97,4 +95,54 @@
 	\end{frame}
 	
 	\TULendframe
+
+	\begin{frame}[plain, noframenumbering]
+		\bigskip
+		„Zdůvodněte malý počet respondentů při získávání zpětné vazby.“
+		\bigskip
+		\begin{itemize}
+			\item Uživatelská základna omezena na studenty ULA (TUL)
+			\begin{itemize}
+				\item Osloveno \textasciitilde100 lidí
+				\item Větší důvěra v serióznost odpovědí
+			\end{itemize}
+			\item Nasazeno až během zkouškového období (pozdě)
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[plain, noframenumbering]
+		\bigskip
+		„Řešil jste nějakým způsobem mechanismus aktualizace bota vzhledem ke zmíněnému faktu, že platforma Discord je poměrně často aktualizována?“
+		\bigskip
+		\begin{itemize}
+			\item Dvě instance bota – vývoj a produkce
+			\item Nutno vylepšit Docker nasazení – bind mount
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[plain, noframenumbering]
+		\bigskip
+		„Mohl byste stručně shrnout, jak se Vámi navrhovaný bot liší od těch existujících, které v práci zmiňujete? V
+		čem je Vaše řešení inovativní?“
+		\bigskip
+		\begin{itemize}		
+		\item Zaměřením existujících botů jsou výpočty („kalkulačka“) a vykreslování matematických výrazů. Funkce výkladu teorie a generace složitějších příkladů jsou tedy na trhu Discord botů unikátní.
+		\item Vykreslování není z pohledu uživatele nijak inovativní; maximálně modal pro editaci. Z pohledu kódu je „zajímavá“ implementace vykreslování matic bez použití KaTeX / MathJax.
+		\end{itemize}
+	\end{frame}
+	
+	\begin{frame}[plain, noframenumbering]
+		\bigskip
+		„Při hodnocení platformy Discord upozorňujete na problematiku aktualizací a potenciální změny v chování
+		bota. Vzhledem k tomu, že k aktualizacím dochází jednou měsíčně, je Vámi navrhované řešení dlouhodobě
+		udržitelné? Myslíte, že aktualizace můžou Vámi navrženého bota pravidelně měnit? Bude tedy potřeba každý
+		měsíc do bota zasahovat?“
+		\bigskip
+		\begin{itemize}
+			\item Poslední dobou jsou časté drobné kosmetické změny. Nejedná se ale o nic, co by narušilo funkce nebo čitelnost bota. V nejhorším případě musela být přepsána část Markdown materiálů – jediný zásah za půl roku.
+			\item Problematičtější by mohly být aktualizace API, v zájmu Discordu by ale mělo být zachování zpětné kompatibility.
+			\item Každá závislost je hrozbou (Discord, discord.py).
+		\end{itemize}
+	\end{frame}
+	
 \end{document}
